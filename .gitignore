@@ -1,0 +1,7 @@
+asteroids
+*.o
+*.dSYM
+**/.DS_Store
+**/.vscode/
+mcm.sh
+mcm-pedantic.sh
