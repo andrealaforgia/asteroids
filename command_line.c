@@ -10,6 +10,7 @@
 #define SHOW_FPS "--show-fps"
 #define DISPLAY "--display="
 #define DISPLAY_MODE "--display-mode="
+#define WINDOW_MODE "--window-mode="
 #define FPS "--fps="
 
 void print_help(void) {
@@ -24,6 +25,8 @@ void print_help(void) {
   puts("\t" DISPLAY_MODE
        "X: use display mode X (default is 0: use " GRAPHICS_INFO
        " to show all available display modes)");
+  puts("\t" WINDOW_MODE
+       "0|1: run as full screen (0 = default) or as a maximized window (1)");
   printf("\n");
 }
 
@@ -58,6 +61,14 @@ static void parse_argument(const char *argument,
     options->display = number;
 
   } else if (extract_numeric_argument(DISPLAY_MODE, argument, &number)) {
+    options->display_mode = number;
+
+  } else if (extract_numeric_argument(WINDOW_MODE, argument, &number)) {
+    int valid_window_mode = number == 0 || number == 1;
+    if (!valid_window_mode) {
+      fprintf(stderr, "Invalid window mode %s", argument);
+      exit(EXIT_FAILURE);
+    }
     options->display_mode = number;
 
   } else if (extract_numeric_argument(FPS, argument, &number)) {
