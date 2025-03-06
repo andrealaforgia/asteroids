@@ -10,6 +10,7 @@ typedef struct {
   bool show_fps;
   int display;
   int display_mode;
+  int window_mode;
   int fps;
 } command_line_options_t, *command_line_options_ptr;
 

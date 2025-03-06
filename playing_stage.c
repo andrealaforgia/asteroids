@@ -468,7 +468,8 @@ static ALWAYS_INLINE void check_if_saucer_hits_ship(void) {
 
 static ALWAYS_INLINE bool ship_bullet_hits_saucer(size_t bullet_index) {
   bullet_ptr bullet = &ship_bullets[bullet_index];
-  return point_distance(&saucer.position, &bullet->position) < saucer_radius();
+  return saucer.flying &&
+         point_distance(&saucer.position, &bullet->position) < saucer_radius();
 }
 
 static ALWAYS_INLINE void check_if_ship_hits_saucer(void) {
