@@ -49,12 +49,11 @@ install:
 dev_install:
 	$(DEV_INSTALL_CMD)
 
+lint:
+	cpplint --filter=-build/include_subdir,-legal/copyright,-runtime/threadsafe_fn $(SRC) $(HEADERS)
+
 clean:
 	$(RM) $(OBJ) $(TARGET)
-
-lint:
-	# Run cpplint on all .c files
-	cpplint $(SRC)
 
 format:
 	# Run clang-format on all .c and .h files
