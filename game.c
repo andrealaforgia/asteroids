@@ -14,7 +14,8 @@ game_t init_game(game_settings_t game_settings) {
   game_t game;
   game.settings = game_settings;
   game.graphics_context =
-      init_graphics_context(game.settings.display, game.settings.display_mode);
+      init_graphics_context(game.settings.display, game.settings.display_mode,
+                            game.settings.window_mode);
   game.audio_context = init_audio_context();
   game.keyboard_state = init_keyboard_state();
   reset_game(&game);

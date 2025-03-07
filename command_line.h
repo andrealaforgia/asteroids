@@ -2,6 +2,7 @@
 #define COMMAND_LINE_H_
 
 #include <stdbool.h>
+#include "window_mode.h"
 
 typedef struct {
   bool help;
@@ -10,7 +11,7 @@ typedef struct {
   bool show_fps;
   int display;
   int display_mode;
-  int window_mode;
+  window_mode_t window_mode;
   int fps;
 } command_line_options_t, *command_line_options_ptr;
 

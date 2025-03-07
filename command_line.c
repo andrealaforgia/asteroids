@@ -26,7 +26,7 @@ void print_help(void) {
        "X: use display mode X (default is 0: use " GRAPHICS_INFO
        " to show all available display modes)");
   puts("\t" WINDOW_MODE
-       "0|1: run as full screen (0 = default) or as a maximized window (1)");
+       "0|1: run as a maximized window (0 = default) or as full screen (1)");
   printf("\n");
 }
 
