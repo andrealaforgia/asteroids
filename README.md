@@ -5,7 +5,7 @@ make install
 
 ## Build the game
 ```
-make clean && make && rm *.o
+make
 ```
 
 ### Show run options
@@ -30,8 +30,8 @@ e.g. Running the game with no sounds, showing the frame-per-second rate, for mod
 ```
 
 ### Window modes
-The game can run either in full screen (0) or as a maximised window (1). The default is full screen:
+The game can run either as a maximised window (0, default) or in full screen (1). 
 e.g. Running maximised:
 ```
-./asteroids --display=1 --window-mode=1
+./asteroids --window-mode=0
 ```
