@@ -18,8 +18,8 @@ void print_help(void) {
   puts("\t" HELP ": print this help");
   puts("\t" GRAPHICS_INFO ": print info about the graphics system");
   puts("\t" NO_SOUND ": disable sound");
-  puts("\t" FPS "X : set frame per seconds to X (default is 60)");
-  puts("\t" SHOW_FPS ": show frames-per-second stats during game");
+  /* puts("\t" FPS "X : set frame per seconds to X (default is 60)");
+  puts("\t" SHOW_FPS ": show frames-per-second stats during game"); */
   puts("\t" DISPLAY "X : use display X (default is 0: use " GRAPHICS_INFO
        " to show the number of available displays");
   puts("\t" DISPLAY_MODE
