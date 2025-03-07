@@ -24,9 +24,9 @@ Select the display and resolution from the `graphics-info` list:
 ./asteroids --graphics-info
 ```
 
-e.g. Running the game with no sounds, showing the frame-per-second rate, for mode 11 of display 1:
+e.g. Running the game with no sounds, for mode 11 of display 1, and in full screen:
 ```
-./asteroids --no-sound --show-fps --display=1 --display-mode=11
+./asteroids --no-sound --show-fps --display=1 --display-mode=11 --window-mode=1
 ```
 
 ### Window modes
