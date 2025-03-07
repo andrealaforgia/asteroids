@@ -51,14 +51,20 @@ void print_graphics_info(void) {
   SDL_Quit();
 }
 
-graphics_context_t init_graphics_context(int display, int display_mode) {
-  graphics_context_t graphics_context;
+graphics_context_t init_graphics_context(int display, int display_mode,
+                                         window_mode_t window_mode) {
+  graphics_context_t graphics_context = {0};
 
-  SDL_Init(SDL_INIT_EVERYTHING);
+  if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    SDL_Log("SDL Init Error: %s\n", SDL_GetError());
+    abort();
+  }
+
   SDL_ShowCursor(SDL_DISABLE);
   SDL_DisplayMode sdl_display_mode;
+
   if (SDL_GetDisplayMode(display, display_mode, &sdl_display_mode) != 0) {
-    SDL_Log("Error: %s\n", SDL_GetError());
+    SDL_Log("SDL_GetDisplayMode Error: %s\n", SDL_GetError());
     abort();
   }
 
@@ -66,22 +72,28 @@ graphics_context_t init_graphics_context(int display, int display_mode) {
 
   graphics_context.screen_width = sdl_display_mode.w;
   graphics_context.screen_height = sdl_display_mode.h;
-
   graphics_context.screen_center = point(graphics_context.screen_width / 2,
                                          graphics_context.screen_height / 2);
 
-  if ((graphics_context.window = SDL_CreateWindow(
-           "Asteroids", SDL_WINDOWPOS_CENTERED_DISPLAY(display),
-           SDL_WINDOWPOS_CENTERED_DISPLAY(display),
-           graphics_context.screen_width, graphics_context.screen_height,
-           SDL_WINDOW_FULLSCREEN)) == NULL) {
-    fprintf(stderr, "Error: %s\n", SDL_GetError());
+  Uint32 window_flags = MAXIMIZED_WINDOW;
+  if (window_mode == FULL_SCREEN) {
+    window_flags = SDL_WINDOW_FULLSCREEN;
+  }
+
+  graphics_context.window = SDL_CreateWindow(
+      "Asteroids", SDL_WINDOWPOS_CENTERED_DISPLAY(display),
+      SDL_WINDOWPOS_CENTERED_DISPLAY(display), graphics_context.screen_width,
+      graphics_context.screen_height, window_flags);
+
+  if (!graphics_context.window) {
+    SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
     abort();
   }
 
-  if ((graphics_context.renderer = SDL_CreateRenderer(
-           graphics_context.window, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
-    fprintf(stderr, "Error: %s\n", SDL_GetError());
+  graphics_context.renderer =
+      SDL_CreateRenderer(graphics_context.window, -1, SDL_RENDERER_ACCELERATED);
+  if (!graphics_context.renderer) {
+    SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());
     abort();
   }
 

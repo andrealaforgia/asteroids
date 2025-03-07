@@ -2,6 +2,7 @@
 #define COMMAND_LINE_H_
 
 #include <stdbool.h>
+
 #include "window_mode.h"
 
 typedef struct {
