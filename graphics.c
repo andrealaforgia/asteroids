@@ -8,8 +8,8 @@
 
 static int get_display_count(void) { return SDL_GetNumVideoDisplays(); }
 
-static SDL_DisplayMode *get_diplay_modes(int display_index,
-                                         int *p_display_mode_count) {
+static SDL_DisplayMode *get_display_modes(int display_index,
+                                          int *p_display_mode_count) {
   *p_display_mode_count = SDL_GetNumDisplayModes(display_index);
   if (*p_display_mode_count < 1) {
     SDL_Log("SDL_GetNumDisplayModes failed: %s", SDL_GetError());
@@ -37,7 +37,7 @@ void print_graphics_info(void) {
     SDL_Log("Display Index: %d\n", display_index);
     int display_mode_count;
     SDL_DisplayMode *display_modes =
-        get_diplay_modes(display_index, &display_mode_count);
+        get_display_modes(display_index, &display_mode_count);
     if (display_modes) {
       for (int dm = 0; dm < display_mode_count; dm++) {
         SDL_Log("Display Mode %d\tbpp %d\t%s\t%d x %d", dm,
