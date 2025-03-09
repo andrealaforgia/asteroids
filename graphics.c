@@ -68,22 +68,18 @@ graphics_context_t init_graphics_context(int display, int display_mode,
     abort();
   }
 
-  SDL_Log("Display Mode: w=%d h=%d\n", sdl_display_mode.w, sdl_display_mode.h);
+  SDL_Log("Display Mode: w=%d h=%d refresh=%d\n", sdl_display_mode.w,
+          sdl_display_mode.h, sdl_display_mode.refresh_rate);
 
-  // Get usable display bounds (accounts for macOS notch and menu bar)
-  SDL_Rect usable_bounds;
-  SDL_GetDisplayUsableBounds(display, &usable_bounds);
-  SDL_Log("Usable Bounds: w=%d h=%d\n", usable_bounds.w, usable_bounds.h);
-
-  graphics_context.screen_width = usable_bounds.w;
-  graphics_context.screen_height = usable_bounds.h;
+  graphics_context.screen_width = sdl_display_mode.w;
+  graphics_context.screen_height = sdl_display_mode.h;
   graphics_context.screen_center = point(graphics_context.screen_width / 2,
                                          graphics_context.screen_height / 2);
 
-  // Use high-DPI flag and fullscreen mode handling
   Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE;
+
   if (window_mode == FULL_SCREEN) {
-    window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    window_flags |= SDL_WINDOW_FULLSCREEN;
   } else {
     window_flags |= SDL_WINDOW_MAXIMIZED;
   }
@@ -98,12 +94,19 @@ graphics_context_t init_graphics_context(int display, int display_mode,
     abort();
   }
 
-  // Get actual rendering size to account for high-DPI displays
+  if (window_mode == FULL_SCREEN) {
+    if (SDL_SetWindowDisplayMode(graphics_context.window, &sdl_display_mode) !=
+        0) {
+      SDL_Log("SDL_SetWindowDisplayMode Error: %s\n", SDL_GetError());
+      abort();
+    }
+    SDL_SetWindowFullscreen(graphics_context.window, SDL_WINDOW_FULLSCREEN);
+  }
+
   int drawable_w, drawable_h;
   SDL_GL_GetDrawableSize(graphics_context.window, &drawable_w, &drawable_h);
   SDL_Log("Drawable Size: w=%d h=%d\n", drawable_w, drawable_h);
 
-  // Adjust renderer size if necessary
   graphics_context.renderer =
       SDL_CreateRenderer(graphics_context.window, -1, SDL_RENDERER_ACCELERATED);
   if (!graphics_context.renderer) {
