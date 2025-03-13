@@ -8,30 +8,39 @@ make install
 make
 ```
 
-### Show run options
+## Show run options
 ```
 ./asteroids --help
 ```
 
-## Run the game
+## Run the game in a maximised window (recommended the first time)
 ```
 ./asteroids
 ```
 
-### Run the game with custom options
-Select the display and resolution from the `graphics-info` list:
+## Run the game as full screen
+```
+./asteroids --window-mode=1
+```
+
+The game will run by default on the main display. To run it as full screen on a secondary screen, use:
+```
+./asteroids --window-mode=1 --display=1
+```
+To discover the number of displays available, run: 
 ```
 ./asteroids --graphics-info
 ```
 
-e.g. Running the game with no sounds, for mode 11 of display 1, and in full screen:
+The game will run with sound enabled by default. If you want to disable sound at the start, use the `--no-sound` option:
 ```
-./asteroids --no-sound --display=1 --display-mode=11 --window-mode=1
+./asteroids --no-sound
 ```
 
-### Window modes
-The game can run either as a maximised window (0, default) or in full screen (1). 
-e.g. Running maximised:
-```
-./asteroids --window-mode=0
-```
+## Commands
+
+`S`: enable/disable sound
+`<up>` or `K`: thrust the ship
+`<left>` or `H`: rotate the ship left
+`<right>` or `L`: rotate the ship right
+`<space>`: shoots
