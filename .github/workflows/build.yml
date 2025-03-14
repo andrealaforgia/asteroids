@@ -1,0 +1,22 @@
+name: Build Asteroids
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          make dev_install
+          make install
+
+      - name: Build 
+        run: |
+          make lint
+          make all
+
