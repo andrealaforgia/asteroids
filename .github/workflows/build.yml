@@ -17,8 +17,11 @@ jobs:
           make dev_install
           make install
 
+      - name: lint
+        run:
+          make lint
+
       - name: Build 
         run: |
-          make lint
           make all
 
