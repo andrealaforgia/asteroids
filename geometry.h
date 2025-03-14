@@ -1,6 +1,10 @@
 #ifndef GEOMETRY_H_
 #define GEOMETRY_H_
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 typedef struct {
   int x_delta;
   int y_delta;

@@ -5,10 +5,6 @@
 
 #include "inline.h"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 ALWAYS_INLINE point_t point(double x, double y) {
   point_t p;
   p.x = x;
