@@ -28,6 +28,38 @@ static graphics_context_ptr graphics_context = NULL;
 static audio_context_ptr audio_context = NULL;
 static fps_tracker_t fps_tracker;
 
+/* ---- ==== ---- ==== sound ==== ---- ==== ---- */
+
+static ALWAYS_INLINE bool sound_on(void) { return !game->settings.no_sound; }
+
+static ALWAYS_INLINE void play_bang_large_if_sound_on(void) {
+  if (sound_on()) {
+    play_bang_large(audio_context);
+  }
+}
+
+static ALWAYS_INLINE void play_bang_medium_if_sound_on(void) {
+  if (sound_on()) {
+    play_bang_medium(audio_context);
+  }
+}
+
+static ALWAYS_INLINE void play_bang_small_if_sound_on(void) {
+  if (sound_on()) {
+    play_bang_small(audio_context);
+  }
+}
+
+static ALWAYS_INLINE void play_thrust_if_sound_on(void) {
+  if (sound_on()) {
+    play_thrust(audio_context);
+  }
+}
+
+static ALWAYS_INLINE void toggle_sound(void) {
+  game->settings.no_sound = !game->settings.no_sound;
+}
+
 /* ---- ==== ---- ==== sharpnels ==== ---- ==== ---- */
 
 #define MAX_SHARPNEL_COUNT 50
