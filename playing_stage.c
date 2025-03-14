@@ -18,7 +18,6 @@
 #include "geometry.h"
 #include "graphics.h"
 #include "physics.h"
-#include "playing_stage_sound.h"
 #include "render.h"
 #include "saucer.h"
 #include "score.h"
