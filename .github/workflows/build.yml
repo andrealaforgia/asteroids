@@ -3,25 +3,29 @@ name: Build Asteroids
 on:
   push:
     branches: [main]
-
 jobs:
-  build:
-    runs-on: ubuntu-latest 
-      
+  lint:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          make dev_install
-          make install
+      - name: Install Dependencies
+        run: make dev_install
 
-      - name: Lint
-        run:
-          make lint
+      - name: Run Linter
+        run: make lint
 
-      - name: Build 
-        run: |
-          make all
+  build:
+    runs-on: ubuntu-latest
+    needs: lint  # Ensures linting passes before building
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
+      - name: Install Dependencies
+        run: make install 
+
+      - name: Compile Project
+        run: make
+        
