@@ -602,7 +602,7 @@ game_stage_action_t handle_playing_stage(void) {
 
     event_t event = poll_event();
 
-    if (event == QUIT) {
+    if (event == QUIT_EVENT) {
       break;
     }
 
