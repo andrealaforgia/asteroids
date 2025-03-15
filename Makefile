@@ -3,8 +3,8 @@ CC = gcc
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
     PLATFORM = LINUX
-    INSTALL_CMD = sudo apt-get install -y libsdl2-dev libsdl2-mixer-dev
-    DEV_INSTALL_CMD = sudo apt-get install -y cpplint clang-format
+    INSTALL_CMD = sudo apt-get update && apt-get install -y libsdl2-dev libsdl2-mixer-dev
+    DEV_INSTALL_CMD = sudo apt-get updaet && apt-get install -y cpplint clang-format
 else ifeq ($(UNAME_S), Darwin)
     PLATFORM = OSX
     INSTALL_CMD = brew install sdl2 sdl2_mixer
