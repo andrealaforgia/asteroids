@@ -31,7 +31,7 @@ TARGET = asteroids
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(LFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LFLAGS) 
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
