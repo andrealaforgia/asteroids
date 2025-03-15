@@ -20,7 +20,7 @@ else
 endif
 
 # Compiler flags
-CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(SDL2_FLAGS)
+CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(SDL2_FLAGS) -lm
 
 # Source and object files
 SRCDIR = .
