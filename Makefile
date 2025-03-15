@@ -50,3 +50,13 @@ clean:
 
 format:
 	clang-format -i -style=Google $(SRC) $(HEADERS)
+
+show_sdl_config:
+	@echo "Checking SDL2 Configuration..."
+	@which sdl2-config || echo "sdl2-config not found"
+	@sdl2-config --version || echo "Failed to get SDL2 version"
+	@sdl2-config --cflags || echo "Failed to get SDL2 cflags"
+	@sdl2-config --libs || echo "Failed to get SDL2 libs"
+	@echo "Library Paths:"
+	@ldconfig -p | grep SDL || echo "No SDL libraries found in ldconfig"
+

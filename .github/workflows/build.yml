@@ -26,6 +26,9 @@ jobs:
       - name: Install Dependencies
         run: make install 
 
+      - name: Show SDL Configuration
+        run: make show_sdl_config
+
       - name: Compile Project
         run: make
         
