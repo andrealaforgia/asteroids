@@ -13,8 +13,8 @@ else
     $(error Unsupported platform)
 endif
 
-SDL2_CFLAGS := `sdl2-config --cflags`
-SDL2_LFLAGS := `sdl2-config --libs` -lSDL2_mixer
+SDL2_CFLAGS := $(shell sdl2-config --cflags)
+SDL2_LFLAGS := $(shell sdl2-config --libs) -lSDL2_mixer
 
 CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(SDL2_CFLAGS) 
 LFLAGS := $(SDL2_LFLAGS) -lm
