@@ -1,20 +1,19 @@
 # Compiler
 CC = gcc
 
+SDL2_FLAGS := `sdl2-config --libs --cflags` -lSDL2_mixer
+RM = rm -f
+
 # Platform detection
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
     PLATFORM = LINUX
-    SDL2_FLAGS := `sdl2-config --libs --cflags` -lSDL2_mixer
     INSTALL_CMD = sudo apt-get install -y libsdl2-dev libsdl2-mixer-dev
     DEV_INSTALL_CMD = sudo apt-get install -y cpplint clang-format
-    RM = rm -f
 else ifeq ($(UNAME_S), Darwin)
     PLATFORM = OSX
-    SDL2_FLAGS := `sdl2-config --libs --cflags` -lSDL2_mixer
     INSTALL_CMD = brew install sdl2 sdl2_mixer
     DEV_INSTALL_CMD = brew install cpplint clang-format
-    RM = rm -f
 else
     $(error Unsupported platform)
 endif
