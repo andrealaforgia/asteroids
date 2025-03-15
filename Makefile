@@ -34,7 +34,7 @@ TARGET = asteroids
 .PHONY: all install dev_install clean lint format
 
 # Ensure formatting runs before every make
-all: format $(TARGET)
+all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
