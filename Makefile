@@ -14,7 +14,7 @@ else
 endif
 
 SDL2_CFLAGS := $(shell sdl2-config --cflags)
-SDL2_LFLAGS := $(shell sdl2-config --libs) -lSDL2_mixer -lSDL2
+SDL2_LFLAGS := $(shell sdl2-config --libs) -lSDL2_mixer
 
 CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(SDL2_CFLAGS) 
 LFLAGS := $(SDL2_LFLAGS) -lm
