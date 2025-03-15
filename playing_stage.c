@@ -1,11 +1,11 @@
 #include "playing_stage.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "animate.h"
-#include "assert.h"
 #include "asteroid.h"
 #include "audio.h"
 #include "bullet.h"
@@ -21,6 +21,7 @@
 #include "render.h"
 #include "saucer.h"
 #include "score.h"
+#include "sharpnel.h"
 #include "text.h"
 
 static game_ptr game = NULL;
@@ -58,45 +59,6 @@ static ALWAYS_INLINE void play_thrust_if_sound_on(void) {
 
 static ALWAYS_INLINE void toggle_sound(void) {
   game->settings.no_sound = !game->settings.no_sound;
-}
-
-/* ---- ==== ---- ==== sharpnels ==== ---- ==== ---- */
-
-#define MAX_SHARPNEL_COUNT 50
-#define SHARPNEL_MAX_AGE_MSECS 750
-
-static sharpnel_t sharpnels[MAX_SHARPNEL_COUNT];
-static size_t sharpnel_count = 0;
-
-static ALWAYS_INLINE void add_sharpnel(point_t position) {
-  assert(sharpnel_count < MAX_SHARPNEL_COUNT);
-  sharpnels[sharpnel_count++] = create_sharpnel(position);
-}
-
-static ALWAYS_INLINE void remove_sharpnel(size_t sharpnel_index) {
-  assert(sharpnel_count > 0);
-  if (sharpnel_count > 1) {
-    sharpnels[sharpnel_index] = sharpnels[sharpnel_count - 1];
-  }
-  --sharpnel_count;
-}
-
-static ALWAYS_INLINE void update_sharpnel(size_t sharpnel_index) {
-  int sharpnel_age = elapsed_from(sharpnels[sharpnel_index].creation_ticks);
-  if (sharpnel_age > SHARPNEL_MAX_AGE_MSECS) {
-    remove_sharpnel(sharpnel_index);
-    return;
-  } else {
-    sharpnels[sharpnel_index].scale += 0.375;
-  }
-  color_t color = GRAY_SCALE(sharpnel_age, SHARPNEL_MAX_AGE_MSECS);
-  render_sharpnel(graphics_context, &sharpnels[sharpnel_index], color);
-}
-
-static ALWAYS_INLINE void animate_sharpnels(void) {
-  for (size_t sbi = 0; sbi < sharpnel_count; sbi++) {
-    update_sharpnel(sbi);
-  }
 }
 
 /* ---- ==== ---- ==== ship ==== ---- ==== ---- */
@@ -529,7 +491,7 @@ static ALWAYS_INLINE void recreate_asteroids_if_none_are_left(void) {
 
 static ALWAYS_INLINE void reset_objects(void) {
   asteroid_count = 0;
-  sharpnel_count = 0;
+  reset_sharpnels();
   saucer_bullet_count = 0;
   ship_bullet_count = 0;
   saucer.flying = false;
@@ -588,7 +550,7 @@ game_stage_action_t handle_playing_stage(void) {
 
     animate_saucer_bullets();
 
-    animate_sharpnels();
+    animate_sharpnels(graphics_context);
 
     show_lives();
 

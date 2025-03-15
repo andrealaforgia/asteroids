@@ -103,8 +103,6 @@ const coords_t OBJECT_COORDS[] = {
 
 const bounds_t ASTEROID_BOUNDS[] = {{0, 11}, {11, 24}, {24, 36}, {36, 49}};
 
-const bounds_t SHARPNEL_BOUNDS = {49, 69};
-
 const bounds_t SAUCER_BOUNDS = {69, 81};
 
 ALWAYS_INLINE void render_object(const graphics_context_ptr graphics_context,
@@ -133,12 +131,6 @@ ALWAYS_INLINE void render_saucer(const graphics_context_ptr graphics_context,
                                  const saucer_ptr saucer) {
   render_object(graphics_context, SAUCER_BOUNDS, &saucer->position,
                 saucer->scale, COLOR_RED);
-}
-
-ALWAYS_INLINE void render_sharpnel(const graphics_context_ptr graphics_context,
-                                   const sharpnel_ptr sharpnel, color_t color) {
-  render_object(graphics_context, SHARPNEL_BOUNDS, &sharpnel->position,
-                sharpnel->scale, color);
 }
 
 ALWAYS_INLINE void _render_ship(const graphics_context_ptr graphics_context,
