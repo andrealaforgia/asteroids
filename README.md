@@ -24,9 +24,9 @@ Select the display and resolution from the `graphics-info` list:
 ./asteroids --graphics-info
 ```
 
-e.g. Running the game with no sounds, showing the frame-per-second rate, for mode 11 of display 1:
+Example: Running the game with FPS display, custom volume, for mode 11 of display 1:
 ```
-./asteroids --no-sound --show-fps --display=1 --display-mode=11
+./asteroids --show-fps --volume=64 --display=1 --display-mode=11
 ```
 
 ### Window Modes
@@ -96,3 +96,56 @@ VSync synchronizes the game's frame rendering with your display's refresh rate t
 ```
 ./asteroids --window-mode=1 --vsync
 ```
+
+### FPS Display
+
+Display real-time frames-per-second statistics in the top-left corner during gameplay.
+
+**Default:** FPS display is **disabled** by default.
+
+**Enable FPS display:**
+```
+./asteroids --show-fps
+```
+
+**Use cases:**
+- Performance monitoring and debugging
+- Verifying VSync is working correctly (should show 60 FPS or your display's refresh rate)
+- Diagnosing performance issues or frame drops
+- Comparing performance between different window modes or displays
+
+**Example - FPS display with VSync:**
+```
+./asteroids --show-fps --vsync
+```
+
+### Audio Volume
+
+Control the game's audio volume at startup.
+
+**Default:** Volume is set to **32** (out of 128) for comfortable listening.
+
+**Set custom volume:**
+```
+./asteroids --volume=64   # Half of maximum
+./asteroids --volume=0    # Mute all sound
+./asteroids --volume=128  # Maximum volume
+```
+
+**Valid range:** 0-128 (0 = silent, 128 = maximum)
+
+**Note:** You can also toggle sound on/off during gameplay by pressing the **S** key.
+
+## Game Controls
+
+### Gameplay
+- **Up Arrow** - Thrust forward
+- **Left Arrow** - Rotate left
+- **Right Arrow** - Rotate right
+- **Space** - Fire weapon
+
+### System Controls
+- **S** - Toggle sound on/off
+- **F11** - Toggle fullscreen mode
+- **ESC** - Quit game
+- **Return/Enter** - Start game (from intro screen)

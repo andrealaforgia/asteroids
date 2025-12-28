@@ -20,8 +20,7 @@ void print_help(void) {
   puts("\t" GRAPHICS_INFO ": print info about the graphics system");
   puts("\t" VSYNC ": enable VSync for smoother rendering (default: off)");
   puts("\t" VOLUME "X: set audio volume 0-128 (default: 32, 0=silent, 128=max)");
-  /* puts("\t" FPS "X : set frame per seconds to X (default is 60)");
-  puts("\t" SHOW_FPS ": show frames-per-second stats during game"); */
+  puts("\t" SHOW_FPS ": show frames-per-second stats during game");
   puts("\t" DISPLAY "X : use display X (default is 0: use " GRAPHICS_INFO
        " to show the number of available displays");
   puts("\t" DISPLAY_MODE
