@@ -16,13 +16,19 @@ endif
 SDL2_CFLAGS := $(shell sdl2-config --cflags)
 SDL2_LFLAGS := $(shell sdl2-config --libs) -lSDL2_mixer
 
-CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(SDL2_CFLAGS) 
-LFLAGS := $(SDL2_LFLAGS) -lm
-
 SRCDIR = .
-SRC = $(wildcard $(SRCDIR)/*.c)
-HEADERS = $(wildcard $(SRCDIR)/*.h)
+ENGINE_GRAPHICS_DIR = engine/core/graphics
+
+# Find all C source files in root and engine directories
+SRC = $(wildcard $(SRCDIR)/*.c) $(wildcard $(ENGINE_GRAPHICS_DIR)/*.c)
+HEADERS = $(wildcard $(SRCDIR)/*.h) $(wildcard $(ENGINE_GRAPHICS_DIR)/*.h)
 OBJ = $(SRC:.c=.o)
+
+# Add include paths
+INCLUDES = -I. -I$(ENGINE_GRAPHICS_DIR)
+
+CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(INCLUDES) $(SDL2_CFLAGS)
+LFLAGS := $(SDL2_LFLAGS) -lm
 
 TARGET = asteroids
 
