@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "inline.h"
+#include "logger.h"
 
 #define BANG_LARGE_INDEX 0
 #define BANG_MEDIUM_INDEX 1
@@ -31,7 +32,7 @@
 
 audio_context_t init_audio_context(void) {
   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
-    fprintf(stderr, "Cannot initialize audio!\n");
+    LOG_MIX_ERROR("Mix_OpenAudio");
   }
   audio_context_t audio_context;
   audio_context.chunks[BANG_LARGE_INDEX] = Mix_LoadWAV(BANG_LARGE_WAV);

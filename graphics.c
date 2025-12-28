@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "inline.h"
+#include "logger.h"
 
 static int get_display_count(void) { return SDL_GetNumVideoDisplays(); }
 
@@ -12,7 +13,7 @@ static SDL_DisplayMode *get_display_modes(int display_index,
                                           int *p_display_mode_count) {
   *p_display_mode_count = SDL_GetNumDisplayModes(display_index);
   if (*p_display_mode_count < 1) {
-    SDL_Log("SDL_GetNumDisplayModes failed: %s", SDL_GetError());
+    LOG_SDL_ERROR("SDL_GetNumDisplayModes");
     return NULL;
   }
 
@@ -21,7 +22,7 @@ static SDL_DisplayMode *get_display_modes(int display_index,
 
   for (int i = 0; i < *p_display_mode_count; i++) {
     if (SDL_GetDisplayMode(display_index, i, &display_modes[i]) != 0) {
-      SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
+      LOG_SDL_ERROR("SDL_GetDisplayMode");
       free(display_modes);
       return NULL;
     }
@@ -32,18 +33,18 @@ static SDL_DisplayMode *get_display_modes(int display_index,
 void print_graphics_info(void) {
   SDL_Init(SDL_INIT_EVERYTHING);
   int display_count = get_display_count();
-  SDL_Log("Number of available displays: %d\n", display_count);
+  LOG_INFO_FMT("Number of available displays: %d", display_count);
   for (int display_index = 0; display_index < display_count; display_index++) {
-    SDL_Log("Display Index: %d\n", display_index);
+    LOG_INFO_FMT("Display Index: %d", display_index);
     int display_mode_count;
     SDL_DisplayMode *display_modes =
         get_display_modes(display_index, &display_mode_count);
     if (display_modes) {
       for (int dm = 0; dm < display_mode_count; dm++) {
-        SDL_Log("Display Mode %d\tbpp %d\t%s\t%d x %d", dm,
-                SDL_BITSPERPIXEL(display_modes[dm].format),
-                SDL_GetPixelFormatName(display_modes[dm].format),
-                display_modes[dm].w, display_modes[dm].h);
+        LOG_INFO_FMT("Display Mode %d\tbpp %d\t%s\t%d x %d", dm,
+                     SDL_BITSPERPIXEL(display_modes[dm].format),
+                     SDL_GetPixelFormatName(display_modes[dm].format),
+                     display_modes[dm].w, display_modes[dm].h);
       }
       free(display_modes);
     }
@@ -56,20 +57,24 @@ graphics_context_t init_graphics_context(int display, int display_mode,
   graphics_context_t graphics_context = {0};
 
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-    SDL_Log("SDL Init Error: %s\n", SDL_GetError());
+    LOG_SDL_ERROR("SDL_Init");
     abort();
   }
+
+  // Set SDL hints for better rendering on macOS/Metal
+  SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");  // nearest pixel sampling
 
   SDL_ShowCursor(SDL_DISABLE);
   SDL_DisplayMode sdl_display_mode;
 
   if (SDL_GetDisplayMode(display, display_mode, &sdl_display_mode) != 0) {
-    SDL_Log("SDL_GetDisplayMode Error: %s\n", SDL_GetError());
+    LOG_SDL_ERROR("SDL_GetDisplayMode");
     abort();
   }
 
-  SDL_Log("Display Mode: w=%d h=%d refresh=%d\n", sdl_display_mode.w,
-          sdl_display_mode.h, sdl_display_mode.refresh_rate);
+  LOG_INFO_FMT("Display Mode: w=%d h=%d refresh=%d", sdl_display_mode.w,
+               sdl_display_mode.h, sdl_display_mode.refresh_rate);
 
   graphics_context.screen_width = sdl_display_mode.w;
   graphics_context.screen_height = sdl_display_mode.h;
@@ -90,14 +95,14 @@ graphics_context_t init_graphics_context(int display, int display_mode,
       graphics_context.screen_height, window_flags);
 
   if (!graphics_context.window) {
-    SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
+    LOG_SDL_ERROR("SDL_CreateWindow");
     abort();
   }
 
   if (window_mode == FULL_SCREEN) {
     if (SDL_SetWindowDisplayMode(graphics_context.window, &sdl_display_mode) !=
         0) {
-      SDL_Log("SDL_SetWindowDisplayMode Error: %s\n", SDL_GetError());
+      LOG_SDL_ERROR("SDL_SetWindowDisplayMode");
       abort();
     }
     SDL_SetWindowFullscreen(graphics_context.window, SDL_WINDOW_FULLSCREEN);
@@ -105,24 +110,34 @@ graphics_context_t init_graphics_context(int display, int display_mode,
 
   int drawable_w, drawable_h;
   SDL_GL_GetDrawableSize(graphics_context.window, &drawable_w, &drawable_h);
-  SDL_Log("Drawable Size: w=%d h=%d\n", drawable_w, drawable_h);
+  LOG_INFO_FMT("Drawable Size: w=%d h=%d", drawable_w, drawable_h);
 
   Uint32 renderer_flags = SDL_RENDERER_ACCELERATED;
   if (vsync) {
     renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
-    SDL_Log("VSync enabled\n");
+    LOG_INFO("VSync enabled");
   }
 
   graphics_context.renderer =
       SDL_CreateRenderer(graphics_context.window, -1, renderer_flags);
   if (!graphics_context.renderer) {
-    SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+    LOG_SDL_ERROR("SDL_CreateRenderer");
     abort();
   }
 
-  SDL_RenderSetLogicalSize(graphics_context.renderer,
-                           graphics_context.screen_width,
-                           graphics_context.screen_height);
+  // Configure renderer for proper blending
+  SDL_SetRenderDrawBlendMode(graphics_context.renderer, SDL_BLENDMODE_BLEND);
+
+  // Log renderer info for debugging
+  SDL_RendererInfo renderer_info;
+  if (SDL_GetRendererInfo(graphics_context.renderer, &renderer_info) == 0) {
+    LOG_INFO_FMT("Renderer: %s", renderer_info.name);
+  }
+
+  // Don't use logical size on macOS - causes scaling artifacts on Retina displays
+  // SDL_RenderSetLogicalSize(graphics_context.renderer,
+  //                          graphics_context.screen_width,
+  //                          graphics_context.screen_height);
 
   return graphics_context;
 }

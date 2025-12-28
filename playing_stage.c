@@ -512,7 +512,10 @@ game_stage_action_t handle_playing_stage(void) {
   reset_objects();
 
   while (true) {
-    if (elapsed_from(last_frame_ticks) < (1000 / game->settings.fps)) {
+    int frame_time = 1000 / game->settings.fps;
+    int elapsed = elapsed_from(last_frame_ticks);
+    if (elapsed < frame_time) {
+      SDL_Delay(1);  // Yield to OS instead of busy-waiting
       continue;
     }
     last_frame_ticks = get_clock_ticks_ms();
