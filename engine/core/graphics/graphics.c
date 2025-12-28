@@ -343,12 +343,11 @@ ALWAYS_INLINE void draw_fat_pixel(const graphics_context_ptr graphics_context,
                                   const point_ptr p, color_t color) {
   SDL_SetRenderDrawColor(graphics_context->renderer, R(color), G(color),
                          B(color), 255);
-  SDL_RenderDrawLine(graphics_context->renderer, p->x - 1, p->y - 1, p->x + 1,
-                     p->y - 1);
-  SDL_RenderDrawLine(graphics_context->renderer, p->x - 1, p->y, p->x + 1,
-                     p->y);
-  SDL_RenderDrawLine(graphics_context->renderer, p->x - 1, p->y + 1, p->x + 1,
-                     p->y + 1);
+  // Draw a 5x5 square for thicker bullets
+  for (int dy = -2; dy <= 2; dy++) {
+    SDL_RenderDrawLine(graphics_context->renderer, p->x - 2, p->y + dy,
+                       p->x + 2, p->y + dy);
+  }
 }
 
 void draw_circle(const graphics_context_ptr graphics_context, int32_t centreX,

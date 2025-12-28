@@ -167,8 +167,8 @@ ALWAYS_INLINE void _render_ship(const graphics_context_ptr graphics_context,
   int number_of_points = thrusting ? NUMBER_OF_POINTS : NUMBER_OF_POINTS - 2;
   for (int i = 0; i < number_of_points; i++) {
     int j = i == number_of_points - 1 ? 0 : i + 1;
-    draw_line_between_points(graphics_context, &points[i], &points[j],
-                             ship_color);
+    draw_thick_line(graphics_context, points[i].x, points[i].y,
+                    points[j].x, points[j].y, ship_color);
   }
 }
 
