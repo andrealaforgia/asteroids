@@ -382,10 +382,20 @@ random_point(const graphics_context_ptr graphics_context) {
 }
 
 ALWAYS_INLINE color_t random_color(void) {
-  int r = 128 + rand() % 128;
-  int g = 128 + rand() % 128;
-  int b = 128 + rand() % 128;
-  return COLOR(r, g, b);
+  // Generate vibrant colors by using predefined bright color palette
+  color_t colors[] = {
+    0xFF0000,  // Red
+    0x00FF00,  // Green
+    0x0000FF,  // Blue
+    0xFFFF00,  // Yellow
+    0xFF00FF,  // Magenta
+    0x00FFFF,  // Cyan
+    0xFF8000,  // Orange
+    0xFF0080,  // Pink
+    0x80FF00,  // Lime
+    0x0080FF,  // Sky blue
+  };
+  return colors[rand() % (sizeof(colors) / sizeof(color_t))];
 }
 
 ALWAYS_INLINE bool out_of_bounds(const graphics_context_ptr graphics_context,
