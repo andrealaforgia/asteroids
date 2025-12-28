@@ -52,7 +52,7 @@ void print_graphics_info(void) {
 }
 
 graphics_context_t init_graphics_context(int display, int display_mode,
-                                         window_mode_t window_mode) {
+                                         window_mode_t window_mode, bool vsync) {
   graphics_context_t graphics_context = {0};
 
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -107,8 +107,14 @@ graphics_context_t init_graphics_context(int display, int display_mode,
   SDL_GL_GetDrawableSize(graphics_context.window, &drawable_w, &drawable_h);
   SDL_Log("Drawable Size: w=%d h=%d\n", drawable_w, drawable_h);
 
+  Uint32 renderer_flags = SDL_RENDERER_ACCELERATED;
+  if (vsync) {
+    renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
+    SDL_Log("VSync enabled\n");
+  }
+
   graphics_context.renderer =
-      SDL_CreateRenderer(graphics_context.window, -1, SDL_RENDERER_ACCELERATED);
+      SDL_CreateRenderer(graphics_context.window, -1, renderer_flags);
   if (!graphics_context.renderer) {
     SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());
     abort();

@@ -19,7 +19,7 @@ typedef struct {
 void print_graphics_info(void);
 
 graphics_context_t init_graphics_context(int display, int display_mode,
-                                         window_mode_t window_mode);
+                                         window_mode_t window_mode, bool vsync);
 void terminate_graphics_context(const graphics_context_ptr graphics_context);
 void draw_line_between_points(const graphics_context_ptr graphics_context,
                               const point_ptr p1, const point_ptr p2,

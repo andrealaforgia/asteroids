@@ -8,6 +8,7 @@
 #define GRAPHICS_INFO "--graphics-info"
 #define NO_SOUND "--no-sound"
 #define SHOW_FPS "--show-fps"
+#define VSYNC "--vsync"
 #define DISPLAY "--display="
 #define DISPLAY_MODE "--display-mode="
 #define WINDOW_MODE "--window-mode="
@@ -18,6 +19,7 @@ void print_help(void) {
   puts("\t" HELP ": print this help");
   puts("\t" GRAPHICS_INFO ": print info about the graphics system");
   puts("\t" NO_SOUND ": disable sound");
+  puts("\t" VSYNC ": enable VSync for smoother rendering (default: off)");
   /* puts("\t" FPS "X : set frame per seconds to X (default is 60)");
   puts("\t" SHOW_FPS ": show frames-per-second stats during game"); */
   puts("\t" DISPLAY "X : use display X (default is 0: use " GRAPHICS_INFO
@@ -54,6 +56,9 @@ static void parse_argument(const char *argument,
   } else if (!strcmp(SHOW_FPS, argument)) {
     options->show_fps = true;
 
+  } else if (!strcmp(VSYNC, argument)) {
+    options->vsync = true;
+
   } else if (!strcmp(GRAPHICS_INFO, argument)) {
     options->graphics_info = true;
 
@@ -81,6 +86,7 @@ static void set_defaults(const command_line_options_ptr options) {
   options->graphics_info = false;
   options->no_sound = false;
   options->show_fps = false;
+  options->vsync = false;
   options->display = 0;
   options->display_mode = 0;
   options->fps = 60;
