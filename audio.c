@@ -1,7 +1,10 @@
 #include "audio.h"
 
+#include <SDL.h>
 #include <SDL_mixer.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "inline.h"
 #include "logger.h"
@@ -18,25 +21,44 @@
 #define THRUST_INDEX 9
 #define GAME_OVER_INDEX 10
 
-#define BANG_LARGE_WAV "./sounds/bangLarge.wav"
-#define BANG_MEDIUM_WAV "./sounds/bangMedium.wav"
-#define BANG_SMALL_WAV "./sounds/bangSmall.wav"
-#define BEAT1_WAV "./sounds/beat1.wav"
-#define BEAT2_WAV "./sounds/beat2.wav"
-#define EXTRA_SHIP_WAV "./sounds/extraShip.wav"
-#define FIRE_WAV "./sounds/fire.wav"
-#define SAUCER_SMALL_WAV "./sounds/saucerSmall.wav"
-#define SAUCER_BIG_WAV "./sounds/saucerBig.wav"
-#define THRUST_WAV "./sounds/thrust.wav"
-#define GAME_OVER_WAV "./sounds/gameOver.wav"
+// Sound file names (relative to executable directory)
+#define BANG_LARGE_WAV "sounds/bangLarge.wav"
+#define BANG_MEDIUM_WAV "sounds/bangMedium.wav"
+#define BANG_SMALL_WAV "sounds/bangSmall.wav"
+#define BEAT1_WAV "sounds/beat1.wav"
+#define BEAT2_WAV "sounds/beat2.wav"
+#define EXTRA_SHIP_WAV "sounds/extraShip.wav"
+#define FIRE_WAV "sounds/fire.wav"
+#define SAUCER_SMALL_WAV "sounds/saucerSmall.wav"
+#define SAUCER_BIG_WAV "sounds/saucerBig.wav"
+#define THRUST_WAV "sounds/thrust.wav"
+#define GAME_OVER_WAV "sounds/gameOver.wav"
+
+// Construct full path to a sound file
+static char *get_sound_path(const char *base_path, const char *sound_file) {
+  size_t path_len = strlen(base_path) + strlen(sound_file) + 1;
+  char *full_path = malloc(path_len);
+  if (full_path) {
+    snprintf(full_path, path_len, "%s%s", base_path, sound_file);
+  }
+  return full_path;
+}
 
 // Helper function to load sound with error checking
-static Mix_Chunk *load_sound(const char *path) {
-  Mix_Chunk *chunk = Mix_LoadWAV(path);
+static Mix_Chunk *load_sound(const char *base_path, const char *sound_file) {
+  char *full_path = get_sound_path(base_path, sound_file);
+  if (!full_path) {
+    LOG_WARN("Failed to allocate memory for sound path");
+    return NULL;
+  }
+
+  Mix_Chunk *chunk = Mix_LoadWAV(full_path);
   if (!chunk) {
-    LOG_MIX_ERROR(path);
+    LOG_MIX_ERROR(full_path);
     LOG_WARN("Game will continue without this sound effect");
   }
+
+  free(full_path);
   return chunk;
 }
 
@@ -44,18 +66,31 @@ audio_context_t init_audio_context(int volume) {
   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
     LOG_MIX_ERROR("Mix_OpenAudio");
   }
+
+  // Get the base path for the executable
+  char *base_path = SDL_GetBasePath();
+  if (!base_path) {
+    LOG_SDL_ERROR("SDL_GetBasePath");
+    LOG_WARN("Using current directory for sound files");
+    base_path = SDL_strdup("./");
+  }
+
   audio_context_t audio_context;
-  audio_context.chunks[BANG_LARGE_INDEX] = load_sound(BANG_LARGE_WAV);
-  audio_context.chunks[BANG_MEDIUM_INDEX] = load_sound(BANG_MEDIUM_WAV);
-  audio_context.chunks[BANG_SMALL_INDEX] = load_sound(BANG_SMALL_WAV);
-  audio_context.chunks[BEAT1_INDEX] = load_sound(BEAT1_WAV);
-  audio_context.chunks[BEAT2_INDEX] = load_sound(BEAT2_WAV);
-  audio_context.chunks[EXTRA_SHIP_INDEX] = load_sound(EXTRA_SHIP_WAV);
-  audio_context.chunks[FIRE_INDEX] = load_sound(FIRE_WAV);
-  audio_context.chunks[SAUCER_BIG_INDEX] = load_sound(SAUCER_BIG_WAV);
-  audio_context.chunks[SAUCER_SMALL_INDEX] = load_sound(SAUCER_SMALL_WAV);
-  audio_context.chunks[THRUST_INDEX] = load_sound(THRUST_WAV);
-  audio_context.chunks[GAME_OVER_INDEX] = load_sound(GAME_OVER_WAV);
+  audio_context.chunks[BANG_LARGE_INDEX] = load_sound(base_path, BANG_LARGE_WAV);
+  audio_context.chunks[BANG_MEDIUM_INDEX] =
+      load_sound(base_path, BANG_MEDIUM_WAV);
+  audio_context.chunks[BANG_SMALL_INDEX] = load_sound(base_path, BANG_SMALL_WAV);
+  audio_context.chunks[BEAT1_INDEX] = load_sound(base_path, BEAT1_WAV);
+  audio_context.chunks[BEAT2_INDEX] = load_sound(base_path, BEAT2_WAV);
+  audio_context.chunks[EXTRA_SHIP_INDEX] = load_sound(base_path, EXTRA_SHIP_WAV);
+  audio_context.chunks[FIRE_INDEX] = load_sound(base_path, FIRE_WAV);
+  audio_context.chunks[SAUCER_BIG_INDEX] = load_sound(base_path, SAUCER_BIG_WAV);
+  audio_context.chunks[SAUCER_SMALL_INDEX] =
+      load_sound(base_path, SAUCER_SMALL_WAV);
+  audio_context.chunks[THRUST_INDEX] = load_sound(base_path, THRUST_WAV);
+  audio_context.chunks[GAME_OVER_INDEX] = load_sound(base_path, GAME_OVER_WAV);
+
+  SDL_free(base_path);
 
   // Amount of channels (Max amount of sounds playing at the same time)
   int channels = Mix_AllocateChannels(256);
