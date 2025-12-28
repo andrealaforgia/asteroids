@@ -8,7 +8,6 @@
 typedef struct {
   bool help;
   bool graphics_info;
-  bool no_sound;
   bool show_fps;
   bool vsync;
   int display;

@@ -76,11 +76,12 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  game_settings_t game_settings = init_game_settings(
-      command_line_options.no_sound, command_line_options.show_fps,
-      command_line_options.vsync, command_line_options.display,
-      command_line_options.display_mode, command_line_options.window_mode,
-      command_line_options.fps, command_line_options.volume);
+  game_settings_t game_settings =
+      init_game_settings(command_line_options.show_fps,
+                         command_line_options.vsync, command_line_options.display,
+                         command_line_options.display_mode,
+                         command_line_options.window_mode, command_line_options.fps,
+                         command_line_options.volume);
 
   game_t game = init_game(game_settings);
 

@@ -6,7 +6,6 @@
 
 #define HELP "--help"
 #define GRAPHICS_INFO "--graphics-info"
-#define NO_SOUND "--no-sound"
 #define SHOW_FPS "--show-fps"
 #define VSYNC "--vsync"
 #define DISPLAY "--display="
@@ -19,7 +18,6 @@ void print_help(void) {
   puts("\noptions:");
   puts("\t" HELP ": print this help");
   puts("\t" GRAPHICS_INFO ": print info about the graphics system");
-  puts("\t" NO_SOUND ": disable sound");
   puts("\t" VSYNC ": enable VSync for smoother rendering (default: off)");
   puts("\t" VOLUME "X: set audio volume 0-128 (default: 32, 0=silent, 128=max)");
   /* puts("\t" FPS "X : set frame per seconds to X (default is 60)");
@@ -51,9 +49,6 @@ static void parse_argument(const char *argument,
   int number;
   if (!strcmp(HELP, argument)) {
     options->help = true;
-
-  } else if (!strcmp(NO_SOUND, argument)) {
-    options->no_sound = true;
 
   } else if (!strcmp(SHOW_FPS, argument)) {
     options->show_fps = true;
@@ -93,7 +88,6 @@ static void parse_argument(const char *argument,
 static void set_defaults(const command_line_options_ptr options) {
   options->help = false;
   options->graphics_info = false;
-  options->no_sound = false;
   options->show_fps = false;
   options->vsync = false;
   options->display = 0;
