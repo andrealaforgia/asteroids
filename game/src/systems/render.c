@@ -1,7 +1,5 @@
 #include "render.h"
 
-#include <SDL.h>
-
 #include "asteroid.h"
 #include "bullet.h"
 #include "coords.h"
@@ -110,32 +108,19 @@ const bounds_t SAUCER_BOUNDS = {69, 81};
 ALWAYS_INLINE void render_object(const graphics_context_ptr graphics_context,
                                  bounds_t bounds, const point_ptr position,
                                  int scale, int color, bool filled) {
+  (void)filled;  // Unused parameter - filling disabled for performance
   int cx = position->x;
   int cy = position->y;
-
-  // Collect all points for filled polygon rendering
-  SDL_Point points[50];  // Max points for any asteroid
-  int point_count = 0;
 
   for (int i = bounds.lower; i < bounds.upper; i++) {
     int nx = cx + (OBJECT_COORDS[i].x_delta * scale);
     int ny = cy - (OBJECT_COORDS[i].y_delta * scale);
 
     if (OBJECT_COORDS[i].brightness > 0) {
-      if (filled && point_count < 50) {
-        points[point_count].x = cx;
-        points[point_count].y = cy;
-        point_count++;
-      }
       draw_line(graphics_context, cx, cy, nx, ny, color);
     }
     cx = nx;
     cy = ny;
-  }
-
-  // Draw filled polygon if requested
-  if (filled && point_count > 2) {
-    draw_filled_polygon(graphics_context, points, point_count, color);
   }
 }
 
@@ -159,30 +144,6 @@ ALWAYS_INLINE void _render_ship(const graphics_context_ptr graphics_context,
   point_t points[NUMBER_OF_POINTS];
   create_ship_points(ship_rotation_index, ship_scale, ship_position, points);
   int number_of_points = thrusting ? NUMBER_OF_POINTS : NUMBER_OF_POINTS - 2;
-
-  // Fill ship body with grey
-  SDL_Point ship_poly[6];
-  for (int i = 0; i < 5; i++) {
-    ship_poly[i].x = points[i].x;
-    ship_poly[i].y = points[i].y;
-  }
-  ship_poly[5].x = points[0].x;  // Close the polygon
-  ship_poly[5].y = points[0].y;
-  draw_filled_polygon(graphics_context, ship_poly, 6, COLOR_GRAY);
-
-  // Fill thrust fire with red if thrusting
-  if (thrusting) {
-    SDL_Point thrust_poly[3];
-    thrust_poly[0].x = points[4].x;  // Back left of ship
-    thrust_poly[0].y = points[4].y;
-    thrust_poly[1].x = points[6].x;  // Flame tip
-    thrust_poly[1].y = points[6].y;
-    thrust_poly[2].x = points[5].x;  // Back right of ship
-    thrust_poly[2].y = points[5].y;
-    draw_filled_polygon(graphics_context, thrust_poly, 3, COLOR_RED);
-  }
-
-  // Draw outline
   for (int i = 0; i < number_of_points; i++) {
     int j = i == number_of_points - 1 ? 0 : i + 1;
     draw_line_between_points(graphics_context, &points[i], &points[j],
