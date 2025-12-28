@@ -25,12 +25,13 @@ ENGINE_UTILS_DIR = engine/core/utils
 
 GAME_ENTITIES_DIR = game/src/entities
 GAME_STAGES_DIR = game/src/stages
+GAME_SYSTEMS_DIR = game/src/systems
 GAME_INCLUDE_DIR = game/include
 
 # Find all C source files in root, engine, and game directories
 SRC = $(wildcard $(SRCDIR)/*.c) \
       $(wildcard $(ENGINE_GRAPHICS_DIR)/*.c) $(wildcard $(ENGINE_MATH_DIR)/*.c) $(wildcard $(ENGINE_INPUT_DIR)/*.c) $(wildcard $(ENGINE_AUDIO_DIR)/*.c) $(wildcard $(ENGINE_UTILS_DIR)/*.c) \
-      $(wildcard $(GAME_ENTITIES_DIR)/*.c) $(wildcard $(GAME_STAGES_DIR)/*.c)
+      $(wildcard $(GAME_ENTITIES_DIR)/*.c) $(wildcard $(GAME_STAGES_DIR)/*.c) $(wildcard $(GAME_SYSTEMS_DIR)/*.c)
 
 HEADERS = $(wildcard $(SRCDIR)/*.h) \
           $(wildcard $(ENGINE_GRAPHICS_DIR)/*.h) $(wildcard $(ENGINE_MATH_DIR)/*.h) $(wildcard $(ENGINE_INPUT_DIR)/*.h) $(wildcard $(ENGINE_AUDIO_DIR)/*.h) $(wildcard $(ENGINE_UTILS_DIR)/*.h) \
