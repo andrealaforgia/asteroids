@@ -154,7 +154,7 @@ ALWAYS_INLINE void render_asteroid(const graphics_context_ptr graphics_context,
 ALWAYS_INLINE void render_saucer(const graphics_context_ptr graphics_context,
                                  const saucer_ptr saucer) {
   render_object(graphics_context, SAUCER_BOUNDS, &saucer->position,
-                saucer->scale, COLOR_RED, false, COLOR_BLACK, false);
+                saucer->scale, COLOR_RED, false, COLOR_BLACK, true);
 }
 
 ALWAYS_INLINE void _render_ship(const graphics_context_ptr graphics_context,
