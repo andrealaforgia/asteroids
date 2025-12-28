@@ -382,8 +382,8 @@ random_point(const graphics_context_ptr graphics_context) {
 }
 
 ALWAYS_INLINE color_t random_color(void) {
-  int r = 64;
-  int g = 96 + rand() % 128;
+  int r = 128 + rand() % 128;
+  int g = 128 + rand() % 128;
   int b = 128 + rand() % 128;
   return COLOR(r, g, b);
 }
