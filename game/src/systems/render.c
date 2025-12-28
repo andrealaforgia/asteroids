@@ -159,6 +159,30 @@ ALWAYS_INLINE void _render_ship(const graphics_context_ptr graphics_context,
   point_t points[NUMBER_OF_POINTS];
   create_ship_points(ship_rotation_index, ship_scale, ship_position, points);
   int number_of_points = thrusting ? NUMBER_OF_POINTS : NUMBER_OF_POINTS - 2;
+
+  // Fill ship body with grey
+  SDL_Point ship_poly[6];
+  for (int i = 0; i < 5; i++) {
+    ship_poly[i].x = points[i].x;
+    ship_poly[i].y = points[i].y;
+  }
+  ship_poly[5].x = points[0].x;  // Close the polygon
+  ship_poly[5].y = points[0].y;
+  draw_filled_polygon(graphics_context, ship_poly, 6, COLOR_GRAY);
+
+  // Fill thrust fire with red if thrusting
+  if (thrusting) {
+    SDL_Point thrust_poly[3];
+    thrust_poly[0].x = points[4].x;  // Back left of ship
+    thrust_poly[0].y = points[4].y;
+    thrust_poly[1].x = points[6].x;  // Flame tip
+    thrust_poly[1].y = points[6].y;
+    thrust_poly[2].x = points[5].x;  // Back right of ship
+    thrust_poly[2].y = points[5].y;
+    draw_filled_polygon(graphics_context, thrust_poly, 3, COLOR_RED);
+  }
+
+  // Draw outline
   for (int i = 0; i < number_of_points; i++) {
     int j = i == number_of_points - 1 ? 0 : i + 1;
     draw_line_between_points(graphics_context, &points[i], &points[j],
