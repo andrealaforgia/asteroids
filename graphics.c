@@ -84,12 +84,44 @@ graphics_context_t init_graphics_context(int display, int display_mode,
   // Initialize circle drawing lookup table for performance
   init_circle_lookup();
 
-  // Set SDL hints for better rendering on macOS/Metal
+  // Set SDL hints for optimal performance
+  // These hints tune SDL's behavior for better rendering and responsiveness
+
+  // Use Metal renderer on macOS for best performance
   if (!SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal")) {
     LOG_WARN("Failed to set Metal renderer hint");
   }
+
+  // Nearest pixel sampling (0) for crisp vector graphics, no smoothing
   if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0")) {
     LOG_WARN("Failed to set render scale quality hint");
+  }
+
+  // Enable render batching for better performance (batches draw calls)
+  if (!SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1")) {
+    LOG_WARN("Failed to set render batching hint");
+  } else {
+    LOG_INFO("Render batching enabled");
+  }
+
+  // Enable framebuffer acceleration if available
+  if (!SDL_SetHint(SDL_HINT_FRAMEBUFFER_ACCELERATION, "1")) {
+    LOG_WARN("Failed to set framebuffer acceleration hint");
+  }
+
+  // Don't minimize window when losing focus (better for multi-monitor setups)
+  if (!SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0")) {
+    LOG_WARN("Failed to set minimize on focus loss hint");
+  }
+
+  // Enable mouse relative mode for better input performance
+  if (!SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1")) {
+    LOG_WARN("Failed to set mouse relative mode hint");
+  }
+
+  // Use high-resolution mouse input
+  if (!SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1")) {
+    LOG_WARN("Failed to set mouse focus clickthrough hint");
   }
 
   SDL_ShowCursor(SDL_DISABLE);
@@ -166,12 +198,6 @@ graphics_context_t init_graphics_context(int display, int display_mode,
     abort();
   }
 
-  // Configure renderer for proper blending
-  if (SDL_SetRenderDrawBlendMode(graphics_context.renderer, SDL_BLENDMODE_BLEND) != 0) {
-    LOG_SDL_ERROR("SDL_SetRenderDrawBlendMode");
-    LOG_WARN("Continuing without blend mode");
-  }
-
   // Log renderer info for debugging
   SDL_RendererInfo renderer_info;
   if (SDL_GetRendererInfo(graphics_context.renderer, &renderer_info) == 0) {
@@ -190,6 +216,30 @@ void terminate_graphics_context(const graphics_context_ptr graphics_context) {
   SDL_DestroyRenderer(graphics_context->renderer);
   SDL_DestroyWindow(graphics_context->window);
   SDL_Quit();
+}
+
+void toggle_fullscreen(const graphics_context_ptr graphics_context) {
+  // Get current fullscreen state
+  Uint32 flags = SDL_GetWindowFlags(graphics_context->window);
+  bool is_fullscreen = (flags & SDL_WINDOW_FULLSCREEN) ||
+                       (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+  if (is_fullscreen) {
+    // Switch to windowed mode
+    if (SDL_SetWindowFullscreen(graphics_context->window, 0) == 0) {
+      LOG_INFO("Switched to windowed mode (press F11 to toggle)");
+    } else {
+      LOG_SDL_ERROR("SDL_SetWindowFullscreen");
+    }
+  } else {
+    // Switch to borderless fullscreen (faster toggle than true fullscreen)
+    if (SDL_SetWindowFullscreen(graphics_context->window,
+                                 SDL_WINDOW_FULLSCREEN_DESKTOP) == 0) {
+      LOG_INFO("Switched to fullscreen mode (press F11 to toggle)");
+    } else {
+      LOG_SDL_ERROR("SDL_SetWindowFullscreen");
+    }
+  }
 }
 
 ALWAYS_INLINE void draw_line(const graphics_context_ptr graphics_context,

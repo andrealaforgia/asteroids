@@ -591,6 +591,10 @@ game_stage_action_t handle_playing_stage(void) {
       toggle_sound();
     }
 
+    if (is_f11_key_pressed(&game->keyboard_state)) {
+      toggle_fullscreen(graphics_context);
+    }
+
     if (is_esc_key_pressed(&game->keyboard_state)) {
       break;
     }
