@@ -1,5 +1,5 @@
-#ifndef PHYSICS_H_
-#define PHYSICS_H_
+#ifndef ENGINE_CORE_MATH_PHYSICS_H_
+#define ENGINE_CORE_MATH_PHYSICS_H_
 
 #include "geometry.h"
 
@@ -11,4 +11,4 @@ typedef struct {
 velocity_t velocity(const double speed, const vector_t direction);
 velocity_t random_velocity(void);
 
-#endif  // PHYSICS_H_
+#endif  // ENGINE_CORE_MATH_PHYSICS_H_

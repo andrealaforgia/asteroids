@@ -1,5 +1,5 @@
-#ifndef GRAPHICS_H_
-#define GRAPHICS_H_
+#ifndef ENGINE_CORE_GRAPHICS_GRAPHICS_H_
+#define ENGINE_CORE_GRAPHICS_GRAPHICS_H_
 
 #include <SDL.h>
 #include <stdbool.h>
@@ -9,8 +9,8 @@
 #include "window_mode.h"
 
 typedef struct {
-  SDL_Window *window;
-  SDL_Renderer *renderer;
+  SDL_Window* window;
+  SDL_Renderer* renderer;
   int screen_width;
   int screen_height;
   point_t screen_center;
@@ -27,8 +27,8 @@ void draw_line_between_points(const graphics_context_ptr graphics_context,
                               color_t color);
 void draw_line(const graphics_context_ptr graphics_context, int x1, int y1,
                int x2, int y2, color_t color);
-void draw_thick_line(const graphics_context_ptr graphics_context, int x1, int y1,
-                     int x2, int y2, color_t color);
+void draw_thick_line(const graphics_context_ptr graphics_context, int x1,
+                     int y1, int x2, int y2, color_t color);
 void draw_pixel(const graphics_context_ptr graphics_context, int x, int y,
                 color_t color);
 void draw_point(const graphics_context_ptr graphics_context, const point_ptr p,
@@ -38,7 +38,8 @@ void draw_fat_pixel(const graphics_context_ptr graphics_context,
 void draw_circle(const graphics_context_ptr graphics_context, int32_t centreX,
                  int32_t centreY, int32_t radius, color_t color);
 void draw_filled_polygon(const graphics_context_ptr graphics_context,
-                         const SDL_Point *points, int num_points, color_t color);
+                         const SDL_Point* points, int num_points,
+                         color_t color);
 double wrap_x(const graphics_context_ptr graphics_context, double x);
 double wrap_y(const graphics_context_ptr graphics_context, double y);
 point_t random_point(const graphics_context_ptr graphics_context);
@@ -48,4 +49,4 @@ bool out_of_bounds(const graphics_context_ptr graphics_context,
 point_t random_point_around(const point_ptr point, int min_tolerance,
                             int max_tolerance);
 
-#endif  // GRAPHICS_H_
+#endif  // ENGINE_CORE_GRAPHICS_GRAPHICS_H_

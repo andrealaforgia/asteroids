@@ -1,5 +1,5 @@
-#ifndef COORDS_H_
-#define COORDS_H_
+#ifndef ENGINE_CORE_MATH_COORDS_H_
+#define ENGINE_CORE_MATH_COORDS_H_
 
 typedef struct {
   int lower;
@@ -12,4 +12,4 @@ typedef struct {
   int brightness;
 } coords_t;
 
-#endif  // COORDS_H_
+#endif  // ENGINE_CORE_MATH_COORDS_H_

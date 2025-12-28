@@ -1,5 +1,5 @@
-#ifndef ASTEROID_H_
-#define ASTEROID_H_
+#ifndef GAME_INCLUDE_ENTITIES_ASTEROID_H_
+#define GAME_INCLUDE_ENTITIES_ASTEROID_H_
 
 #include <stdbool.h>
 
@@ -23,4 +23,4 @@ asteroid_t create_asteroid(point_t position, int scale, color_t color);
 bool scale_down(const asteroid_ptr asteroid);
 int random_asteroid_scale(void);
 
-#endif  // ASTEROID_H_
+#endif  // GAME_INCLUDE_ENTITIES_ASTEROID_H_

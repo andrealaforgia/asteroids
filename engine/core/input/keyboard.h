@@ -1,5 +1,5 @@
-#ifndef KEYBOARD_H_
-#define KEYBOARD_H_
+#ifndef ENGINE_CORE_INPUT_KEYBOARD_H_
+#define ENGINE_CORE_INPUT_KEYBOARD_H_
 
 #include <SDL.h>
 #include <stdbool.h>
@@ -7,7 +7,7 @@
 #include "clock.h"
 
 typedef struct {
-  const Uint8 *keys;
+  const Uint8* keys;
   int space_key_last_ticks;
   int up_key_last_ticks;
   int left_key_last_ticks;
@@ -27,4 +27,4 @@ bool is_s_key_pressed(const keyboard_state_ptr keyboard_state);
 bool is_return_key_pressed(const keyboard_state_ptr keyboard_state);
 bool is_f11_key_pressed(const keyboard_state_ptr keyboard_state);
 
-#endif  // KEYBOARD_H_
+#endif  // ENGINE_CORE_INPUT_KEYBOARD_H_

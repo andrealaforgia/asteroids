@@ -365,7 +365,7 @@ static ALWAYS_INLINE void show_fps_if_required(void) {
 }
 
 static ALWAYS_INLINE void show_sound_status(void) {
-  char *text = "SOUND ON";
+  char* text = "SOUND ON";
   if (game->settings.no_sound) {
     text = "SOUND OFF";
   }

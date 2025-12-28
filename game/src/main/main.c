@@ -61,7 +61,7 @@ static void run_game(const game_ptr game) {
   }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   srand(time(NULL));
 
   command_line_options_t command_line_options =
@@ -77,19 +77,18 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  game_settings_t game_settings =
-      init_game_settings(command_line_options.show_fps,
-                         command_line_options.vsync, command_line_options.display,
-                         command_line_options.display_mode,
-                         command_line_options.window_mode, command_line_options.fps,
-                         command_line_options.volume);
+  game_settings_t game_settings = init_game_settings(
+      command_line_options.show_fps, command_line_options.vsync,
+      command_line_options.display, command_line_options.display_mode,
+      command_line_options.window_mode, command_line_options.fps,
+      command_line_options.volume);
 
   // Log game configuration
   LOG_INFO("=== Asteroids Configuration ===");
   LOG_INFO_FMT("Display: %d, Mode: %d", game_settings.display,
                game_settings.display_mode);
-  const char *window_modes[] = {"Windowed", "Fullscreen", "Borderless",
-                                 "Maximized"};
+  const char* window_modes[] = {"Windowed", "Fullscreen", "Borderless",
+                                "Maximized"};
   LOG_INFO_FMT("Window Mode: %s", window_modes[game_settings.window_mode]);
   LOG_INFO_FMT("VSync: %s", game_settings.vsync ? "Enabled" : "Disabled");
   LOG_INFO_FMT("Target FPS: %d", game_settings.fps);

@@ -1,5 +1,5 @@
-#ifndef RENDER_H_
-#define RENDER_H_
+#ifndef GAME_INCLUDE_SYSTEMS_RENDER_H_
+#define GAME_INCLUDE_SYSTEMS_RENDER_H_
 
 #include "asteroid.h"
 #include "bullet.h"
@@ -22,4 +22,4 @@ void render_lives(const graphics_context_ptr graphics_context, point_t position,
 void render_bullet(const graphics_context_ptr graphics_context,
                    const bullet_ptr bullet, color_t color);
 
-#endif  // RENDER_H_
+#endif  // GAME_INCLUDE_SYSTEMS_RENDER_H_

@@ -1,5 +1,5 @@
-#ifndef SCORE_H_
-#define SCORE_H_
+#ifndef GAME_INCLUDE_SYSTEMS_SCORE_H_
+#define GAME_INCLUDE_SYSTEMS_SCORE_H_
 
 #include "game.h"
 
@@ -17,4 +17,4 @@ void score_small_asteroid(const game_ptr game);
 void score_large_saucer(const game_ptr game);
 void score_small_saucer(const game_ptr game);
 
-#endif  // SCORE_H_
+#endif  // GAME_INCLUDE_SYSTEMS_SCORE_H_

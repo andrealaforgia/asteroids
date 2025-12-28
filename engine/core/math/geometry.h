@@ -1,5 +1,5 @@
-#ifndef GEOMETRY_H_
-#define GEOMETRY_H_
+#ifndef ENGINE_CORE_MATH_GEOMETRY_H_
+#define ENGINE_CORE_MATH_GEOMETRY_H_
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -24,4 +24,4 @@ double random_angle(void);
 point_t random_point_around(const point_ptr p, int min_tolerance,
                             int max_tolerance);
 
-#endif  // GEOMETRY_H_
+#endif  // ENGINE_CORE_MATH_GEOMETRY_H_

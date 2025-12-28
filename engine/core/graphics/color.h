@@ -1,5 +1,5 @@
-#ifndef COLOR_H_
-#define COLOR_H_
+#ifndef ENGINE_CORE_GRAPHICS_COLOR_H_
+#define ENGINE_CORE_GRAPHICS_COLOR_H_
 
 #include "inline.h"
 
@@ -21,4 +21,4 @@
 
 typedef int color_t;
 
-#endif  // COLOR_H_
+#endif  // ENGINE_CORE_GRAPHICS_COLOR_H_

@@ -19,7 +19,8 @@ void print_help(void) {
   puts("\t" HELP ": print this help");
   puts("\t" GRAPHICS_INFO ": print info about the graphics system");
   puts("\t" VSYNC ": enable VSync for smoother rendering (default: off)");
-  puts("\t" VOLUME "X: set audio volume 0-128 (default: 32, 0=silent, 128=max)");
+  puts("\t" VOLUME
+       "X: set audio volume 0-128 (default: 32, 0=silent, 128=max)");
   puts("\t" SHOW_FPS ": show frames-per-second stats during game");
   puts("\t" FPS "X: set target frame rate 1-300 (default: 60)");
   puts("\t" DISPLAY "X : use display X (default is 0: use " GRAPHICS_INFO
@@ -32,8 +33,8 @@ void print_help(void) {
   printf("\n");
 }
 
-static int extract_numeric_argument(const char *prefix, const char *argument,
-                                    int *p_number) {
+static int extract_numeric_argument(const char* prefix, const char* argument,
+                                    int* p_number) {
   size_t prefix_length = strlen(prefix);
   size_t argument_length = strlen(argument);
   if (!strncmp(prefix, argument, prefix_length) &&
@@ -45,7 +46,7 @@ static int extract_numeric_argument(const char *prefix, const char *argument,
 }
 
 // Returns true if the argument was recognized, false otherwise
-static bool parse_argument(const char *argument,
+static bool parse_argument(const char* argument,
                            const command_line_options_ptr options) {
   int number;
   if (!strcmp(HELP, argument)) {
@@ -111,7 +112,7 @@ static void set_defaults(const command_line_options_ptr options) {
   options->volume = 32;  // Default volume (0-128 range)
 }
 
-command_line_options_t parse_command_line_options(int argc, char *argv[]) {
+command_line_options_t parse_command_line_options(int argc, char* argv[]) {
   command_line_options_t options;
   set_defaults(&options);
 

@@ -1,5 +1,5 @@
-#ifndef FPS_TRACKER_H_
-#define FPS_TRACKER_H_
+#ifndef ENGINE_CORE_UTILS_FPS_TRACKER_H_
+#define ENGINE_CORE_UTILS_FPS_TRACKER_H_
 
 #include <stdlib.h>
 
@@ -10,6 +10,6 @@ typedef struct {
 
 fps_tracker_t create_fps_tracker(void);
 void track_fps(const fps_tracker_ptr fps_tracker);
-void format_fps(const fps_tracker_ptr fps_tracker, char *s, size_t n);
+void format_fps(const fps_tracker_ptr fps_tracker, char* s, size_t n);
 
-#endif  // FPS_TRACKER_H_
+#endif  // ENGINE_CORE_UTILS_FPS_TRACKER_H_

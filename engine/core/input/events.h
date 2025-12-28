@@ -1,5 +1,5 @@
-#ifndef EVENTS_H_
-#define EVENTS_H_
+#ifndef ENGINE_CORE_INPUT_EVENTS_H_
+#define ENGINE_CORE_INPUT_EVENTS_H_
 
 typedef enum {
   NO_EVENT = 0,
@@ -10,4 +10,4 @@ typedef enum {
 
 event_t poll_event(void);
 
-#endif  // EVENTS_H_
+#endif  // ENGINE_CORE_INPUT_EVENTS_H_

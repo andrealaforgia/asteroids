@@ -1,10 +1,10 @@
-#ifndef AUDIO_H_
-#define AUDIO_H_
+#ifndef ENGINE_CORE_AUDIO_AUDIO_H_
+#define ENGINE_CORE_AUDIO_AUDIO_H_
 
 #include <SDL_mixer.h>
 
 typedef struct {
-  Mix_Chunk *chunks[11];
+  Mix_Chunk* chunks[11];
 } audio_context_t, *audio_context_ptr;
 
 audio_context_t init_audio_context(int volume);
@@ -21,4 +21,4 @@ void play_thrust(const audio_context_ptr audio_context);
 void play_game_over(const audio_context_ptr audio_context);
 void terminate_audio_context(const audio_context_ptr audio_context);
 
-#endif  // AUDIO_H_
+#endif  // ENGINE_CORE_AUDIO_AUDIO_H_

@@ -26,15 +26,15 @@ static void init_circle_lookup(void) {
 
 static int get_display_count(void) { return SDL_GetNumVideoDisplays(); }
 
-static SDL_DisplayMode *get_display_modes(int display_index,
-                                          int *p_display_mode_count) {
+static SDL_DisplayMode* get_display_modes(int display_index,
+                                          int* p_display_mode_count) {
   *p_display_mode_count = SDL_GetNumDisplayModes(display_index);
   if (*p_display_mode_count < 1) {
     LOG_SDL_ERROR("SDL_GetNumDisplayModes");
     return NULL;
   }
 
-  SDL_DisplayMode *display_modes =
+  SDL_DisplayMode* display_modes =
       calloc(*p_display_mode_count, sizeof(SDL_DisplayMode));
 
   for (int i = 0; i < *p_display_mode_count; i++) {
@@ -57,7 +57,7 @@ void print_graphics_info(void) {
   for (int display_index = 0; display_index < display_count; display_index++) {
     LOG_INFO_FMT("Display Index: %d", display_index);
     int display_mode_count;
-    SDL_DisplayMode *display_modes =
+    SDL_DisplayMode* display_modes =
         get_display_modes(display_index, &display_mode_count);
     if (display_modes) {
       for (int dm = 0; dm < display_mode_count; dm++) {
@@ -73,7 +73,8 @@ void print_graphics_info(void) {
 }
 
 graphics_context_t init_graphics_context(int display, int display_mode,
-                                         window_mode_t window_mode, bool vsync) {
+                                         window_mode_t window_mode,
+                                         bool vsync) {
   graphics_context_t graphics_context = {0};
 
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -263,8 +264,8 @@ graphics_context_t init_graphics_context(int display, int display_mode,
     }
   }
 
-  // Don't use logical size on macOS - causes scaling artifacts on Retina displays
-  // SDL_RenderSetLogicalSize(graphics_context.renderer,
+  // Don't use logical size on macOS - causes scaling artifacts on Retina
+  // displays SDL_RenderSetLogicalSize(graphics_context.renderer,
   //                          graphics_context.screen_width,
   //                          graphics_context.screen_height);
 
@@ -293,7 +294,7 @@ void toggle_fullscreen(const graphics_context_ptr graphics_context) {
   } else {
     // Switch to borderless fullscreen (faster toggle than true fullscreen)
     if (SDL_SetWindowFullscreen(graphics_context->window,
-                                 SDL_WINDOW_FULLSCREEN_DESKTOP) == 0) {
+                                SDL_WINDOW_FULLSCREEN_DESKTOP) == 0) {
       LOG_INFO("Switched to fullscreen mode (press F11 to toggle)");
     } else {
       LOG_SDL_ERROR("SDL_SetWindowFullscreen");
@@ -309,16 +310,17 @@ ALWAYS_INLINE void draw_line(const graphics_context_ptr graphics_context,
 }
 
 ALWAYS_INLINE void draw_thick_line(const graphics_context_ptr graphics_context,
-                                    int x1, int y1, int x2, int y2, color_t color) {
+                                   int x1, int y1, int x2, int y2,
+                                   color_t color) {
   SDL_SetRenderDrawColor(graphics_context->renderer, R(color), G(color),
                          B(color), 255);
   // Draw main line
   SDL_RenderDrawLine(graphics_context->renderer, x1, y1, x2, y2);
   // Draw parallel lines to create thickness
-  SDL_RenderDrawLine(graphics_context->renderer, x1+1, y1, x2+1, y2);
-  SDL_RenderDrawLine(graphics_context->renderer, x1, y1+1, x2, y2+1);
-  SDL_RenderDrawLine(graphics_context->renderer, x1-1, y1, x2-1, y2);
-  SDL_RenderDrawLine(graphics_context->renderer, x1, y1-1, x2, y2-1);
+  SDL_RenderDrawLine(graphics_context->renderer, x1 + 1, y1, x2 + 1, y2);
+  SDL_RenderDrawLine(graphics_context->renderer, x1, y1 + 1, x2, y2 + 1);
+  SDL_RenderDrawLine(graphics_context->renderer, x1 - 1, y1, x2 - 1, y2);
+  SDL_RenderDrawLine(graphics_context->renderer, x1, y1 - 1, x2, y2 - 1);
 }
 
 ALWAYS_INLINE void draw_line_between_points(
@@ -368,7 +370,7 @@ void draw_circle(const graphics_context_ptr graphics_context, int32_t centreX,
 }
 
 void draw_filled_polygon(const graphics_context_ptr graphics_context,
-                         const SDL_Point *points, int num_points,
+                         const SDL_Point* points, int num_points,
                          color_t fill_color) {
   if (num_points < 3) return;  // Need at least 3 points for a polygon
 
@@ -387,10 +389,15 @@ void draw_filled_polygon(const graphics_context_ptr graphics_context,
 
     // Create triangle vertices with solid fill color
     SDL_Vertex vertices[3] = {
-        {{center_x, center_y}, {R(fill_color), G(fill_color), B(fill_color), 255}, {0, 0}},
-        {{points[i].x, points[i].y}, {R(fill_color), G(fill_color), B(fill_color), 255}, {0, 0}},
-        {{points[next].x, points[next].y}, {R(fill_color), G(fill_color), B(fill_color), 255}, {0, 0}}
-    };
+        {{center_x, center_y},
+         {R(fill_color), G(fill_color), B(fill_color), 255},
+         {0, 0}},
+        {{points[i].x, points[i].y},
+         {R(fill_color), G(fill_color), B(fill_color), 255},
+         {0, 0}},
+        {{points[next].x, points[next].y},
+         {R(fill_color), G(fill_color), B(fill_color), 255},
+         {0, 0}}};
 
     SDL_RenderGeometry(graphics_context->renderer, NULL, vertices, 3, NULL, 0);
   }
@@ -425,16 +432,16 @@ random_point(const graphics_context_ptr graphics_context) {
 ALWAYS_INLINE color_t random_color(void) {
   // Generate vibrant colors by using predefined bright color palette
   color_t colors[] = {
-    0xFF0000,  // Red
-    0x00FF00,  // Green
-    0x0000FF,  // Blue
-    0xFFFF00,  // Yellow
-    0xFF00FF,  // Magenta
-    0x00FFFF,  // Cyan
-    0xFF8000,  // Orange
-    0xFF0080,  // Pink
-    0x80FF00,  // Lime
-    0x0080FF,  // Sky blue
+      0xFF0000,  // Red
+      0x00FF00,  // Green
+      0x0000FF,  // Blue
+      0xFFFF00,  // Yellow
+      0xFF00FF,  // Magenta
+      0x00FFFF,  // Cyan
+      0xFF8000,  // Orange
+      0xFF0080,  // Pink
+      0x80FF00,  // Lime
+      0x0080FF,  // Sky blue
   };
   return colors[rand() % (sizeof(colors) / sizeof(color_t))];
 }

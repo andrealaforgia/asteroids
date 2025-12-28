@@ -1,5 +1,5 @@
-#ifndef COLLISION_H_
-#define COLLISION_H_
+#ifndef GAME_INCLUDE_SYSTEMS_COLLISION_H_
+#define GAME_INCLUDE_SYSTEMS_COLLISION_H_
 
 #include "asteroid.h"
 #include "bullet.h"
@@ -18,4 +18,4 @@ int ship_saucer_collision(const ship_ptr ship, const saucer_ptr saucer);
 
 int ship_asteroid_collision(const ship_ptr ship, const asteroid_ptr asteroid);
 
-#endif  // COLLISION_H_
+#endif  // GAME_INCLUDE_SYSTEMS_COLLISION_H_

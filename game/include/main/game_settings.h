@@ -1,5 +1,5 @@
-#ifndef GAME_SETTINGS_H_
-#define GAME_SETTINGS_H_
+#ifndef GAME_INCLUDE_MAIN_GAME_SETTINGS_H_
+#define GAME_INCLUDE_MAIN_GAME_SETTINGS_H_
 
 #include <stdbool.h>
 
@@ -20,4 +20,4 @@ game_settings_t init_game_settings(bool show_fps, bool vsync, int display,
                                    int display_mode, window_mode_t window_mode,
                                    int fps, int volume);
 
-#endif  // GAME_SETTINGS_H_
+#endif  // GAME_INCLUDE_MAIN_GAME_SETTINGS_H_

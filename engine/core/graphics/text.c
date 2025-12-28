@@ -336,7 +336,7 @@ ALWAYS_INLINE bounds_t bounds_for_char(char c) {
   return bounds;
 }
 
-ALWAYS_INLINE text_dimensions_t calculate_text_dimensions(const char *s,
+ALWAYS_INLINE text_dimensions_t calculate_text_dimensions(const char* s,
                                                           int scale) {
   double min_y = 999999;
   double max_x = 0;
@@ -361,7 +361,7 @@ ALWAYS_INLINE text_dimensions_t calculate_text_dimensions(const char *s,
 }
 
 ALWAYS_INLINE point_t write_text(const graphics_context_ptr graphics_context,
-                                 const char *s, const point_t position,
+                                 const char* s, const point_t position,
                                  int scale, color_t color) {
   double cx = position.x;
   double cy = position.y;

@@ -1,5 +1,5 @@
-#ifndef SAUCER_H_
-#define SAUCER_H_
+#ifndef GAME_INCLUDE_ENTITIES_SAUCER_H_
+#define GAME_INCLUDE_ENTITIES_SAUCER_H_
 
 #include <stdbool.h>
 
@@ -23,4 +23,4 @@ typedef struct {
 saucer_t create_saucer(const graphics_context_ptr graphics_context);
 bool is_big(const saucer_ptr saucer);
 
-#endif  // SAUCER_H_
+#endif  // GAME_INCLUDE_ENTITIES_SAUCER_H_

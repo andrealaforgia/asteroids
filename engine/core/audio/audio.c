@@ -35,9 +35,9 @@
 #define GAME_OVER_WAV "game/assets/sounds/gameOver.wav"
 
 // Construct full path to a sound file
-static char *get_sound_path(const char *base_path, const char *sound_file) {
+static char* get_sound_path(const char* base_path, const char* sound_file) {
   size_t path_len = strlen(base_path) + strlen(sound_file) + 1;
-  char *full_path = malloc(path_len);
+  char* full_path = malloc(path_len);
   if (full_path) {
     snprintf(full_path, path_len, "%s%s", base_path, sound_file);
   }
@@ -45,14 +45,14 @@ static char *get_sound_path(const char *base_path, const char *sound_file) {
 }
 
 // Helper function to load sound with error checking
-static Mix_Chunk *load_sound(const char *base_path, const char *sound_file) {
-  char *full_path = get_sound_path(base_path, sound_file);
+static Mix_Chunk* load_sound(const char* base_path, const char* sound_file) {
+  char* full_path = get_sound_path(base_path, sound_file);
   if (!full_path) {
     LOG_WARN("Failed to allocate memory for sound path");
     return NULL;
   }
 
-  Mix_Chunk *chunk = Mix_LoadWAV(full_path);
+  Mix_Chunk* chunk = Mix_LoadWAV(full_path);
   if (!chunk) {
     LOG_MIX_ERROR(full_path);
     LOG_WARN("Game will continue without this sound effect");
@@ -68,7 +68,7 @@ audio_context_t init_audio_context(int volume) {
   }
 
   // Get the base path for the executable
-  char *base_path = SDL_GetBasePath();
+  char* base_path = SDL_GetBasePath();
   if (!base_path) {
     LOG_SDL_ERROR("SDL_GetBasePath");
     LOG_WARN("Using current directory for sound files");
@@ -76,15 +76,19 @@ audio_context_t init_audio_context(int volume) {
   }
 
   audio_context_t audio_context;
-  audio_context.chunks[BANG_LARGE_INDEX] = load_sound(base_path, BANG_LARGE_WAV);
+  audio_context.chunks[BANG_LARGE_INDEX] =
+      load_sound(base_path, BANG_LARGE_WAV);
   audio_context.chunks[BANG_MEDIUM_INDEX] =
       load_sound(base_path, BANG_MEDIUM_WAV);
-  audio_context.chunks[BANG_SMALL_INDEX] = load_sound(base_path, BANG_SMALL_WAV);
+  audio_context.chunks[BANG_SMALL_INDEX] =
+      load_sound(base_path, BANG_SMALL_WAV);
   audio_context.chunks[BEAT1_INDEX] = load_sound(base_path, BEAT1_WAV);
   audio_context.chunks[BEAT2_INDEX] = load_sound(base_path, BEAT2_WAV);
-  audio_context.chunks[EXTRA_SHIP_INDEX] = load_sound(base_path, EXTRA_SHIP_WAV);
+  audio_context.chunks[EXTRA_SHIP_INDEX] =
+      load_sound(base_path, EXTRA_SHIP_WAV);
   audio_context.chunks[FIRE_INDEX] = load_sound(base_path, FIRE_WAV);
-  audio_context.chunks[SAUCER_BIG_INDEX] = load_sound(base_path, SAUCER_BIG_WAV);
+  audio_context.chunks[SAUCER_BIG_INDEX] =
+      load_sound(base_path, SAUCER_BIG_WAV);
   audio_context.chunks[SAUCER_SMALL_INDEX] =
       load_sound(base_path, SAUCER_SMALL_WAV);
   audio_context.chunks[THRUST_INDEX] = load_sound(base_path, THRUST_WAV);
