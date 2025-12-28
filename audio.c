@@ -173,8 +173,11 @@ ALWAYS_INLINE void play_game_over(const audio_context_ptr audio_context) {
 }
 
 void terminate_audio_context(const audio_context_ptr audio_context) {
-  for (int i = 0; i < 10; i++) {
-    Mix_FreeChunk(audio_context->chunks[i]);
+  // Free all 11 sound chunks (indices 0-10)
+  for (int i = 0; i < 11; i++) {
+    if (audio_context->chunks[i]) {
+      Mix_FreeChunk(audio_context->chunks[i]);
+    }
   }
   Mix_CloseAudio();
 }
