@@ -23,13 +23,24 @@ ENGINE_INPUT_DIR = engine/core/input
 ENGINE_AUDIO_DIR = engine/core/audio
 ENGINE_UTILS_DIR = engine/core/utils
 
-# Find all C source files in root and engine directories
-SRC = $(wildcard $(SRCDIR)/*.c) $(wildcard $(ENGINE_GRAPHICS_DIR)/*.c) $(wildcard $(ENGINE_MATH_DIR)/*.c) $(wildcard $(ENGINE_INPUT_DIR)/*.c) $(wildcard $(ENGINE_AUDIO_DIR)/*.c) $(wildcard $(ENGINE_UTILS_DIR)/*.c)
-HEADERS = $(wildcard $(SRCDIR)/*.h) $(wildcard $(ENGINE_GRAPHICS_DIR)/*.h) $(wildcard $(ENGINE_MATH_DIR)/*.h) $(wildcard $(ENGINE_INPUT_DIR)/*.h) $(wildcard $(ENGINE_AUDIO_DIR)/*.h) $(wildcard $(ENGINE_UTILS_DIR)/*.h)
+GAME_ENTITIES_DIR = game/src/entities
+GAME_INCLUDE_DIR = game/include
+
+# Find all C source files in root, engine, and game directories
+SRC = $(wildcard $(SRCDIR)/*.c) \
+      $(wildcard $(ENGINE_GRAPHICS_DIR)/*.c) $(wildcard $(ENGINE_MATH_DIR)/*.c) $(wildcard $(ENGINE_INPUT_DIR)/*.c) $(wildcard $(ENGINE_AUDIO_DIR)/*.c) $(wildcard $(ENGINE_UTILS_DIR)/*.c) \
+      $(wildcard $(GAME_ENTITIES_DIR)/*.c)
+
+HEADERS = $(wildcard $(SRCDIR)/*.h) \
+          $(wildcard $(ENGINE_GRAPHICS_DIR)/*.h) $(wildcard $(ENGINE_MATH_DIR)/*.h) $(wildcard $(ENGINE_INPUT_DIR)/*.h) $(wildcard $(ENGINE_AUDIO_DIR)/*.h) $(wildcard $(ENGINE_UTILS_DIR)/*.h) \
+          $(wildcard $(GAME_INCLUDE_DIR)/*/*.h)
+
 OBJ = $(SRC:.c=.o)
 
 # Add include paths
-INCLUDES = -I. -I$(ENGINE_GRAPHICS_DIR) -I$(ENGINE_MATH_DIR) -I$(ENGINE_INPUT_DIR) -I$(ENGINE_AUDIO_DIR) -I$(ENGINE_UTILS_DIR)
+INCLUDES = -I. \
+           -I$(ENGINE_GRAPHICS_DIR) -I$(ENGINE_MATH_DIR) -I$(ENGINE_INPUT_DIR) -I$(ENGINE_AUDIO_DIR) -I$(ENGINE_UTILS_DIR) \
+           -I$(GAME_INCLUDE_DIR) -I$(GAME_INCLUDE_DIR)/entities -I$(GAME_INCLUDE_DIR)/stages -I$(GAME_INCLUDE_DIR)/systems -I$(GAME_INCLUDE_DIR)/main
 
 CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(INCLUDES) $(SDL2_CFLAGS)
 LFLAGS := $(SDL2_LFLAGS) -lm
