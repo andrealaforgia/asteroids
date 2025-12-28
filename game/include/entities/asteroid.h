@@ -17,6 +17,7 @@ typedef struct {
   point_t position;
   velocity_t velocity;
   color_t color;
+  color_t grey_fill;
 } asteroid_t, *asteroid_ptr;
 
 asteroid_t create_asteroid(point_t position, int scale, color_t color);

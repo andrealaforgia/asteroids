@@ -355,45 +355,32 @@ void draw_circle(const graphics_context_ptr graphics_context, int32_t centreX,
   SDL_RenderDrawPoints(graphics_context->renderer, points, CIRCLE_POINTS);
 }
 
-// Helper function to check if point is inside polygon using ray casting algorithm
-static bool point_in_polygon(int x, int y, const SDL_Point *poly, int n) {
-  bool inside = false;
-  for (int i = 0, j = n - 1; i < n; j = i++) {
-    int xi = poly[i].x, yi = poly[i].y;
-    int xj = poly[j].x, yj = poly[j].y;
-
-    bool intersect = ((yi > y) != (yj > y)) &&
-                     (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) inside = !inside;
-  }
-  return inside;
-}
-
 void draw_filled_polygon(const graphics_context_ptr graphics_context,
                          const SDL_Point *points, int num_points,
-                         color_t color) {
+                         color_t fill_color) {
   if (num_points < 3) return;  // Need at least 3 points for a polygon
 
-  // Calculate bounding box
-  int min_x = points[0].x, max_x = points[0].x;
-  int min_y = points[0].y, max_y = points[0].y;
-  for (int i = 1; i < num_points; i++) {
-    if (points[i].x < min_x) min_x = points[i].x;
-    if (points[i].x > max_x) max_x = points[i].x;
-    if (points[i].y < min_y) min_y = points[i].y;
-    if (points[i].y > max_y) max_y = points[i].y;
+  // Calculate center point for triangle fan
+  int center_x = 0, center_y = 0;
+  for (int i = 0; i < num_points; i++) {
+    center_x += points[i].x;
+    center_y += points[i].y;
   }
+  center_x /= num_points;
+  center_y /= num_points;
 
-  // Fill polygon with random grey pixels
-  for (int y = min_y; y <= max_y; y++) {
-    for (int x = min_x; x <= max_x; x++) {
-      if (point_in_polygon(x, y, points, num_points)) {
-        // Generate random grey shade (64-192 range for good visibility)
-        int grey = 64 + rand() % 128;
-        SDL_SetRenderDrawColor(graphics_context->renderer, grey, grey, grey, 255);
-        SDL_RenderDrawPoint(graphics_context->renderer, x, y);
-      }
-    }
+  // Draw triangle fan from center to each edge with solid fill color
+  for (int i = 0; i < num_points; i++) {
+    int next = (i + 1) % num_points;
+
+    // Create triangle vertices with solid fill color
+    SDL_Vertex vertices[3] = {
+        {{center_x, center_y}, {R(fill_color), G(fill_color), B(fill_color), 255}, {0, 0}},
+        {{points[i].x, points[i].y}, {R(fill_color), G(fill_color), B(fill_color), 255}, {0, 0}},
+        {{points[next].x, points[next].y}, {R(fill_color), G(fill_color), B(fill_color), 255}, {0, 0}}
+    };
+
+    SDL_RenderGeometry(graphics_context->renderer, NULL, vertices, 3, NULL, 0);
   }
 }
 

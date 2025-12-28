@@ -1,5 +1,7 @@
 #include "render.h"
 
+#include <SDL.h>
+
 #include "asteroid.h"
 #include "bullet.h"
 #include "coords.h"
@@ -107,33 +109,48 @@ const bounds_t SAUCER_BOUNDS = {69, 81};
 
 ALWAYS_INLINE void render_object(const graphics_context_ptr graphics_context,
                                  bounds_t bounds, const point_ptr position,
-                                 int scale, int color, bool filled) {
-  (void)filled;  // Unused parameter - filling disabled for performance
+                                 int scale, int color, bool filled,
+                                 color_t fill_color) {
   int cx = position->x;
   int cy = position->y;
+
+  // Collect all points for filled polygon rendering
+  SDL_Point points[50];  // Max points for any asteroid
+  int point_count = 0;
 
   for (int i = bounds.lower; i < bounds.upper; i++) {
     int nx = cx + (OBJECT_COORDS[i].x_delta * scale);
     int ny = cy - (OBJECT_COORDS[i].y_delta * scale);
 
     if (OBJECT_COORDS[i].brightness > 0) {
+      if (filled && point_count < 50) {
+        points[point_count].x = cx;
+        points[point_count].y = cy;
+        point_count++;
+      }
       draw_line(graphics_context, cx, cy, nx, ny, color);
     }
     cx = nx;
     cy = ny;
+  }
+
+  // Draw filled polygon if requested
+  if (filled && point_count > 2) {
+    draw_filled_polygon(graphics_context, points, point_count, fill_color);
   }
 }
 
 ALWAYS_INLINE void render_asteroid(const graphics_context_ptr graphics_context,
                                    const asteroid_ptr asteroid) {
   render_object(graphics_context, ASTEROID_BOUNDS[asteroid->type],
-                &asteroid->position, asteroid->scale, asteroid->color, true);
+                &asteroid->position, asteroid->scale, asteroid->color, true,
+                asteroid->grey_fill);
 }
 
 ALWAYS_INLINE void render_saucer(const graphics_context_ptr graphics_context,
                                  const saucer_ptr saucer) {
   render_object(graphics_context, SAUCER_BOUNDS, &saucer->position,
-                saucer->scale, COLOR_RED, false);
+                saucer->scale, COLOR_RED, false, COLOR_BLACK);
 }
 
 ALWAYS_INLINE void _render_ship(const graphics_context_ptr graphics_context,
