@@ -81,12 +81,26 @@ graphics_context_t init_graphics_context(int display, int display_mode,
   graphics_context.screen_center = point(graphics_context.screen_width / 2,
                                          graphics_context.screen_height / 2);
 
-  Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE;
+  Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI;
 
-  if (window_mode == FULL_SCREEN) {
-    window_flags |= SDL_WINDOW_FULLSCREEN;
-  } else {
-    window_flags |= SDL_WINDOW_MAXIMIZED;
+  // Configure window flags based on mode
+  switch (window_mode) {
+    case WINDOWED:
+      window_flags |= SDL_WINDOW_RESIZABLE;
+      LOG_INFO("Window mode: Windowed");
+      break;
+    case FULLSCREEN:
+      window_flags |= SDL_WINDOW_FULLSCREEN;
+      LOG_INFO("Window mode: Fullscreen");
+      break;
+    case BORDERLESS:
+      window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS;
+      LOG_INFO("Window mode: Borderless");
+      break;
+    case MAXIMIZED:
+      window_flags |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
+      LOG_INFO("Window mode: Maximized");
+      break;
   }
 
   graphics_context.window = SDL_CreateWindow(
@@ -99,13 +113,13 @@ graphics_context_t init_graphics_context(int display, int display_mode,
     abort();
   }
 
-  if (window_mode == FULL_SCREEN) {
+  // Set display mode for true fullscreen
+  if (window_mode == FULLSCREEN) {
     if (SDL_SetWindowDisplayMode(graphics_context.window, &sdl_display_mode) !=
         0) {
       LOG_SDL_ERROR("SDL_SetWindowDisplayMode");
       abort();
     }
-    SDL_SetWindowFullscreen(graphics_context.window, SDL_WINDOW_FULLSCREEN);
   }
 
   int drawable_w, drawable_h;

@@ -29,11 +29,39 @@ e.g. Running the game with no sounds, showing the frame-per-second rate, for mod
 ./asteroids --no-sound --show-fps --display=1 --display-mode=11
 ```
 
-### Window modes
-The game can run either in full screen (0) or as a maximised window (1). The default is full screen:
-e.g. Running maximised:
+### Window Modes
+
+The game supports four different window modes:
+
+| Mode | Value | Description |
+|------|-------|-------------|
+| **Windowed** | `--window-mode=0` | Normal resizable window |
+| **Fullscreen** | `--window-mode=1` | True fullscreen mode (default) |
+| **Borderless** | `--window-mode=2` | Borderless fullscreen window |
+| **Maximized** | `--window-mode=3` | Maximized resizable window |
+
+**Default:** Fullscreen mode (1)
+
+**Examples:**
+
+Windowed mode:
 ```
-./asteroids --display=1 --window-mode=1
+./asteroids --window-mode=0
+```
+
+Fullscreen (default):
+```
+./asteroids --window-mode=1
+```
+
+Borderless fullscreen (great for multi-monitor setups):
+```
+./asteroids --window-mode=2
+```
+
+Maximized window:
+```
+./asteroids --window-mode=3
 ```
 
 ### VSync (Vertical Synchronization)

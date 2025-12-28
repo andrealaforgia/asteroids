@@ -1,6 +1,11 @@
 #ifndef WINDOW_MODE_H_
 #define WINDOW_MODE_H_
 
-typedef enum { MAXIMIZED_WINDOW = 0, FULL_SCREEN = 1 } window_mode_t;
+typedef enum {
+  WINDOWED = 0,        // Normal resizable window
+  FULLSCREEN = 1,      // True fullscreen mode
+  BORDERLESS = 2,      // Borderless fullscreen window
+  MAXIMIZED = 3        // Maximized window
+} window_mode_t;
 
 #endif  // WINDOW_MODE_H_

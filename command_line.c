@@ -28,7 +28,7 @@ void print_help(void) {
        "X: use display mode X (default is 0: use " GRAPHICS_INFO
        " to show all available display modes)");
   puts("\t" WINDOW_MODE
-       "0|1: run as a maximized window (0 = default) or as full screen (1)");
+       "N: window mode (0=windowed, 1=fullscreen, 2=borderless, 3=maximized)");
   printf("\n");
 }
 
@@ -69,9 +69,9 @@ static void parse_argument(const char *argument,
     options->display_mode = number;
 
   } else if (extract_numeric_argument(WINDOW_MODE, argument, &number)) {
-    int valid_window_mode = number == 0 || number == 1;
+    int valid_window_mode = number >= 0 && number <= 3;
     if (!valid_window_mode) {
-      fprintf(stderr, "Invalid window mode %s\n", argument);
+      fprintf(stderr, "Invalid window mode %s (valid: 0-3)\n", argument);
       exit(EXIT_FAILURE);
     }
     options->window_mode = number;
@@ -89,6 +89,7 @@ static void set_defaults(const command_line_options_ptr options) {
   options->vsync = false;
   options->display = 0;
   options->display_mode = 0;
+  options->window_mode = FULLSCREEN;  // Default to fullscreen
   options->fps = 60;
 }
 
