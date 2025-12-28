@@ -7,7 +7,7 @@ typedef struct {
   Mix_Chunk *chunks[11];
 } audio_context_t, *audio_context_ptr;
 
-audio_context_t init_audio_context(void);
+audio_context_t init_audio_context(int volume);
 void play_bang_large(const audio_context_ptr audio_context);
 void play_bang_medium(const audio_context_ptr audio_context);
 void play_bang_small(const audio_context_ptr audio_context);

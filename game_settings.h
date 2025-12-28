@@ -13,10 +13,12 @@ typedef struct {
   int display_mode;
   window_mode_t window_mode;
   int fps;
+  int volume;
 } game_settings_t;
 
 game_settings_t init_game_settings(bool no_sound, bool show_fps, bool vsync,
                                    int display, int display_mode,
-                                   window_mode_t window_mode, int fps);
+                                   window_mode_t window_mode, int fps,
+                                   int volume);
 
 #endif  // GAME_SETTINGS_H_

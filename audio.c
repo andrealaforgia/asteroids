@@ -40,7 +40,7 @@ static Mix_Chunk *load_sound(const char *path) {
   return chunk;
 }
 
-audio_context_t init_audio_context(void) {
+audio_context_t init_audio_context(int volume) {
   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
     LOG_MIX_ERROR("Mix_OpenAudio");
   }
@@ -65,10 +65,8 @@ audio_context_t init_audio_context(void) {
   }
 
   // Volume is in the range 0-128, where 128 is full volume
-  int volume = 32;
-  Mix_Volume(
-      -1,
-      volume);  // -1 affects all channels, or you can use a specific channel ID
+  Mix_Volume(-1, volume);  // -1 affects all channels
+  LOG_INFO_FMT("Audio volume set to %d/128", volume);
 
   return audio_context;
 }

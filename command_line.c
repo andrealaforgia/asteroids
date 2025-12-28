@@ -13,6 +13,7 @@
 #define DISPLAY_MODE "--display-mode="
 #define WINDOW_MODE "--window-mode="
 #define FPS "--fps="
+#define VOLUME "--volume="
 
 void print_help(void) {
   puts("\noptions:");
@@ -20,6 +21,7 @@ void print_help(void) {
   puts("\t" GRAPHICS_INFO ": print info about the graphics system");
   puts("\t" NO_SOUND ": disable sound");
   puts("\t" VSYNC ": enable VSync for smoother rendering (default: off)");
+  puts("\t" VOLUME "X: set audio volume 0-128 (default: 32, 0=silent, 128=max)");
   /* puts("\t" FPS "X : set frame per seconds to X (default is 60)");
   puts("\t" SHOW_FPS ": show frames-per-second stats during game"); */
   puts("\t" DISPLAY "X : use display X (default is 0: use " GRAPHICS_INFO
@@ -78,6 +80,13 @@ static void parse_argument(const char *argument,
 
   } else if (extract_numeric_argument(FPS, argument, &number)) {
     options->fps = number;
+
+  } else if (extract_numeric_argument(VOLUME, argument, &number)) {
+    if (number < 0 || number > 128) {
+      fprintf(stderr, "Invalid volume %s (valid: 0-128)\n", argument);
+      exit(EXIT_FAILURE);
+    }
+    options->volume = number;
   }
 }
 
@@ -91,6 +100,7 @@ static void set_defaults(const command_line_options_ptr options) {
   options->display_mode = 0;
   options->window_mode = FULLSCREEN;  // Default to fullscreen
   options->fps = 60;
+  options->volume = 32;  // Default volume (0-128 range)
 }
 
 command_line_options_t parse_command_line_options(int argc, char *argv[]) {

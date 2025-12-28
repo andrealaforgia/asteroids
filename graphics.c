@@ -185,23 +185,54 @@ graphics_context_t init_graphics_context(int display, int display_mode,
   SDL_GL_GetDrawableSize(graphics_context.window, &drawable_w, &drawable_h);
   LOG_INFO_FMT("Drawable Size: w=%d h=%d", drawable_w, drawable_h);
 
+  // Try hardware acceleration first, fall back to software if needed
   Uint32 renderer_flags = SDL_RENDERER_ACCELERATED;
   if (vsync) {
     renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
-    LOG_INFO("VSync enabled");
   }
 
   graphics_context.renderer =
       SDL_CreateRenderer(graphics_context.window, -1, renderer_flags);
+
   if (!graphics_context.renderer) {
-    LOG_SDL_ERROR("SDL_CreateRenderer");
-    abort();
+    LOG_WARN("Hardware-accelerated renderer failed, trying software renderer");
+    LOG_SDL_ERROR("SDL_CreateRenderer (hardware)");
+
+    // Try software renderer as fallback
+    renderer_flags = SDL_RENDERER_SOFTWARE;
+    if (vsync) {
+      renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
+    }
+
+    graphics_context.renderer =
+        SDL_CreateRenderer(graphics_context.window, -1, renderer_flags);
+
+    if (!graphics_context.renderer) {
+      LOG_SDL_ERROR("SDL_CreateRenderer (software fallback)");
+      LOG_ERROR("Failed to create any renderer - aborting");
+      abort();
+    } else {
+      LOG_INFO("Using software renderer (performance may be reduced)");
+    }
   }
 
   // Log renderer info for debugging
   SDL_RendererInfo renderer_info;
   if (SDL_GetRendererInfo(graphics_context.renderer, &renderer_info) == 0) {
     LOG_INFO_FMT("Renderer: %s", renderer_info.name);
+
+    // Log renderer capabilities
+    if (renderer_info.flags & SDL_RENDERER_ACCELERATED) {
+      LOG_INFO("Renderer: Hardware-accelerated");
+    } else if (renderer_info.flags & SDL_RENDERER_SOFTWARE) {
+      LOG_INFO("Renderer: Software");
+    }
+
+    if (renderer_info.flags & SDL_RENDERER_PRESENTVSYNC) {
+      LOG_INFO("VSync: Enabled");
+    } else {
+      LOG_INFO("VSync: Disabled (using manual frame limiting)");
+    }
   }
 
   // Don't use logical size on macOS - causes scaling artifacts on Retina displays

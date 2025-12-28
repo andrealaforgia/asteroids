@@ -15,6 +15,7 @@ typedef struct {
   int display_mode;
   window_mode_t window_mode;
   int fps;
+  int volume;  // Audio volume (0-128, default 32)
 } command_line_options_t, *command_line_options_ptr;
 
 command_line_options_t parse_command_line_options(int argc, char *argv[]);
