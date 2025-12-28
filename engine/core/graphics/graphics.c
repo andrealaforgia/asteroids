@@ -308,6 +308,19 @@ ALWAYS_INLINE void draw_line(const graphics_context_ptr graphics_context,
   SDL_RenderDrawLine(graphics_context->renderer, x1, y1, x2, y2);
 }
 
+ALWAYS_INLINE void draw_thick_line(const graphics_context_ptr graphics_context,
+                                    int x1, int y1, int x2, int y2, color_t color) {
+  SDL_SetRenderDrawColor(graphics_context->renderer, R(color), G(color),
+                         B(color), 255);
+  // Draw main line
+  SDL_RenderDrawLine(graphics_context->renderer, x1, y1, x2, y2);
+  // Draw parallel lines to create thickness
+  SDL_RenderDrawLine(graphics_context->renderer, x1+1, y1, x2+1, y2);
+  SDL_RenderDrawLine(graphics_context->renderer, x1, y1+1, x2, y2+1);
+  SDL_RenderDrawLine(graphics_context->renderer, x1-1, y1, x2-1, y2);
+  SDL_RenderDrawLine(graphics_context->renderer, x1, y1-1, x2, y2-1);
+}
+
 ALWAYS_INLINE void draw_line_between_points(
     const graphics_context_ptr graphics_context, const point_ptr p1,
     const point_ptr p2, color_t color) {

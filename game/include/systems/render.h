@@ -11,7 +11,7 @@
 
 void render_object(const graphics_context_ptr graphics_context, bounds_t bounds,
                    const point_ptr position, int scale, int color, bool filled,
-                   color_t fill_color);
+                   color_t fill_color, bool thick);
 void render_asteroid(const graphics_context_ptr graphics_context,
                      const asteroid_ptr asteroid);
 void render_saucer(const graphics_context_ptr graphics_context,

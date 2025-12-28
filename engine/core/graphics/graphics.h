@@ -27,6 +27,8 @@ void draw_line_between_points(const graphics_context_ptr graphics_context,
                               color_t color);
 void draw_line(const graphics_context_ptr graphics_context, int x1, int y1,
                int x2, int y2, color_t color);
+void draw_thick_line(const graphics_context_ptr graphics_context, int x1, int y1,
+                     int x2, int y2, color_t color);
 void draw_pixel(const graphics_context_ptr graphics_context, int x, int y,
                 color_t color);
 void draw_point(const graphics_context_ptr graphics_context, const point_ptr p,

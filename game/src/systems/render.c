@@ -110,7 +110,7 @@ const bounds_t SAUCER_BOUNDS = {69, 81};
 ALWAYS_INLINE void render_object(const graphics_context_ptr graphics_context,
                                  bounds_t bounds, const point_ptr position,
                                  int scale, int color, bool filled,
-                                 color_t fill_color) {
+                                 color_t fill_color, bool thick) {
   int cx = position->x;
   int cy = position->y;
 
@@ -128,7 +128,11 @@ ALWAYS_INLINE void render_object(const graphics_context_ptr graphics_context,
         points[point_count].y = cy;
         point_count++;
       }
-      draw_line(graphics_context, cx, cy, nx, ny, color);
+      if (thick) {
+        draw_thick_line(graphics_context, cx, cy, nx, ny, color);
+      } else {
+        draw_line(graphics_context, cx, cy, nx, ny, color);
+      }
     }
     cx = nx;
     cy = ny;
@@ -143,14 +147,14 @@ ALWAYS_INLINE void render_object(const graphics_context_ptr graphics_context,
 ALWAYS_INLINE void render_asteroid(const graphics_context_ptr graphics_context,
                                    const asteroid_ptr asteroid) {
   render_object(graphics_context, ASTEROID_BOUNDS[asteroid->type],
-                &asteroid->position, asteroid->scale, asteroid->color, true,
-                asteroid->grey_fill);
+                &asteroid->position, asteroid->scale, asteroid->color, false,
+                COLOR_BLACK, true);
 }
 
 ALWAYS_INLINE void render_saucer(const graphics_context_ptr graphics_context,
                                  const saucer_ptr saucer) {
   render_object(graphics_context, SAUCER_BOUNDS, &saucer->position,
-                saucer->scale, COLOR_RED, false, COLOR_BLACK);
+                saucer->scale, COLOR_RED, false, COLOR_BLACK, false);
 }
 
 ALWAYS_INLINE void _render_ship(const graphics_context_ptr graphics_context,
