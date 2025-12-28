@@ -372,7 +372,7 @@ ALWAYS_INLINE point_t write_text(const graphics_context_ptr graphics_context,
         double nx = cx + (FONT_COORDS[j].x_delta * scale);
         double ny = cy - (FONT_COORDS[j].y_delta * scale);
         if (FONT_COORDS[j].brightness > 0) {
-          draw_line(graphics_context, cx, cy, nx, ny, color);
+          draw_thick_line(graphics_context, cx, cy, nx, ny, color);
         }
         cx = nx;
         cy = ny;
