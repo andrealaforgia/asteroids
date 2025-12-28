@@ -43,7 +43,8 @@ static int extract_numeric_argument(const char *prefix, const char *argument,
   return 0;
 }
 
-static void parse_argument(const char *argument,
+// Returns true if the argument was recognized, false otherwise
+static bool parse_argument(const char *argument,
                            const command_line_options_ptr options) {
   int number;
   if (!strcmp(HELP, argument)) {
@@ -67,7 +68,8 @@ static void parse_argument(const char *argument,
   } else if (extract_numeric_argument(WINDOW_MODE, argument, &number)) {
     int valid_window_mode = number >= 0 && number <= 3;
     if (!valid_window_mode) {
-      fprintf(stderr, "Invalid window mode %s (valid: 0-3)\n", argument);
+      fprintf(stderr, "Error: Invalid window mode %s (valid: 0-3)\n", argument);
+      fprintf(stderr, "Use --help to see all available options\n");
       exit(EXIT_FAILURE);
     }
     options->window_mode = number;
@@ -77,11 +79,18 @@ static void parse_argument(const char *argument,
 
   } else if (extract_numeric_argument(VOLUME, argument, &number)) {
     if (number < 0 || number > 128) {
-      fprintf(stderr, "Invalid volume %s (valid: 0-128)\n", argument);
+      fprintf(stderr, "Error: Invalid volume %s (valid: 0-128)\n", argument);
+      fprintf(stderr, "Use --help to see all available options\n");
       exit(EXIT_FAILURE);
     }
     options->volume = number;
+
+  } else {
+    // Argument not recognized
+    return false;
   }
+
+  return true;
 }
 
 static void set_defaults(const command_line_options_ptr options) {
@@ -99,8 +108,19 @@ static void set_defaults(const command_line_options_ptr options) {
 command_line_options_t parse_command_line_options(int argc, char *argv[]) {
   command_line_options_t options;
   set_defaults(&options);
-  for (int i = 0; i < argc; i++) {
-    parse_argument(argv[i], &options);
+
+  // Skip argv[0] which is the program name
+  for (int i = 1; i < argc; i++) {
+    if (!parse_argument(argv[i], &options)) {
+      // Unrecognized argument
+      if (strncmp(argv[i], "--", 2) == 0 || strncmp(argv[i], "-", 1) == 0) {
+        fprintf(stderr, "Error: Unknown option '%s'\n", argv[i]);
+        fprintf(stderr, "Use --help to see all available options\n");
+        exit(EXIT_FAILURE);
+      }
+      // Not an option (doesn't start with --), ignore it
+    }
   }
+
   return options;
 }
