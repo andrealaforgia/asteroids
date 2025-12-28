@@ -17,9 +17,6 @@ ALWAYS_INLINE asteroid_t create_asteroid(point_t position, int scale,
   asteroid.velocity = random_velocity();
   asteroid.scale = scale;
   asteroid.color = color;
-  // Assign random grey shade for fill (64-192 range for good visibility)
-  int grey = 64 + rand() % 128;
-  asteroid.grey_fill = GRAY(grey);
   return asteroid;
 }
 
