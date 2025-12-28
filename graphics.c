@@ -7,6 +7,23 @@
 #include "inline.h"
 #include "logger.h"
 
+// Pre-calculated sin/cos lookup table for circle drawing optimization
+#define CIRCLE_POINTS 360
+static double circle_cos[CIRCLE_POINTS];
+static double circle_sin[CIRCLE_POINTS];
+static bool circle_lookup_initialized = false;
+
+static void init_circle_lookup(void) {
+  if (!circle_lookup_initialized) {
+    for (int i = 0; i < CIRCLE_POINTS; i++) {
+      double angle = i * M_PI / 180.0;
+      circle_cos[i] = cos(angle);
+      circle_sin[i] = sin(angle);
+    }
+    circle_lookup_initialized = true;
+  }
+}
+
 static int get_display_count(void) { return SDL_GetNumVideoDisplays(); }
 
 static SDL_DisplayMode *get_display_modes(int display_index,
@@ -63,6 +80,9 @@ graphics_context_t init_graphics_context(int display, int display_mode,
     LOG_SDL_ERROR("SDL_Init");
     abort();
   }
+
+  // Initialize circle drawing lookup table for performance
+  init_circle_lookup();
 
   // Set SDL hints for better rendering on macOS/Metal
   if (!SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal")) {
@@ -211,14 +231,19 @@ ALWAYS_INLINE void draw_fat_pixel(const graphics_context_ptr graphics_context,
 
 void draw_circle(const graphics_context_ptr graphics_context, int32_t centreX,
                  int32_t centreY, int32_t radius, color_t color) {
+  // Pre-allocate points array for batched rendering
+  SDL_Point points[CIRCLE_POINTS];
+
+  // Calculate all circle points using pre-calculated lookup table
+  for (int i = 0; i < CIRCLE_POINTS; i++) {
+    points[i].x = centreX + (int)(radius * circle_cos[i]);
+    points[i].y = centreY + (int)(radius * circle_sin[i]);
+  }
+
+  // Render all points in a single batched call (720 calls -> 2 calls)
   SDL_SetRenderDrawColor(graphics_context->renderer, R(color), G(color),
                          B(color), 255);
-  for (int i = 0; i < 360; i++) {
-    double angle = i * M_PI / 180;
-    int x = centreX + (int)(radius * cos(angle));
-    int y = centreY + (int)(radius * sin(angle));
-    draw_pixel(graphics_context, x, y, color);
-  }
+  SDL_RenderDrawPoints(graphics_context->renderer, points, CIRCLE_POINTS);
 }
 
 ALWAYS_INLINE double wrap(double value, double upper_bound) {
