@@ -35,6 +35,8 @@ void draw_fat_pixel(const graphics_context_ptr graphics_context,
                     const point_ptr p, color_t color);
 void draw_circle(const graphics_context_ptr graphics_context, int32_t centreX,
                  int32_t centreY, int32_t radius, color_t color);
+void draw_filled_polygon(const graphics_context_ptr graphics_context,
+                         const SDL_Point *points, int num_points, color_t color);
 double wrap_x(const graphics_context_ptr graphics_context, double x);
 double wrap_y(const graphics_context_ptr graphics_context, double y);
 point_t random_point(const graphics_context_ptr graphics_context);

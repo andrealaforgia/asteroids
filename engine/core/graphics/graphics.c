@@ -355,6 +355,38 @@ void draw_circle(const graphics_context_ptr graphics_context, int32_t centreX,
   SDL_RenderDrawPoints(graphics_context->renderer, points, CIRCLE_POINTS);
 }
 
+void draw_filled_polygon(const graphics_context_ptr graphics_context,
+                         const SDL_Point *points, int num_points,
+                         color_t color) {
+  if (num_points < 3) return;  // Need at least 3 points for a polygon
+
+  SDL_SetRenderDrawColor(graphics_context->renderer, R(color), G(color),
+                         B(color), 255);
+
+  // Calculate center point for triangle fan
+  int center_x = 0, center_y = 0;
+  for (int i = 0; i < num_points; i++) {
+    center_x += points[i].x;
+    center_y += points[i].y;
+  }
+  center_x /= num_points;
+  center_y /= num_points;
+
+  // Draw triangle fan from center to each edge
+  for (int i = 0; i < num_points; i++) {
+    int next = (i + 1) % num_points;
+
+    // Create triangle vertices
+    SDL_Vertex vertices[3] = {
+        {{center_x, center_y}, {R(color), G(color), B(color), 255}, {0, 0}},
+        {{points[i].x, points[i].y}, {R(color), G(color), B(color), 255}, {0, 0}},
+        {{points[next].x, points[next].y}, {R(color), G(color), B(color), 255}, {0, 0}}
+    };
+
+    SDL_RenderGeometry(graphics_context->renderer, NULL, vertices, 3, NULL, 0);
+  }
+}
+
 ALWAYS_INLINE double wrap(double value, double upper_bound) {
   if (value < 0) {
     return upper_bound - 1;
