@@ -9,6 +9,7 @@
 #include "game_over_stage.h"
 #include "graphics.h"
 #include "intro_stage.h"
+#include "logger.h"
 #include "playing_stage.h"
 
 static void run_game(const game_ptr game) {
@@ -82,6 +83,19 @@ int main(int argc, char *argv[]) {
                          command_line_options.display_mode,
                          command_line_options.window_mode, command_line_options.fps,
                          command_line_options.volume);
+
+  // Log game configuration
+  LOG_INFO("=== Asteroids Configuration ===");
+  LOG_INFO_FMT("Display: %d, Mode: %d", game_settings.display,
+               game_settings.display_mode);
+  const char *window_modes[] = {"Windowed", "Fullscreen", "Borderless",
+                                 "Maximized"};
+  LOG_INFO_FMT("Window Mode: %s", window_modes[game_settings.window_mode]);
+  LOG_INFO_FMT("VSync: %s", game_settings.vsync ? "Enabled" : "Disabled");
+  LOG_INFO_FMT("Target FPS: %d", game_settings.fps);
+  LOG_INFO_FMT("Show FPS: %s", game_settings.show_fps ? "Yes" : "No");
+  LOG_INFO_FMT("Audio Volume: %d/128", game_settings.volume);
+  LOG_INFO("==============================");
 
   game_t game = init_game(game_settings);
 
