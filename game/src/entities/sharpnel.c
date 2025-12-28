@@ -42,7 +42,7 @@ ALWAYS_INLINE void remove_sharpnel(size_t sharpnel_index) {
 ALWAYS_INLINE void render_sharpnel(const graphics_context_ptr graphics_context,
                                    const sharpnel_ptr sharpnel, color_t color) {
   render_object(graphics_context, SHARPNEL_BOUNDS, &sharpnel->position,
-                sharpnel->scale, color);
+                sharpnel->scale, color, false);
 }
 
 ALWAYS_INLINE void update_sharpnel(const graphics_context_ptr graphics_context,
