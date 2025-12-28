@@ -22,17 +22,17 @@
 #define GAME_OVER_INDEX 10
 
 // Sound file names (relative to executable directory)
-#define BANG_LARGE_WAV "sounds/bangLarge.wav"
-#define BANG_MEDIUM_WAV "sounds/bangMedium.wav"
-#define BANG_SMALL_WAV "sounds/bangSmall.wav"
-#define BEAT1_WAV "sounds/beat1.wav"
-#define BEAT2_WAV "sounds/beat2.wav"
-#define EXTRA_SHIP_WAV "sounds/extraShip.wav"
-#define FIRE_WAV "sounds/fire.wav"
-#define SAUCER_SMALL_WAV "sounds/saucerSmall.wav"
-#define SAUCER_BIG_WAV "sounds/saucerBig.wav"
-#define THRUST_WAV "sounds/thrust.wav"
-#define GAME_OVER_WAV "sounds/gameOver.wav"
+#define BANG_LARGE_WAV "game/assets/sounds/bangLarge.wav"
+#define BANG_MEDIUM_WAV "game/assets/sounds/bangMedium.wav"
+#define BANG_SMALL_WAV "game/assets/sounds/bangSmall.wav"
+#define BEAT1_WAV "game/assets/sounds/beat1.wav"
+#define BEAT2_WAV "game/assets/sounds/beat2.wav"
+#define EXTRA_SHIP_WAV "game/assets/sounds/extraShip.wav"
+#define FIRE_WAV "game/assets/sounds/fire.wav"
+#define SAUCER_SMALL_WAV "game/assets/sounds/saucerSmall.wav"
+#define SAUCER_BIG_WAV "game/assets/sounds/saucerBig.wav"
+#define THRUST_WAV "game/assets/sounds/thrust.wav"
+#define GAME_OVER_WAV "game/assets/sounds/gameOver.wav"
 
 // Construct full path to a sound file
 static char *get_sound_path(const char *base_path, const char *sound_file) {
