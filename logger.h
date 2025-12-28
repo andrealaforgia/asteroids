@@ -28,4 +28,8 @@
 // Log a warning
 #define LOG_WARN(msg) SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "%s", msg)
 
+// Log a formatted warning
+#define LOG_WARN_FMT(fmt, ...) \
+  SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, fmt, __VA_ARGS__)
+
 #endif  // LOGGER_H_

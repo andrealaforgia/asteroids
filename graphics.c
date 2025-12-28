@@ -125,8 +125,36 @@ graphics_context_t init_graphics_context(int display, int display_mode,
   }
 
   SDL_ShowCursor(SDL_DISABLE);
-  SDL_DisplayMode sdl_display_mode;
 
+  // Validate display index
+  int num_displays = SDL_GetNumVideoDisplays();
+  if (num_displays < 1) {
+    LOG_SDL_ERROR("SDL_GetNumVideoDisplays");
+    abort();
+  }
+
+  if (display < 0 || display >= num_displays) {
+    LOG_WARN_FMT("Invalid display index %d (valid range: 0-%d)", display,
+                 num_displays - 1);
+    LOG_INFO("Falling back to display 0");
+    display = 0;
+  }
+
+  // Validate display mode index
+  int num_modes = SDL_GetNumDisplayModes(display);
+  if (num_modes < 1) {
+    LOG_SDL_ERROR("SDL_GetNumDisplayModes");
+    abort();
+  }
+
+  if (display_mode < 0 || display_mode >= num_modes) {
+    LOG_WARN_FMT("Invalid display mode %d for display %d (valid range: 0-%d)",
+                 display_mode, display, num_modes - 1);
+    LOG_INFO("Falling back to display mode 0");
+    display_mode = 0;
+  }
+
+  SDL_DisplayMode sdl_display_mode;
   if (SDL_GetDisplayMode(display, display_mode, &sdl_display_mode) != 0) {
     LOG_SDL_ERROR("SDL_GetDisplayMode");
     abort();
