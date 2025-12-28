@@ -31,7 +31,10 @@ static SDL_DisplayMode *get_display_modes(int display_index,
 }
 
 void print_graphics_info(void) {
-  SDL_Init(SDL_INIT_EVERYTHING);
+  if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    LOG_SDL_ERROR("SDL_Init");
+    return;
+  }
   int display_count = get_display_count();
   LOG_INFO_FMT("Number of available displays: %d", display_count);
   for (int display_index = 0; display_index < display_count; display_index++) {
@@ -62,8 +65,12 @@ graphics_context_t init_graphics_context(int display, int display_mode,
   }
 
   // Set SDL hints for better rendering on macOS/Metal
-  SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");  // nearest pixel sampling
+  if (!SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal")) {
+    LOG_WARN("Failed to set Metal renderer hint");
+  }
+  if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0")) {
+    LOG_WARN("Failed to set render scale quality hint");
+  }
 
   SDL_ShowCursor(SDL_DISABLE);
   SDL_DisplayMode sdl_display_mode;
@@ -140,7 +147,10 @@ graphics_context_t init_graphics_context(int display, int display_mode,
   }
 
   // Configure renderer for proper blending
-  SDL_SetRenderDrawBlendMode(graphics_context.renderer, SDL_BLENDMODE_BLEND);
+  if (SDL_SetRenderDrawBlendMode(graphics_context.renderer, SDL_BLENDMODE_BLEND) != 0) {
+    LOG_SDL_ERROR("SDL_SetRenderDrawBlendMode");
+    LOG_WARN("Continuing without blend mode");
+  }
 
   // Log renderer info for debugging
   SDL_RendererInfo renderer_info;
