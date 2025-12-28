@@ -3,6 +3,9 @@ name: Build Asteroids
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -10,8 +13,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: make dev_install
+      - name: Install Dev Dependencies
+        run: sudo apt-get update && sudo apt-get install -y cpplint clang-format
 
       - name: Run Linter
         run: make lint
@@ -23,12 +26,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: make install 
+      - name: Install Build Dependencies
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libsdl2-mixer-dev
 
-      - name: Show SDL Configuration
-        run: make show_sdl_config
-
-      - name: Compile Project
+      - name: Build Project
         run: make
-        
+
+      - name: Verify Executable
+        run: |
+          ls -lh asteroids
+          file asteroids
+
