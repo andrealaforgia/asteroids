@@ -21,6 +21,7 @@ void print_help(void) {
   puts("\t" VSYNC ": enable VSync for smoother rendering (default: off)");
   puts("\t" VOLUME "X: set audio volume 0-128 (default: 32, 0=silent, 128=max)");
   puts("\t" SHOW_FPS ": show frames-per-second stats during game");
+  puts("\t" FPS "X: set target frame rate 1-300 (default: 60)");
   puts("\t" DISPLAY "X : use display X (default is 0: use " GRAPHICS_INFO
        " to show the number of available displays");
   puts("\t" DISPLAY_MODE
@@ -75,6 +76,11 @@ static bool parse_argument(const char *argument,
     options->window_mode = number;
 
   } else if (extract_numeric_argument(FPS, argument, &number)) {
+    if (number < 1 || number > 300) {
+      fprintf(stderr, "Error: Invalid FPS %s (valid: 1-300)\n", argument);
+      fprintf(stderr, "Use --help to see all available options\n");
+      exit(EXIT_FAILURE);
+    }
     options->fps = number;
 
   } else if (extract_numeric_argument(VOLUME, argument, &number)) {

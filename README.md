@@ -119,6 +119,32 @@ Display real-time frames-per-second statistics in the top-left corner during gam
 ./asteroids --show-fps --vsync
 ```
 
+### Target Frame Rate
+
+Control the game's target frame rate (FPS). The game will attempt to maintain this frame rate through frame limiting.
+
+**Default:** 60 FPS
+
+**Set custom frame rate:**
+```
+./asteroids --fps=120   # High refresh rate displays
+./asteroids --fps=30    # Lower performance systems
+./asteroids --fps=144   # Gaming monitors
+```
+
+**Valid range:** 1-300 FPS
+
+**Notes:**
+- When VSync is enabled, the actual frame rate will be capped at your display's refresh rate
+- Higher FPS values provide smoother animation but require more CPU/GPU power
+- Lower FPS values reduce resource usage but may feel less responsive
+- Most displays are 60Hz, so 60 FPS is optimal for most users
+
+**Example - 120 FPS for high refresh rate display:**
+```
+./asteroids --fps=120
+```
+
 ### Audio Volume
 
 Control the game's audio volume at startup.
