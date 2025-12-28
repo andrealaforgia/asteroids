@@ -18,14 +18,15 @@ SDL2_LFLAGS := $(shell sdl2-config --libs) -lSDL2_mixer
 
 SRCDIR = .
 ENGINE_GRAPHICS_DIR = engine/core/graphics
+ENGINE_MATH_DIR = engine/core/math
 
 # Find all C source files in root and engine directories
-SRC = $(wildcard $(SRCDIR)/*.c) $(wildcard $(ENGINE_GRAPHICS_DIR)/*.c)
-HEADERS = $(wildcard $(SRCDIR)/*.h) $(wildcard $(ENGINE_GRAPHICS_DIR)/*.h)
+SRC = $(wildcard $(SRCDIR)/*.c) $(wildcard $(ENGINE_GRAPHICS_DIR)/*.c) $(wildcard $(ENGINE_MATH_DIR)/*.c)
+HEADERS = $(wildcard $(SRCDIR)/*.h) $(wildcard $(ENGINE_GRAPHICS_DIR)/*.h) $(wildcard $(ENGINE_MATH_DIR)/*.h)
 OBJ = $(SRC:.c=.o)
 
 # Add include paths
-INCLUDES = -I. -I$(ENGINE_GRAPHICS_DIR)
+INCLUDES = -I. -I$(ENGINE_GRAPHICS_DIR) -I$(ENGINE_MATH_DIR)
 
 CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(INCLUDES) $(SDL2_CFLAGS)
 LFLAGS := $(SDL2_LFLAGS) -lm
