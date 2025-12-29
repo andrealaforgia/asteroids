@@ -1,5 +1,5 @@
-#ifndef ENGINE_CORE_GRAPHICS_LOGGER_H_
-#define ENGINE_CORE_GRAPHICS_LOGGER_H_
+#ifndef ENGINE_CORE_UTILS_LOGGER_H_
+#define ENGINE_CORE_UTILS_LOGGER_H_
 
 #include <SDL.h>
 #include <SDL_mixer.h>
@@ -34,4 +34,4 @@
 #define LOG_WARN_FMT(fmt, ...) \
   SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, fmt, __VA_ARGS__)
 
-#endif  // ENGINE_CORE_GRAPHICS_LOGGER_H_
+#endif  // ENGINE_CORE_UTILS_LOGGER_H_
