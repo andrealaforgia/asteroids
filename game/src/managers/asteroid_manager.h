@@ -81,4 +81,10 @@ asteroid_ptr get_asteroid(asteroid_manager_ptr manager, size_t asteroid_index);
 int get_asteroid_radius(const asteroid_manager_ptr manager,
                         size_t asteroid_index);
 
+// Iterator abstraction - foreach active asteroid
+typedef void (*asteroid_callback_t)(asteroid_ptr asteroid, size_t index,
+                                     void* user_data);
+void foreach_active_asteroid(asteroid_manager_ptr manager,
+                              asteroid_callback_t callback, void* user_data);
+
 #endif  // GAME_SRC_MANAGERS_ASTEROID_MANAGER_H_

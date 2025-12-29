@@ -31,7 +31,8 @@ void reset_bullets(bullet_manager_ptr manager) {
 void add_ship_bullet(bullet_manager_ptr manager, point_t position,
                      velocity_t velocity) {
   size_t index;
-  bullet_t* bullet = (bullet_t*)pool_acquire(&manager->ship_bullet_pool, &index);
+  bullet_t* bullet =
+      (bullet_t*)pool_acquire(&manager->ship_bullet_pool, &index);
   if (bullet == NULL) {
     return;  // Pool exhausted
   }
@@ -49,7 +50,8 @@ void update_ship_bullets(bullet_manager_ptr manager, double delta_time) {
       continue;
     }
 
-    bullet_ptr bullet = (bullet_ptr)pool_get_at(&manager->ship_bullet_pool, sbi);
+    bullet_ptr bullet =
+        (bullet_ptr)pool_get_at(&manager->ship_bullet_pool, sbi);
     int bullet_age = elapsed_from(bullet->creation_ticks);
 
     if (elapsed_from(bullet->creation_ticks) > SHIP_BULLET_MAX_AGE_MS) {
@@ -122,4 +124,17 @@ size_t get_saucer_bullet_count(const bullet_manager_ptr manager) {
 
 bullet_ptr get_saucer_bullet(bullet_manager_ptr manager, size_t bullet_index) {
   return (bullet_ptr)pool_get_at(&manager->saucer_bullet_pool, bullet_index);
+}
+
+void foreach_active_ship_bullet(bullet_manager_ptr manager,
+                                 bullet_callback_t callback, void* user_data) {
+  pool_foreach_active(&manager->ship_bullet_pool, (pool_callback_t)callback,
+                      user_data);
+}
+
+void foreach_active_saucer_bullet(bullet_manager_ptr manager,
+                                   bullet_callback_t callback,
+                                   void* user_data) {
+  pool_foreach_active(&manager->saucer_bullet_pool, (pool_callback_t)callback,
+                      user_data);
 }

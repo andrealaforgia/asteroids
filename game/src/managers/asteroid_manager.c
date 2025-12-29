@@ -64,7 +64,8 @@ void update_asteroids(asteroid_manager_ptr manager, double delta_time) {
 
 void break_asteroid_apart(asteroid_manager_ptr manager,
                           size_t asteroid_index) {
-  asteroid_ptr asteroid = (asteroid_ptr)pool_get_at(&manager->pool, asteroid_index);
+  asteroid_ptr asteroid =
+      (asteroid_ptr)pool_get_at(&manager->pool, asteroid_index);
   if (asteroid == NULL) {
     return;
   }
@@ -125,9 +126,15 @@ asteroid_ptr get_asteroid(asteroid_manager_ptr manager, size_t asteroid_index) {
 
 int get_asteroid_radius(const asteroid_manager_ptr manager,
                         size_t asteroid_index) {
-  asteroid_ptr asteroid = (asteroid_ptr)pool_get_at((object_pool_t*)&manager->pool, asteroid_index);
+  asteroid_ptr asteroid =
+      (asteroid_ptr)pool_get_at((object_pool_t*)&manager->pool, asteroid_index);
   if (asteroid == NULL) {
     return 0;
   }
   return 8 * asteroid->scale;
+}
+
+void foreach_active_asteroid(asteroid_manager_ptr manager,
+                              asteroid_callback_t callback, void* user_data) {
+  pool_foreach_active(&manager->pool, (pool_callback_t)callback, user_data);
 }

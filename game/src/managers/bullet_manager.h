@@ -63,4 +63,12 @@ void update_saucer_bullets(bullet_manager_ptr manager, double delta_time);
 size_t get_saucer_bullet_count(const bullet_manager_ptr manager);
 bullet_ptr get_saucer_bullet(bullet_manager_ptr manager, size_t bullet_index);
 
+// Iterator abstractions - foreach active bullets
+typedef void (*bullet_callback_t)(bullet_ptr bullet, size_t index,
+                                   void* user_data);
+void foreach_active_ship_bullet(bullet_manager_ptr manager,
+                                 bullet_callback_t callback, void* user_data);
+void foreach_active_saucer_bullet(bullet_manager_ptr manager,
+                                   bullet_callback_t callback, void* user_data);
+
 #endif  // GAME_SRC_MANAGERS_BULLET_MANAGER_H_
