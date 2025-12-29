@@ -1,8 +1,12 @@
 #include "sprites.h"
 
+#include <math.h>
+
 #include "asteroid.h"
 #include "bullet.h"
+#include "clock.h"
 #include "coords.h"
+#include "game_constants.h"
 #include "geometry.h"
 #include "graphics.h"
 #include "inline.h"
@@ -153,6 +157,40 @@ ALWAYS_INLINE void _render_ship(const graphics_context_ptr graphics_context,
 ALWAYS_INLINE
 void render_ship(const graphics_context_ptr graphics_context,
                  const ship_ptr ship) {
+  // Calculate immunity time remaining
+  int elapsed = elapsed_from(ship->creation_ticks);
+  bool is_immune = elapsed <= SHIP_IMMUNITY_DURATION_MS;
+
+  if (is_immune) {
+    // Calculate pulsing effect (0.0 to 1.0)
+    // Pulse 3 times per second
+    double pulse_frequency = 3.0;
+    double time_in_seconds = elapsed / 1000.0;
+    double pulse = (sin(time_in_seconds * pulse_frequency * 2.0 * M_PI) + 1.0) /
+                   2.0;  // 0.0 to 1.0
+
+    // Fade out over immunity duration
+    double fade = 1.0 - (elapsed / (double)SHIP_IMMUNITY_DURATION_MS);
+
+    // Calculate circle radius (pulses between 1.2x and 1.8x ship size)
+    int base_radius = 8 * ship->scale;
+    int min_radius = base_radius * 1.2;
+    int max_radius = base_radius * 1.8;
+    int circle_radius = min_radius + (int)((max_radius - min_radius) * pulse);
+
+    // Calculate alpha (0-255) with fade
+    int alpha = (int)(255 * fade * 0.7);  // Max 70% opacity
+
+    // Create semi-transparent blue color
+    // Format: 0xAARRGGBB (using alpha in top byte for intensity)
+    int intensity = (int)(alpha / 255.0 * 128);  // Scale to 0-128
+    color_t circle_color = COLOR(0, intensity, 255);
+
+    // Draw the pulsing circle
+    draw_circle(graphics_context, ship->position.x, ship->position.y,
+                circle_radius, circle_color);
+  }
+
   _render_ship(graphics_context, ship->rotation_index, ship->scale,
                &ship->position, ship->thrusting, COLOR_WHITE);
 }
