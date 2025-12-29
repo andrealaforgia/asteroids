@@ -190,6 +190,17 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
       toggle_fullscreen(state->graphics_context);
     }
 
+    if (is_s_key_pressed(&state->game->keyboard_state)) {
+      // Toggle sound: if volume > 0, mute; otherwise set to default
+      if (state->game->settings.volume > 0) {
+        state->game->settings.volume = 0;
+        set_audio_volume(0);  // Mute SDL mixer
+      } else {
+        state->game->settings.volume = 50;  // Default volume
+        set_audio_volume(64);               // Set SDL mixer to 50% (64/128)
+      }
+    }
+
     if (is_esc_key_pressed(&state->game->keyboard_state)) {
       break;
     }
