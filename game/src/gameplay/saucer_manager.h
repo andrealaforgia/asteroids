@@ -1,5 +1,5 @@
-#ifndef SAUCER_MANAGER_H_
-#define SAUCER_MANAGER_H_
+#ifndef GAME_SRC_GAMEPLAY_SAUCER_MANAGER_H_
+#define GAME_SRC_GAMEPLAY_SAUCER_MANAGER_H_
 
 #include "audio.h"
 #include "bullet_manager.h"
@@ -52,4 +52,4 @@ point_t get_saucer_position(const saucer_manager_ptr manager);
 // Check if saucer is big
 bool is_saucer_big(const saucer_manager_ptr manager);
 
-#endif  // SAUCER_MANAGER_H_
+#endif  // GAME_SRC_GAMEPLAY_SAUCER_MANAGER_H_
