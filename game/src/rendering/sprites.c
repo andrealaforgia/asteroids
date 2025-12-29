@@ -1,4 +1,4 @@
-#include "render.h"
+#include "sprites.h"
 
 #include "asteroid.h"
 #include "bullet.h"

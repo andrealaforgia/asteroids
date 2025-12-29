@@ -1,5 +1,5 @@
-#ifndef GAME_SRC_GAMEPLAY_GAME_AUDIO_H_
-#define GAME_SRC_GAMEPLAY_GAME_AUDIO_H_
+#ifndef GAME_SRC_AUDIO_GAME_AUDIO_H_
+#define GAME_SRC_AUDIO_GAME_AUDIO_H_
 
 #include "audio.h"
 
@@ -37,4 +37,4 @@ void play_thrust(const audio_context_ptr audio_context);
 void play_game_over(const audio_context_ptr audio_context);
 void play_ship_lost(const audio_context_ptr audio_context);
 
-#endif  // GAME_SRC_GAMEPLAY_GAME_AUDIO_H_
+#endif  // GAME_SRC_AUDIO_GAME_AUDIO_H_

@@ -16,7 +16,7 @@
 #include "graphics.h"
 #include "keyboard.h"
 #include "physics.h"
-#include "render.h"
+#include "sprites.h"
 #include "saucer.h"
 #include "text.h"
 

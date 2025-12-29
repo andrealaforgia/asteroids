@@ -1,5 +1,5 @@
-#ifndef GAME_SRC_GAMEPLAY_ASTEROID_MANAGER_H_
-#define GAME_SRC_GAMEPLAY_ASTEROID_MANAGER_H_
+#ifndef GAME_SRC_MANAGERS_ASTEROID_MANAGER_H_
+#define GAME_SRC_MANAGERS_ASTEROID_MANAGER_H_
 
 #include <stddef.h>
 
@@ -59,4 +59,4 @@ asteroid_ptr get_asteroid(asteroid_manager_ptr manager, size_t asteroid_index);
 int get_asteroid_radius(const asteroid_manager_ptr manager,
                         size_t asteroid_index);
 
-#endif  // GAME_SRC_GAMEPLAY_ASTEROID_MANAGER_H_
+#endif  // GAME_SRC_MANAGERS_ASTEROID_MANAGER_H_

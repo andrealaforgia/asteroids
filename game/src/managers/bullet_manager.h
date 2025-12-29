@@ -1,5 +1,5 @@
-#ifndef GAME_SRC_GAMEPLAY_BULLET_MANAGER_H_
-#define GAME_SRC_GAMEPLAY_BULLET_MANAGER_H_
+#ifndef GAME_SRC_MANAGERS_BULLET_MANAGER_H_
+#define GAME_SRC_MANAGERS_BULLET_MANAGER_H_
 
 #include <stddef.h>
 
@@ -44,4 +44,4 @@ void update_saucer_bullets(bullet_manager_ptr manager, double delta_time);
 size_t get_saucer_bullet_count(const bullet_manager_ptr manager);
 bullet_ptr get_saucer_bullet(bullet_manager_ptr manager, size_t bullet_index);
 
-#endif  // GAME_SRC_GAMEPLAY_BULLET_MANAGER_H_
+#endif  // GAME_SRC_MANAGERS_BULLET_MANAGER_H_

@@ -7,7 +7,7 @@
 #include "color.h"
 #include "game_constants.h"
 #include "physics.h"
-#include "render.h"
+#include "sprites.h"
 
 void init_bullet_manager(bullet_manager_ptr manager, game_ptr game,
                          graphics_context_ptr graphics_context,

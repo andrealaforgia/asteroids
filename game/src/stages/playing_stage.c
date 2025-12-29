@@ -19,7 +19,7 @@
 #include "graphics.h"
 #include "keyboard.h"
 #include "physics.h"
-#include "render.h"
+#include "sprites.h"
 #include "saucer_manager.h"
 #include "score.h"
 #include "sharpnel.h"

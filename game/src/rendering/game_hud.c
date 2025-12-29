@@ -1,7 +1,7 @@
 #include "game_hud.h"
 
 #include "geometry.h"
-#include "render.h"
+#include "sprites.h"
 #include "text.h"
 
 void init_game_hud(game_hud_ptr hud, game_ptr game,

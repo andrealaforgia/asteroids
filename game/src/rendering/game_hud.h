@@ -1,5 +1,5 @@
-#ifndef GAME_SRC_GAMEPLAY_GAME_HUD_H_
-#define GAME_SRC_GAMEPLAY_GAME_HUD_H_
+#ifndef GAME_SRC_RENDERING_GAME_HUD_H_
+#define GAME_SRC_RENDERING_GAME_HUD_H_
 
 #include "fps_tracker.h"
 #include "game.h"
@@ -23,4 +23,4 @@ void reset_game_hud(game_hud_ptr hud);
 // Render the complete HUD (lives, score, fps if enabled)
 void render_hud(game_hud_ptr hud, int ship_scale);
 
-#endif  // GAME_SRC_GAMEPLAY_GAME_HUD_H_
+#endif  // GAME_SRC_RENDERING_GAME_HUD_H_

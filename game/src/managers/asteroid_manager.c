@@ -7,7 +7,7 @@
 #include "game_audio.h"
 #include "game_constants.h"
 #include "physics.h"
-#include "render.h"
+#include "sprites.h"
 #include "score.h"
 #include "sharpnel.h"
 

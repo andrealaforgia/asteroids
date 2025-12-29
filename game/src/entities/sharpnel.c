@@ -9,7 +9,7 @@
 #include "geometry.h"
 #include "graphics.h"
 #include "inline.h"
-#include "render.h"
+#include "sprites.h"
 
 #define SHARPNEL_MAX_AGE_MSECS 750
 
