@@ -20,6 +20,7 @@
 #define SAUCER_SMALL_INDEX 8
 #define THRUST_INDEX 9
 #define GAME_OVER_INDEX 10
+#define SHIP_LOST_INDEX 11
 
 // Sound file names (relative to executable directory)
 #define BANG_LARGE_WAV "game/assets/sounds/bang_large.wav"
@@ -33,6 +34,7 @@
 #define SAUCER_BIG_WAV "game/assets/sounds/saucer_big.wav"
 #define THRUST_WAV "game/assets/sounds/thrust.wav"
 #define GAME_OVER_WAV "game/assets/sounds/game_over.wav"
+#define SHIP_LOST_MP3 "game/assets/sounds/ship_lost.mp3"
 
 // Construct full path to a sound file
 static char* get_sound_path(const char* base_path, const char* sound_file) {
@@ -93,6 +95,7 @@ audio_context_t init_audio_context(int volume) {
       load_sound(base_path, SAUCER_SMALL_WAV);
   audio_context.chunks[THRUST_INDEX] = load_sound(base_path, THRUST_WAV);
   audio_context.chunks[GAME_OVER_INDEX] = load_sound(base_path, GAME_OVER_WAV);
+  audio_context.chunks[SHIP_LOST_INDEX] = load_sound(base_path, SHIP_LOST_MP3);
 
   SDL_free(base_path);
 
@@ -176,9 +179,15 @@ ALWAYS_INLINE void play_game_over(const audio_context_ptr audio_context) {
   }
 }
 
+ALWAYS_INLINE void play_ship_lost(const audio_context_ptr audio_context) {
+  if (audio_context->chunks[SHIP_LOST_INDEX]) {
+    Mix_PlayChannel(-1, audio_context->chunks[SHIP_LOST_INDEX], 0);
+  }
+}
+
 void terminate_audio_context(const audio_context_ptr audio_context) {
-  // Free all 11 sound chunks (indices 0-10)
-  for (int i = 0; i < 11; i++) {
+  // Free all 12 sound chunks (indices 0-11)
+  for (int i = 0; i < 12; i++) {
     if (audio_context->chunks[i]) {
       Mix_FreeChunk(audio_context->chunks[i]);
     }

@@ -4,7 +4,7 @@
 #include <SDL_mixer.h>
 
 typedef struct {
-  Mix_Chunk* chunks[11];
+  Mix_Chunk* chunks[12];
 } audio_context_t, *audio_context_ptr;
 
 audio_context_t init_audio_context(int volume);
@@ -19,6 +19,7 @@ void play_saucer_big(const audio_context_ptr audio_context);
 void play_saucer_small(const audio_context_ptr audio_context);
 void play_thrust(const audio_context_ptr audio_context);
 void play_game_over(const audio_context_ptr audio_context);
+void play_ship_lost(const audio_context_ptr audio_context);
 void terminate_audio_context(const audio_context_ptr audio_context);
 
 #endif  // ENGINE_CORE_AUDIO_AUDIO_H_

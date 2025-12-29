@@ -92,7 +92,9 @@ static ALWAYS_INLINE void update_ship(double delta_time) {
 
 static ALWAYS_INLINE void handle_ship_destruction(void) {
   add_sharpnel(ship.position);
-  play_bang_small_if_sound_on();
+  if (sound_on()) {
+    play_ship_lost(audio_context);
+  }
   destroy_ship(&ship);
 }
 
