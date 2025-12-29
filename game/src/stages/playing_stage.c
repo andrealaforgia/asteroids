@@ -32,7 +32,7 @@ static fps_tracker_t fps_tracker;
 
 /* ---- ==== ---- ==== sound ==== ---- ==== ---- */
 
-static ALWAYS_INLINE bool sound_on(void) { return !game->settings.no_sound; }
+static ALWAYS_INLINE bool sound_on(void) { return game->settings.volume > 0; }
 
 static ALWAYS_INLINE void play_bang_large_if_sound_on(void) {
   if (sound_on()) {
@@ -56,10 +56,6 @@ static ALWAYS_INLINE void play_thrust_if_sound_on(void) {
   if (sound_on()) {
     play_thrust(audio_context);
   }
-}
-
-static ALWAYS_INLINE void toggle_sound(void) {
-  game->settings.no_sound = !game->settings.no_sound;
 }
 
 /* ---- ==== ---- ==== ship ==== ---- ==== ---- */
@@ -374,19 +370,6 @@ static ALWAYS_INLINE void show_fps_if_required(void) {
   }
 }
 
-static ALWAYS_INLINE void show_sound_status(void) {
-  char* text = "SOUND ON";
-  if (game->settings.no_sound) {
-    text = "SOUND OFF";
-  }
-  text_dimensions_t text_dimensions = calculate_text_dimensions(text, 10);
-  write_text(
-      graphics_context, text,
-      point(graphics_context->screen_center.x / 4 - text_dimensions.width / 2,
-            5 + text_dimensions.height),
-      10, COLOR_WHITE);
-}
-
 static ALWAYS_INLINE void check_if_asteroid_hits_ship(void) {
   for (size_t ai = 0; ai < asteroid_count; ai++) {
     if (asteroid_and_ship_collide(ai)) {
@@ -575,8 +558,6 @@ game_stage_action_t handle_playing_stage(void) {
 
     show_score();
 
-    show_sound_status();
-
     show_fps_if_required();
 
     render_frame(graphics_context);
@@ -601,10 +582,6 @@ game_stage_action_t handle_playing_stage(void) {
 
     if (is_space_key_pressed(&game->keyboard_state)) {
       fire_ship_bullet();
-    }
-
-    if (is_s_key_pressed(&game->keyboard_state)) {
-      toggle_sound();
     }
 
     if (is_f11_key_pressed(&game->keyboard_state)) {

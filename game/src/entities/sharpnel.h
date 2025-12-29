@@ -1,5 +1,5 @@
-#ifndef GAME_INCLUDE_ENTITIES_SHARPNEL_H_
-#define GAME_INCLUDE_ENTITIES_SHARPNEL_H_
+#ifndef GAME_SRC_ENTITIES_SHARPNEL_H_
+#define GAME_SRC_ENTITIES_SHARPNEL_H_
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -25,4 +25,4 @@ void update_sharpnel(const graphics_context_ptr graphics_context,
 void animate_sharpnels(const graphics_context_ptr graphics_context,
                        double delta_time);
 void reset_sharpnels(void);
-#endif  // GAME_INCLUDE_ENTITIES_SHARPNEL_H_
+#endif  // GAME_SRC_ENTITIES_SHARPNEL_H_

@@ -1,5 +1,5 @@
-#ifndef GAME_INCLUDE_ENTITIES_SHIP_H_
-#define GAME_INCLUDE_ENTITIES_SHIP_H_
+#ifndef GAME_SRC_ENTITIES_SHIP_H_
+#define GAME_SRC_ENTITIES_SHIP_H_
 
 #include <stdbool.h>
 
@@ -34,4 +34,4 @@ void rotate_ship_right(const ship_ptr ship);
 void accelerate_ship(const ship_ptr ship);
 void destroy_ship(const ship_ptr ship);
 
-#endif  // GAME_INCLUDE_ENTITIES_SHIP_H_
+#endif  // GAME_SRC_ENTITIES_SHIP_H_

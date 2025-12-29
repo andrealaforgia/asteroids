@@ -9,8 +9,6 @@
 #include "inline.h"
 #include "keyboard.h"
 
-#define INITIAL_LIVES 5
-
 game_t init_game(game_settings_t game_settings) {
   game_t game;
   game.settings = game_settings;
@@ -30,6 +28,6 @@ void terminate_game(const game_ptr game) {
 }
 
 void reset_game(const game_ptr game) {
-  game->lives = INITIAL_LIVES;
+  game->lives = game->settings.initial_lives;
   game->score = 0;
 }

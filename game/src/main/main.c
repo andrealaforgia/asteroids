@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
       command_line_options.show_fps, command_line_options.vsync,
       command_line_options.display, command_line_options.display_mode,
       command_line_options.window_mode, command_line_options.fps,
-      command_line_options.volume);
+      command_line_options.volume, 5);
 
   // Log game configuration
   LOG_INFO("=== Asteroids Configuration ===");

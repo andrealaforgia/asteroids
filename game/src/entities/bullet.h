@@ -1,5 +1,5 @@
-#ifndef GAME_INCLUDE_ENTITIES_BULLET_H_
-#define GAME_INCLUDE_ENTITIES_BULLET_H_
+#ifndef GAME_SRC_ENTITIES_BULLET_H_
+#define GAME_SRC_ENTITIES_BULLET_H_
 
 #include "geometry.h"
 #include "physics.h"
@@ -12,4 +12,4 @@ typedef struct {
 
 bullet_t create_bullet(const point_t position, const velocity_t velocity);
 
-#endif  // GAME_INCLUDE_ENTITIES_BULLET_H_
+#endif  // GAME_SRC_ENTITIES_BULLET_H_

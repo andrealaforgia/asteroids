@@ -79,7 +79,7 @@ void init_game_over_stage(const game_ptr _game) {
 }
 
 static void play_game_over_if_sound_on(void) {
-  if (!game->settings.no_sound) {
+  if (game->settings.volume > 0) {
     play_game_over(audio_context);
   }
 }
