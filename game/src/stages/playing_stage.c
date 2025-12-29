@@ -11,8 +11,10 @@
 #include "collision_system.h"
 #include "events.h"
 #include "frame.h"
+#include "frame_limiter.h"
 #include "game.h"
 #include "game_audio.h"
+#include "game_constants.h"
 #include "game_hud.h"
 #include "graphics.h"
 #include "keyboard.h"
@@ -34,8 +36,6 @@ static game_hud_t game_hud;
 
 /* ---- ==== ---- ==== ship ==== ---- ==== ---- */
 
-#define SHIP_THRUST_TICKS 90
-
 static ship_t ship;
 
 static ALWAYS_INLINE bool sound_on(void) { return game->settings.volume > 0; }
@@ -43,7 +43,7 @@ static ALWAYS_INLINE bool sound_on(void) { return game->settings.volume > 0; }
 static ALWAYS_INLINE void animate_ship(double delta_time) {
   wrap_animate(graphics_context, &ship.position, &ship.velocity, delta_time);
   if (ship.thrusting &&
-      elapsed_from(ship.last_thrust_ticks) > SHIP_THRUST_TICKS) {
+      elapsed_from(ship.last_thrust_ticks) > SHIP_THRUST_DURATION_MS) {
     ship.thrusting = false;
     ship.last_thrust_ticks = get_clock_ticks_ms();
   }
@@ -52,7 +52,7 @@ static ALWAYS_INLINE void animate_ship(double delta_time) {
 static ALWAYS_INLINE void update_ship(double delta_time) {
   animate_ship(delta_time);
   // Flashing effect during immunity
-  if (elapsed_from(ship.creation_ticks) > 3000 ||
+  if (elapsed_from(ship.creation_ticks) > SHIP_IMMUNITY_DURATION_MS ||
       get_clock_ticks_ms() % 5 == 0) {
     render_ship(graphics_context, &ship);
   }
@@ -124,21 +124,13 @@ void init_playing_stage(const game_ptr _game) {
 /* ---- ==== ---- ==== main game loop ==== ---- ==== ---- */
 
 game_stage_action_t handle_playing_stage(void) {
-  int last_frame_ticks = get_clock_ticks_ms();
+  frame_limiter_t frame_limiter = create_frame_limiter(game->settings.fps);
 
   create_first_ship();
   reset_objects();
 
   while (true) {
-    int frame_time = 1000 / game->settings.fps;
-    int elapsed = elapsed_from(last_frame_ticks);
-    if (elapsed < frame_time) {
-      SDL_Delay(1);
-      continue;
-    }
-    last_frame_ticks = get_clock_ticks_ms();
-
-    double delta_time = elapsed / (1000.0 / 60.0);
+    double delta_time = frame_limiter_wait(&frame_limiter);
 
     clear_frame(graphics_context);
 

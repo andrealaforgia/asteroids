@@ -3,12 +3,10 @@
 #include "animate.h"
 #include "clock.h"
 #include "game_audio.h"
+#include "game_constants.h"
 #include "physics.h"
 #include "render.h"
 #include "sharpnel.h"
-
-#define SAUCER_CREATION_FREQUENCY_MSECS 30000
-#define MAX_SAUCER_BULLET_FIRE_INTERVAL_MSECS 3000
 
 void init_saucer_manager(saucer_manager_ptr manager, game_ptr game,
                          graphics_context_ptr graphics_context,
@@ -36,7 +34,7 @@ static ALWAYS_INLINE bool sound_on(const saucer_manager_ptr manager) {
 }
 
 void create_saucer_if_required(saucer_manager_ptr manager) {
-  int wait_time = SAUCER_CREATION_FREQUENCY_MSECS +
+  int wait_time = SAUCER_CREATION_FREQUENCY_MS +
                   manager->last_travel_duration_msecs;
   if (elapsed_from(manager->last_travel_start_ticks) > wait_time) {
     manager->saucer = create_saucer(manager->graphics_context);
@@ -54,7 +52,7 @@ void update_saucer(saucer_manager_ptr manager, double delta_time,
   } else {
     render_saucer(manager->graphics_context, &manager->saucer);
     if (elapsed_from(manager->last_bullet_fired_ticks) >
-        MAX_SAUCER_BULLET_FIRE_INTERVAL_MSECS) {
+        SAUCER_BULLET_FIRE_INTERVAL_MS) {
       add_saucer_bullet(manager->bullet_manager, manager->saucer.position,
                         target_position);
       manager->last_bullet_fired_ticks = get_clock_ticks_ms();

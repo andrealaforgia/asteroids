@@ -10,6 +10,7 @@
 #include "clock.h"
 #include "events.h"
 #include "frame.h"
+#include "frame_limiter.h"
 #include "game.h"
 #include "geometry.h"
 #include "graphics.h"
@@ -123,18 +124,10 @@ game_stage_action_t handle_intro_stage(void) {
                                    random_asteroid_scale(), random_color());
   }
 
-  int last_frame_ticks = get_clock_ticks_ms();
+  frame_limiter_t frame_limiter = create_frame_limiter(game->settings.fps);
 
   while (true) {
-    int frame_time = 1000 / game->settings.fps;
-    int elapsed = elapsed_from(last_frame_ticks);
-    if (elapsed < frame_time) {
-      continue;
-    }
-    last_frame_ticks = get_clock_ticks_ms();
-
-    // Calculate delta_time normalized to 60 FPS baseline
-    double delta_time = elapsed / (1000.0 / 60.0);
+    double delta_time = frame_limiter_wait(&frame_limiter);
 
     clear_frame(graphics_context);
 

@@ -5,12 +5,11 @@
 #include "animate.h"
 #include "color.h"
 #include "game_audio.h"
+#include "game_constants.h"
 #include "physics.h"
 #include "render.h"
 #include "score.h"
 #include "sharpnel.h"
-
-#define MAX_ASTEROID_COUNT 1000
 
 static asteroid_t asteroids[MAX_ASTEROID_COUNT];
 static size_t asteroid_count = 0;

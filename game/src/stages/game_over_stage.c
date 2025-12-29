@@ -10,6 +10,7 @@
 #include "clock.h"
 #include "events.h"
 #include "frame.h"
+#include "frame_limiter.h"
 #include "game.h"
 #include "game_audio.h"
 #include "geometry.h"
@@ -139,20 +140,12 @@ static ALWAYS_INLINE void show_title_text(void) {
 game_stage_action_t handle_game_over_stage(void) {
   play_game_over_if_sound_on();
 
-  int last_frame_ticks = get_clock_ticks_ms();
+  frame_limiter_t frame_limiter = create_frame_limiter(game->settings.fps);
 
   create_asteroids();
 
   while (true) {
-    int frame_time = 1000 / game->settings.fps;
-    int elapsed = elapsed_from(last_frame_ticks);
-    if (elapsed < frame_time) {
-      continue;
-    }
-    last_frame_ticks = get_clock_ticks_ms();
-
-    // Calculate delta_time normalized to 60 FPS baseline
-    double delta_time = elapsed / (1000.0 / 60.0);
+    double delta_time = frame_limiter_wait(&frame_limiter);
 
     clear_frame(graphics_context);
 

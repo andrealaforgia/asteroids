@@ -12,7 +12,6 @@ typedef struct {
   point_t position;
   double scale;
   int creation_ticks;
-  bool active;
 } sharpnel_t, *sharpnel_ptr;
 
 sharpnel_t create_sharpnel(point_t position);

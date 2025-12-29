@@ -1,20 +1,19 @@
 #include "collision_system.h"
 
 #include "clock.h"
+#include "game_constants.h"
 #include "geometry.h"
 #include "score.h"
 
-#define SHIP_IMMUNITY_DURATION_MSECS 3000
-
 static ALWAYS_INLINE int ship_radius(ship_ptr ship) { return 8 * ship->scale; }
 
-static ALWAYS_INLINE bool ship_is_not_immune(ship_ptr ship) {
-  return elapsed_from(ship->creation_ticks) > SHIP_IMMUNITY_DURATION_MSECS;
+static ALWAYS_INLINE bool ship_is_immune(ship_ptr ship) {
+  return elapsed_from(ship->creation_ticks) <= SHIP_IMMUNITY_DURATION_MS;
 }
 
 bool check_asteroid_ship_collisions(asteroid_manager_ptr asteroid_manager,
                                     ship_ptr ship) {
-  if (!ship_is_not_immune(ship)) {
+  if (ship_is_immune(ship)) {
     return false;
   }
 
@@ -51,7 +50,7 @@ void check_ship_bullet_asteroid_collisions(
 
 bool check_saucer_bullet_ship_collisions(bullet_manager_ptr bullet_manager,
                                          ship_ptr ship) {
-  if (!ship_is_not_immune(ship)) {
+  if (ship_is_immune(ship)) {
     return false;
   }
 
@@ -92,7 +91,7 @@ collision_result_t check_ship_saucer_collision(
     ship_ptr ship, saucer_manager_ptr saucer_manager) {
   collision_result_t result = {false, false};
 
-  if (!is_saucer_flying(saucer_manager) || !ship_is_not_immune(ship)) {
+  if (!is_saucer_flying(saucer_manager) || ship_is_immune(ship)) {
     return result;
   }
 

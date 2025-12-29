@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "clock.h"
+#include "game_constants.h"
 #include "geometry.h"
 #include "inline.h"
 
@@ -768,7 +769,7 @@ ALWAYS_INLINE void rotate_ship_right(const ship_ptr ship) {
 }
 
 ALWAYS_INLINE point_t get_cannon_position(const ship_ptr ship) {
-  rel_point_t rp = COORDS[ship->rotation_index][3];
+  rel_point_t rp = COORDS[ship->rotation_index][SHIP_CANNON_POINT_INDEX];
   rp.x_delta *= ship->scale;
   rp.y_delta *= ship->scale;
   return relative_point(&ship->position, &rp);
@@ -776,9 +777,9 @@ ALWAYS_INLINE point_t get_cannon_position(const ship_ptr ship) {
 
 ALWAYS_INLINE void accelerate_ship(const ship_ptr ship) {
   double angle = calculate_ship_angle(ship);
-  ship->velocity.speed = 1;
-  ship->velocity.direction.x += 0.625f * cos(angle);
-  ship->velocity.direction.y -= 0.625f * sin(angle);
+  ship->velocity.speed = SHIP_BASE_SPEED;
+  ship->velocity.direction.x += SHIP_THRUST_ACCELERATION * cos(angle);
+  ship->velocity.direction.y -= SHIP_THRUST_ACCELERATION * sin(angle);
   ship->thrusting = true;
   ship->last_thrust_ticks = get_clock_ticks_ms();
 }

@@ -5,15 +5,9 @@
 #include "animate.h"
 #include "clock.h"
 #include "color.h"
+#include "game_constants.h"
 #include "physics.h"
 #include "render.h"
-
-#define MAX_SHIP_BULLET_COUNT 20
-#define SHIP_BULLET_MAX_AGE_MSECS 1000
-
-#define SAUCER_BULLET_SPEED 10
-#define MAX_SAUCER_BULLET_COUNT 20
-#define SAUCER_BULLET_MAX_AGE_MSECS 5000
 
 static bullet_t ship_bullets[MAX_SHIP_BULLET_COUNT];
 static size_t ship_bullet_count = 0;
@@ -58,13 +52,13 @@ static ALWAYS_INLINE void update_ship_bullet(bullet_manager_ptr manager,
                                               double delta_time) {
   bullet_ptr bullet = &ship_bullets[bullet_index];
   int bullet_age = elapsed_from(bullet->creation_ticks);
-  if (elapsed_from(bullet->creation_ticks) > SHIP_BULLET_MAX_AGE_MSECS) {
+  if (elapsed_from(bullet->creation_ticks) > SHIP_BULLET_MAX_AGE_MS) {
     remove_ship_bullet(manager, bullet_index);
     return;
   }
   wrap_animate(manager->graphics_context, &bullet->position, &bullet->velocity,
                delta_time);
-  color_t color = GRAY_SCALE(bullet_age, SHIP_BULLET_MAX_AGE_MSECS);
+  color_t color = GRAY_SCALE(bullet_age, SHIP_BULLET_MAX_AGE_MS);
   render_bullet(manager->graphics_context, bullet, color);
 }
 
@@ -113,13 +107,13 @@ static ALWAYS_INLINE void update_saucer_bullet(bullet_manager_ptr manager,
                                                 double delta_time) {
   bullet_ptr bullet = &saucer_bullets[bullet_index];
   int bullet_age = elapsed_from(bullet->creation_ticks);
-  if (elapsed_from(bullet->creation_ticks) > SAUCER_BULLET_MAX_AGE_MSECS) {
+  if (elapsed_from(bullet->creation_ticks) > SAUCER_BULLET_MAX_AGE_MS) {
     remove_saucer_bullet(manager, bullet_index);
     return;
   }
   wrap_animate(manager->graphics_context, &bullet->position, &bullet->velocity,
                delta_time);
-  color_t color = GRAY_SCALE(bullet_age, SAUCER_BULLET_MAX_AGE_MSECS);
+  color_t color = GRAY_SCALE(bullet_age, SAUCER_BULLET_MAX_AGE_MS);
   render_bullet(manager->graphics_context, bullet, color);
 }
 
