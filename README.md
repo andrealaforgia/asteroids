@@ -1,26 +1,3 @@
-## Project Structure
-
-This project is organized to separate the reusable 2D engine from game-specific code:
-
-```
-asteroids/
-├── engine/core/           # Reusable 2D engine components
-│   ├── graphics/         # Rendering, text, colors
-│   ├── audio/            # Sound system
-│   ├── input/            # Keyboard and event handling
-│   ├── math/             # Geometry, physics, animation
-│   └── utils/            # Clock, FPS tracking, command-line parsing
-├── game/                  # Asteroids game-specific code
-│   ├── src/
-│   │   ├── entities/     # Ship, asteroids, bullets, saucers
-│   │   ├── stages/       # Intro, playing, game over screens
-│   │   ├── systems/      # Collision, scoring, rendering
-│   │   └── main/         # Game initialization and main loop
-│   ├── include/          # Game header files
-│   └── assets/sounds/    # Audio files
-└── Makefile              # Build system
-```
-
 ## Install dependencies
 ```
 make install
