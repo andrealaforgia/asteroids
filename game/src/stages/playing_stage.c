@@ -6,6 +6,7 @@
 
 #include "asteroid_manager.h"
 #include "bullet_manager.h"
+#include "clock.h"
 #include "collision_system.h"
 #include "events.h"
 #include "frame.h"
@@ -22,6 +23,7 @@
 #include "sharpnel.h"
 #include "ship.h"
 #include "stage.h"
+#include "text.h"
 
 /* ---- ==== ---- ==== helper functions ==== ---- ==== ---- */
 
@@ -31,6 +33,38 @@ static inline bool any_ship_lives_left(const playing_stage_state_ptr state) {
 
 static inline void consume_one_ship_life(playing_stage_state_ptr state) {
   --state->game->lives;
+}
+
+static inline void render_sound_notification(playing_stage_state_ptr state) {
+  if (!state->sound_notification_active) {
+    return;
+  }
+
+  int elapsed = elapsed_from(state->sound_notification_start_ticks);
+
+  // Check if notification should be dismissed
+  if (elapsed >= SOUND_NOTIFICATION_DURATION_MS) {
+    state->sound_notification_active = false;
+    return;
+  }
+
+  // Calculate fade (1.0 at start, 0.0 at end)
+  double fade = 1.0 - (elapsed / (double)SOUND_NOTIFICATION_DURATION_MS);
+
+  // Create white color with fade
+  int intensity = (int)(255 * fade);
+  color_t text_color = COLOR(intensity, intensity, intensity);
+
+  const char* message = state->sound_notification_is_on ? "SOUND IS ON" : "SOUND IS OFF";
+  int text_scale = (state->graphics_context->screen_height * 10) / 900;
+  text_dimensions_t text_dimensions = calculate_text_dimensions(message, text_scale);
+
+  point_t position = point(
+    state->graphics_context->screen_center.x - text_dimensions.width / 2,
+    state->graphics_context->screen_center.y
+  );
+
+  write_text(state->graphics_context, message, position, text_scale, text_color);
 }
 
 /* ---- ==== ---- ==== init ==== ---- ==== ---- */
@@ -76,6 +110,11 @@ playing_stage_state_ptr create_playing_stage(game_ptr game) {
       &state->ship, state->graphics_context, state->audio_context,
       &state->bullet_manager, state->sharpnel_system, &state->event_system,
       game->settings.volume);
+
+  // Initialize sound notification state
+  state->sound_notification_active = false;
+  state->sound_notification_is_on = false;
+  state->sound_notification_start_ticks = 0;
 
   return state;
 }
@@ -162,6 +201,9 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
     // Render HUD
     render_hud(&state->game_hud, state->ship.scale);
 
+    // Render sound notification if active
+    render_sound_notification(state);
+
     render_frame(state->graphics_context);
 
     // Handle events and input
@@ -195,10 +237,15 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
       if (state->game->settings.volume > 0) {
         state->game->settings.volume = 0;
         set_audio_volume(0);  // Mute SDL mixer
+        state->sound_notification_is_on = false;
       } else {
         state->game->settings.volume = 50;  // Default volume
         set_audio_volume(64);               // Set SDL mixer to 50% (64/128)
+        state->sound_notification_is_on = true;
       }
+      // Activate notification
+      state->sound_notification_active = true;
+      state->sound_notification_start_ticks = get_clock_ticks_ms();
     }
 
     if (is_esc_key_pressed(&state->game->keyboard_state)) {

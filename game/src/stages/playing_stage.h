@@ -23,6 +23,10 @@ typedef struct {
   sharpnel_system_ptr sharpnel_system;
   ship_t ship;
   ship_controller_t ship_controller;
+  // Sound toggle notification
+  bool sound_notification_active;
+  bool sound_notification_is_on;
+  int sound_notification_start_ticks;
 } playing_stage_state_t;
 
 typedef playing_stage_state_t* playing_stage_state_ptr;
