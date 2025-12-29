@@ -10,6 +10,28 @@
 #include "saucer.h"
 #include "sharpnel.h"
 
+/**
+ * Saucer Manager - Manages the enemy saucer entity
+ *
+ * API Convention:
+ * - Initialization: init_saucer_manager(manager, dependencies...)
+ * - Reset state: reset_saucer(manager)
+ * - Create: create_saucer_if_required(manager)
+ * - Destroy: destroy_saucer(manager)
+ * - Update: update_saucer(manager, delta_time, target_position)
+ * - Query: is_saucer_flying(manager), get_saucer_radius(manager), etc.
+ *
+ * Note: Only one saucer exists at a time, so no add/remove/count APIs
+ *
+ * Usage:
+ *   saucer_manager_t manager;
+ *   init_saucer_manager(&manager, game, graphics, audio, bullets, sharpnel, events);
+ *   create_saucer_if_required(&manager);
+ *   if (is_saucer_flying(&manager)) {
+ *     update_saucer(&manager, delta_time, ship_position);
+ *   }
+ */
+
 typedef struct {
   graphics_context_ptr graphics_context;
   audio_context_ptr audio_context;

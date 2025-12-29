@@ -10,6 +10,25 @@
 #include "graphics.h"
 #include "object_pool.h"
 
+/**
+ * Bullet Manager - Manages ship and saucer bullets
+ *
+ * API Convention (per bullet type):
+ * - Initialization: init_bullet_manager(manager, dependencies...)
+ * - Reset state: reset_bullets(manager)
+ * - Add entity: add_{ship|saucer}_bullet(manager, params...)
+ * - Remove entity: remove_{ship|saucer}_bullet(manager, index)
+ * - Get count: get_{ship|saucer}_bullet_count(manager)
+ * - Get entity: get_{ship|saucer}_bullet(manager, index)
+ * - Update: update_{ship|saucer}_bullets(manager, delta_time)
+ *
+ * Usage:
+ *   bullet_manager_t manager;
+ *   init_bullet_manager(&manager, game, graphics, audio);
+ *   add_ship_bullet(&manager, position, velocity);
+ *   update_ship_bullets(&manager, delta_time);
+ */
+
 typedef struct {
   graphics_context_ptr graphics_context;
   audio_context_ptr audio_context;

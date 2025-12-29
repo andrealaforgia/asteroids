@@ -12,6 +12,25 @@
 #include "object_pool.h"
 #include "sharpnel.h"
 
+/**
+ * Asteroid Manager - Manages the lifecycle of all asteroids in the game
+ *
+ * API Convention:
+ * - Initialization: init_asteroid_manager(manager, dependencies...)
+ * - Reset state: reset_asteroids(manager)
+ * - Add entity: add_asteroid(manager, params...)
+ * - Remove entity: remove_asteroid(manager, index)
+ * - Get count: get_asteroid_count(manager)
+ * - Get entity: get_asteroid(manager, index)
+ * - Update: update_asteroids(manager, delta_time)
+ *
+ * Usage:
+ *   asteroid_manager_t manager;
+ *   init_asteroid_manager(&manager, game, graphics, audio, sharpnel, events);
+ *   create_asteroids(&manager, safe_position);
+ *   update_asteroids(&manager, delta_time);
+ */
+
 typedef struct {
   graphics_context_ptr graphics_context;
   audio_context_ptr audio_context;
