@@ -33,6 +33,7 @@ static asteroid_manager_t asteroid_manager;
 static bullet_manager_t bullet_manager;
 static saucer_manager_t saucer_manager;
 static game_hud_t game_hud;
+static sharpnel_system_t* sharpnel_system = NULL;
 
 /* ---- ==== ---- ==== ship ==== ---- ==== ---- */
 
@@ -59,7 +60,7 @@ static ALWAYS_INLINE void update_ship(double delta_time) {
 }
 
 static ALWAYS_INLINE void handle_ship_destruction(void) {
-  add_sharpnel(ship.position);
+  add_sharpnel(sharpnel_system, ship.position);
   if (sound_on()) {
     play_ship_lost(audio_context);
   }
@@ -102,7 +103,7 @@ static ALWAYS_INLINE void create_first_ship(void) {
 
 static ALWAYS_INLINE void reset_objects(void) {
   reset_asteroids(&asteroid_manager);
-  reset_sharpnels();
+  reset_sharpnels(sharpnel_system);
   reset_bullets(&bullet_manager);
   reset_saucer(&saucer_manager);
   reset_game_hud(&game_hud);
@@ -113,11 +114,12 @@ void init_playing_stage(const game_ptr _game) {
   graphics_context = &game->graphics_context;
   audio_context = &game->audio_context;
 
+  sharpnel_system = create_sharpnel_system(graphics_context, MAX_SHARPNEL_COUNT);
   init_asteroid_manager(&asteroid_manager, game, graphics_context,
-                        audio_context);
+                        audio_context, sharpnel_system);
   init_bullet_manager(&bullet_manager, game, graphics_context, audio_context);
   init_saucer_manager(&saucer_manager, game, graphics_context, audio_context,
-                      &bullet_manager);
+                      &bullet_manager, sharpnel_system);
   init_game_hud(&game_hud, game, graphics_context);
 }
 
@@ -149,7 +151,7 @@ game_stage_action_t handle_playing_stage(void) {
     }
 
     update_saucer_bullets(&bullet_manager, delta_time);
-    animate_sharpnels(graphics_context, delta_time);
+    animate_sharpnels(sharpnel_system, delta_time);
 
     // Check all collisions
     if (check_asteroid_ship_collisions(&asteroid_manager, &ship)) {

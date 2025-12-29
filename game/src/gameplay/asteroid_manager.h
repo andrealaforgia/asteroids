@@ -9,11 +9,13 @@
 #include "geometry.h"
 #include "graphics.h"
 #include "object_pool.h"
+#include "sharpnel.h"
 
 typedef struct {
   graphics_context_ptr graphics_context;
   audio_context_ptr audio_context;
   game_ptr game;
+  sharpnel_system_ptr sharpnel_system;
   object_pool_t pool;
 } asteroid_manager_t;
 
@@ -22,7 +24,8 @@ typedef asteroid_manager_t* asteroid_manager_ptr;
 // Initialize the asteroid manager with required context
 void init_asteroid_manager(asteroid_manager_ptr manager, game_ptr game,
                             graphics_context_ptr graphics_context,
-                            audio_context_ptr audio_context);
+                            audio_context_ptr audio_context,
+                            sharpnel_system_ptr sharpnel_system);
 
 // Reset asteroid state
 void reset_asteroids(asteroid_manager_ptr manager);

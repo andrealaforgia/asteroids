@@ -13,10 +13,12 @@
 
 void init_asteroid_manager(asteroid_manager_ptr manager, game_ptr game,
                             graphics_context_ptr graphics_context,
-                            audio_context_ptr audio_context) {
+                            audio_context_ptr audio_context,
+                            sharpnel_system_ptr sharpnel_system) {
   manager->game = game;
   manager->graphics_context = graphics_context;
   manager->audio_context = audio_context;
+  manager->sharpnel_system = sharpnel_system;
   manager->pool = create_object_pool(sizeof(asteroid_t), MAX_ASTEROID_COUNT);
 }
 
@@ -69,7 +71,7 @@ void break_asteroid_apart(asteroid_manager_ptr manager,
   if (asteroid == NULL) {
     return;
   }
-  add_sharpnel(asteroid->position);
+  add_sharpnel(manager->sharpnel_system, asteroid->position);
 
   switch (asteroid->scale) {
     case LARGE_ASTEROID_SCALE: {

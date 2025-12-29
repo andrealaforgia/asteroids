@@ -11,11 +11,13 @@
 void init_saucer_manager(saucer_manager_ptr manager, game_ptr game,
                          graphics_context_ptr graphics_context,
                          audio_context_ptr audio_context,
-                         bullet_manager_ptr bullet_manager) {
+                         bullet_manager_ptr bullet_manager,
+                         sharpnel_system_ptr sharpnel_system) {
   manager->game = game;
   manager->graphics_context = graphics_context;
   manager->audio_context = audio_context;
   manager->bullet_manager = bullet_manager;
+  manager->sharpnel_system = sharpnel_system;
   manager->saucer.flying = false;
   manager->last_travel_duration_msecs = 0;
   manager->last_travel_start_ticks = 0;
@@ -62,7 +64,7 @@ void update_saucer(saucer_manager_ptr manager, double delta_time,
 
 void destroy_saucer(saucer_manager_ptr manager) {
   manager->saucer.flying = false;
-  add_sharpnel(manager->saucer.position);
+  add_sharpnel(manager->sharpnel_system, manager->saucer.position);
   if (is_big(&manager->saucer)) {
     if (sound_on(manager)) {
       play_bang_large(manager->audio_context);
