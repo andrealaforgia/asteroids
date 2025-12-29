@@ -172,20 +172,23 @@ void render_ship(const graphics_context_ptr graphics_context,
     // Fade out over immunity duration
     double fade = 1.0 - (elapsed / (double)SHIP_IMMUNITY_DURATION_MS);
 
-    // Calculate circle radius (pulses between 1.5x and 2.2x ship size)
+    // Circle is 10% larger than ship (ship radius is 8 * scale)
+    // Add slight pulse on top of the 10% base size
     int base_radius = 8 * ship->scale;
-    int min_radius = base_radius * 1.5;
-    int max_radius = base_radius * 2.2;
-    int circle_radius = min_radius + (int)((max_radius - min_radius) * pulse);
+    int shield_radius = base_radius * 1.1;  // 10% larger
+    int pulse_amount = base_radius * 0.15;  // Pulse by 15% of ship size
+    int circle_radius = shield_radius + (int)(pulse_amount * pulse);
 
     // Create bright cyan color (0x00FFFF) with fade
     // Cyan = full green + full blue, no red
     int intensity = (int)(255 * fade);  // Full brightness, just fade
     color_t circle_color = COLOR(0, intensity, intensity);
 
-    // Draw the pulsing circle
-    draw_circle(graphics_context, ship->position.x, ship->position.y,
-                circle_radius, circle_color);
+    // Draw thick circle (5 concentric circles for thickness)
+    for (int i = -2; i <= 2; i++) {
+      draw_circle(graphics_context, ship->position.x, ship->position.y,
+                  circle_radius + i, circle_color);
+    }
   }
 
   _render_ship(graphics_context, ship->rotation_index, ship->scale,
