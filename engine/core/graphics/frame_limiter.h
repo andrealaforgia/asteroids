@@ -1,5 +1,5 @@
-#ifndef ENGINE_CORE_UTILS_FRAME_LIMITER_H_
-#define ENGINE_CORE_UTILS_FRAME_LIMITER_H_
+#ifndef ENGINE_CORE_GRAPHICS_FRAME_LIMITER_H_
+#define ENGINE_CORE_GRAPHICS_FRAME_LIMITER_H_
 
 #include "clock.h"
 
@@ -18,4 +18,4 @@ frame_limiter_t create_frame_limiter(int target_fps);
 // Yields CPU with SDL_Delay(1) when waiting
 double frame_limiter_wait(frame_limiter_t* limiter);
 
-#endif  // ENGINE_CORE_UTILS_FRAME_LIMITER_H_
+#endif  // ENGINE_CORE_GRAPHICS_FRAME_LIMITER_H_

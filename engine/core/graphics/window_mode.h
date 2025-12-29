@@ -1,5 +1,5 @@
-#ifndef ENGINE_CORE_UTILS_WINDOW_MODE_H_
-#define ENGINE_CORE_UTILS_WINDOW_MODE_H_
+#ifndef ENGINE_CORE_GRAPHICS_WINDOW_MODE_H_
+#define ENGINE_CORE_GRAPHICS_WINDOW_MODE_H_
 
 typedef enum {
   WINDOWED = 0,    // Normal resizable window
@@ -8,4 +8,4 @@ typedef enum {
   MAXIMIZED = 3    // Maximized window
 } window_mode_t;
 
-#endif  // ENGINE_CORE_UTILS_WINDOW_MODE_H_
+#endif  // ENGINE_CORE_GRAPHICS_WINDOW_MODE_H_

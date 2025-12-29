@@ -1,5 +1,5 @@
-#ifndef GAME_SRC_SYSTEMS_COLLISION_SYSTEM_H_
-#define GAME_SRC_SYSTEMS_COLLISION_SYSTEM_H_
+#ifndef GAME_SRC_COLLISION_COLLISION_SYSTEM_H_
+#define GAME_SRC_COLLISION_COLLISION_SYSTEM_H_
 
 #include <stdbool.h>
 
@@ -40,4 +40,4 @@ bool check_ship_bullet_saucer_collisions(bullet_manager_ptr bullet_manager,
 collision_result_t check_ship_saucer_collision(
     ship_ptr ship, saucer_manager_ptr saucer_manager);
 
-#endif  // GAME_SRC_SYSTEMS_COLLISION_SYSTEM_H_
+#endif  // GAME_SRC_COLLISION_COLLISION_SYSTEM_H_
