@@ -22,6 +22,7 @@ ENGINE_MATH_DIR = engine/core/math
 ENGINE_INPUT_DIR = engine/core/input
 ENGINE_AUDIO_DIR = engine/core/audio
 ENGINE_UTILS_DIR = engine/core/utils
+ENGINE_MEMORY_DIR = engine/core/memory
 
 GAME_ENTITIES_DIR = game/src/entities
 GAME_STAGES_DIR = game/src/stages
@@ -29,18 +30,18 @@ GAME_GAMEPLAY_DIR = game/src/gameplay
 GAME_MAIN_DIR = game/src/main
 
 # Find all C source files in engine and game directories (root should be empty now)
-SRC = $(wildcard $(ENGINE_GRAPHICS_DIR)/*.c) $(wildcard $(ENGINE_MATH_DIR)/*.c) $(wildcard $(ENGINE_INPUT_DIR)/*.c) $(wildcard $(ENGINE_AUDIO_DIR)/*.c) $(wildcard $(ENGINE_UTILS_DIR)/*.c) \
+SRC = $(wildcard $(ENGINE_GRAPHICS_DIR)/*.c) $(wildcard $(ENGINE_MATH_DIR)/*.c) $(wildcard $(ENGINE_INPUT_DIR)/*.c) $(wildcard $(ENGINE_AUDIO_DIR)/*.c) $(wildcard $(ENGINE_UTILS_DIR)/*.c) $(wildcard $(ENGINE_MEMORY_DIR)/*.c) \
       $(wildcard $(GAME_ENTITIES_DIR)/*.c) $(wildcard $(GAME_STAGES_DIR)/*.c) $(wildcard $(GAME_GAMEPLAY_DIR)/*.c) $(wildcard $(GAME_MAIN_DIR)/*.c)
 
 HEADERS = $(wildcard $(SRCDIR)/*.h) \
-          $(wildcard $(ENGINE_GRAPHICS_DIR)/*.h) $(wildcard $(ENGINE_MATH_DIR)/*.h) $(wildcard $(ENGINE_INPUT_DIR)/*.h) $(wildcard $(ENGINE_AUDIO_DIR)/*.h) $(wildcard $(ENGINE_UTILS_DIR)/*.h) \
+          $(wildcard $(ENGINE_GRAPHICS_DIR)/*.h) $(wildcard $(ENGINE_MATH_DIR)/*.h) $(wildcard $(ENGINE_INPUT_DIR)/*.h) $(wildcard $(ENGINE_AUDIO_DIR)/*.h) $(wildcard $(ENGINE_UTILS_DIR)/*.h) $(wildcard $(ENGINE_MEMORY_DIR)/*.h) \
           $(wildcard $(GAME_ENTITIES_DIR)/*.h) $(wildcard $(GAME_STAGES_DIR)/*.h) $(wildcard $(GAME_GAMEPLAY_DIR)/*.h) $(wildcard $(GAME_MAIN_DIR)/*.h)
 
 OBJ = $(SRC:.c=.o)
 
 # Add include paths
 INCLUDES = -I. \
-           -I$(ENGINE_GRAPHICS_DIR) -I$(ENGINE_MATH_DIR) -I$(ENGINE_INPUT_DIR) -I$(ENGINE_AUDIO_DIR) -I$(ENGINE_UTILS_DIR) \
+           -I$(ENGINE_GRAPHICS_DIR) -I$(ENGINE_MATH_DIR) -I$(ENGINE_INPUT_DIR) -I$(ENGINE_AUDIO_DIR) -I$(ENGINE_UTILS_DIR) -I$(ENGINE_MEMORY_DIR) \
            -I$(GAME_ENTITIES_DIR) -I$(GAME_STAGES_DIR) -I$(GAME_GAMEPLAY_DIR) -I$(GAME_MAIN_DIR)
 
 CFLAGS := -ggdb3 -Ofast --std=c99 -Wall -Wextra -pedantic-errors $(INCLUDES) $(SDL2_CFLAGS)
