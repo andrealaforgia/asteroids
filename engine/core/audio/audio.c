@@ -43,7 +43,6 @@ audio_context_t init_audio_context(int max_sounds, int volume) {
 
   // Volume is in the range 0-128, where 128 is full volume
   Mix_Volume(-1, volume);  // -1 affects all channels
-  LOG_INFO_FMT("Audio volume set to %d/128", volume);
 
   return audio_context;
 }
