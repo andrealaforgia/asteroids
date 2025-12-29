@@ -98,6 +98,8 @@ void break_asteroid_apart(asteroid_manager_ptr manager,
   }
 
   if (scale_down(asteroid)) {
+    // Create two smaller asteroids at the same position
+    add_asteroid(manager, asteroid->position, asteroid->scale);
     add_asteroid(manager, asteroid->position, asteroid->scale);
   }
   remove_asteroid(manager, asteroid_index);
