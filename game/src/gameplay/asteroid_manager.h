@@ -8,11 +8,13 @@
 #include "game.h"
 #include "geometry.h"
 #include "graphics.h"
+#include "object_pool.h"
 
 typedef struct {
   graphics_context_ptr graphics_context;
   audio_context_ptr audio_context;
   game_ptr game;
+  object_pool_t pool;
 } asteroid_manager_t;
 
 typedef asteroid_manager_t* asteroid_manager_ptr;

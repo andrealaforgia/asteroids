@@ -8,11 +8,14 @@
 #include "game.h"
 #include "geometry.h"
 #include "graphics.h"
+#include "object_pool.h"
 
 typedef struct {
   graphics_context_ptr graphics_context;
   audio_context_ptr audio_context;
   game_ptr game;
+  object_pool_t ship_bullet_pool;
+  object_pool_t saucer_bullet_pool;
 } bullet_manager_t;
 
 typedef bullet_manager_t* bullet_manager_ptr;

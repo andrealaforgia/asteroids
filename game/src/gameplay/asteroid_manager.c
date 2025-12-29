@@ -11,61 +11,52 @@
 #include "score.h"
 #include "sharpnel.h"
 
-static asteroid_t asteroids[MAX_ASTEROID_COUNT];
-static size_t asteroid_count = 0;
-
-static asteroid_manager_t* manager_instance = NULL;
-
 void init_asteroid_manager(asteroid_manager_ptr manager, game_ptr game,
                             graphics_context_ptr graphics_context,
                             audio_context_ptr audio_context) {
   manager->game = game;
   manager->graphics_context = graphics_context;
   manager->audio_context = audio_context;
-  manager_instance = manager;
-  asteroid_count = 0;
+  manager->pool = create_object_pool(sizeof(asteroid_t), MAX_ASTEROID_COUNT);
 }
 
 void reset_asteroids(asteroid_manager_ptr manager) {
-  (void)manager;  // Unused parameter
-  asteroid_count = 0;
+  pool_reset(&manager->pool);
 }
 
 void add_asteroid(asteroid_manager_ptr manager, point_t position, int scale) {
-  (void)manager;  // Unused parameter
-  assert(asteroid_count < MAX_ASTEROID_COUNT);
-  asteroids[asteroid_count++] =
-      create_asteroid(position, scale, random_color());
+  size_t index;
+  asteroid_t* asteroid = (asteroid_t*)pool_acquire(&manager->pool, &index);
+  if (asteroid == NULL) {
+    return;  // Pool exhausted
+  }
+  *asteroid = create_asteroid(position, scale, random_color());
 }
 
 void remove_asteroid(asteroid_manager_ptr manager, size_t asteroid_index) {
-  (void)manager;  // Unused parameter
-  assert(asteroid_count > 0);
-  if (asteroid_count > 1) {
-    asteroids[asteroid_index] = asteroids[asteroid_count - 1];
-  }
-  --asteroid_count;
+  pool_release(&manager->pool, asteroid_index);
 }
 
-static ALWAYS_INLINE void animate_asteroid(
-    graphics_context_ptr graphics_context, size_t asteroid_index,
-    double delta_time) {
-  asteroid_ptr asteroid = &asteroids[asteroid_index];
-  wrap_animate(graphics_context, &asteroid->position, &asteroid->velocity,
-               delta_time);
-}
+// Helper struct to pass both manager and delta_time
+typedef struct {
+  asteroid_manager_ptr manager;
+  double delta_time;
+} update_context_t;
 
-static ALWAYS_INLINE void update_asteroid(
-    graphics_context_ptr graphics_context, size_t asteroid_index,
-    double delta_time) {
-  animate_asteroid(graphics_context, asteroid_index, delta_time);
-  render_asteroid(graphics_context, &asteroids[asteroid_index]);
+static void update_asteroid_with_delta(void* object, size_t index,
+                                        void* user_data) {
+  (void)index;  // Unused
+  update_context_t* ctx = (update_context_t*)user_data;
+  asteroid_ptr asteroid = (asteroid_ptr)object;
+
+  wrap_animate(ctx->manager->graphics_context, &asteroid->position,
+               &asteroid->velocity, ctx->delta_time);
+  render_asteroid(ctx->manager->graphics_context, asteroid);
 }
 
 void update_asteroids(asteroid_manager_ptr manager, double delta_time) {
-  for (size_t ai = 0; ai < asteroid_count; ai++) {
-    update_asteroid(manager->graphics_context, ai, delta_time);
-  }
+  update_context_t ctx = {manager, delta_time};
+  pool_foreach_active(&manager->pool, update_asteroid_with_delta, &ctx);
 }
 
 static ALWAYS_INLINE bool sound_on(const asteroid_manager_ptr manager) {
@@ -74,7 +65,10 @@ static ALWAYS_INLINE bool sound_on(const asteroid_manager_ptr manager) {
 
 void break_asteroid_apart(asteroid_manager_ptr manager,
                           size_t asteroid_index) {
-  asteroid_ptr asteroid = &asteroids[asteroid_index];
+  asteroid_ptr asteroid = (asteroid_ptr)pool_get_at(&manager->pool, asteroid_index);
+  if (asteroid == NULL) {
+    return;
+  }
   add_sharpnel(asteroid->position);
 
   switch (asteroid->scale) {
@@ -126,25 +120,24 @@ void create_asteroids(asteroid_manager_ptr manager, point_t safe_position) {
 
 void recreate_asteroids_if_none_are_left(asteroid_manager_ptr manager,
                                          point_t safe_position) {
-  if (asteroid_count == 0) {
+  if (pool_get_active_count(&manager->pool) == 0) {
     create_asteroids(manager, safe_position);
   }
 }
 
 size_t get_asteroid_count(const asteroid_manager_ptr manager) {
-  (void)manager;  // Unused parameter
-  return asteroid_count;
+  return pool_get_active_count(&manager->pool);
 }
 
 asteroid_ptr get_asteroid(asteroid_manager_ptr manager, size_t asteroid_index) {
-  (void)manager;  // Unused parameter
-  assert(asteroid_index < asteroid_count);
-  return &asteroids[asteroid_index];
+  return (asteroid_ptr)pool_get_at(&manager->pool, asteroid_index);
 }
 
 int get_asteroid_radius(const asteroid_manager_ptr manager,
                         size_t asteroid_index) {
-  (void)manager;  // Unused parameter
-  assert(asteroid_index < asteroid_count);
-  return 8 * asteroids[asteroid_index].scale;
+  asteroid_ptr asteroid = (asteroid_ptr)pool_get_at((object_pool_t*)&manager->pool, asteroid_index);
+  if (asteroid == NULL) {
+    return 0;
+  }
+  return 8 * asteroid->scale;
 }
