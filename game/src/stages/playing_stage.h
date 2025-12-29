@@ -6,6 +6,7 @@
 #include "game.h"
 #include "game_hud.h"
 #include "saucer_manager.h"
+#include "ship_controller.h"
 #include "sharpnel.h"
 #include "ship.h"
 
@@ -19,6 +20,7 @@ typedef struct {
   game_hud_t game_hud;
   sharpnel_system_ptr sharpnel_system;
   ship_t ship;
+  ship_controller_t ship_controller;
 } playing_stage_state_t;
 
 typedef playing_stage_state_t* playing_stage_state_ptr;

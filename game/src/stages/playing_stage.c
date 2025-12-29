@@ -4,70 +4,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "animate.h"
 #include "asteroid_manager.h"
 #include "bullet_manager.h"
-#include "clock.h"
 #include "collision_system.h"
 #include "events.h"
 #include "frame.h"
 #include "frame_limiter.h"
 #include "game.h"
-#include "game_audio.h"
 #include "game_constants.h"
 #include "game_hud.h"
 #include "graphics.h"
 #include "keyboard.h"
-#include "physics.h"
-#include "sprites.h"
 #include "saucer_manager.h"
 #include "score.h"
+#include "ship_controller.h"
 #include "sharpnel.h"
 #include "ship.h"
 
-/* ---- ==== ---- ==== ship ==== ---- ==== ---- */
-
-static ALWAYS_INLINE bool sound_on(const playing_stage_state_ptr state) {
-  return state->game->settings.volume > 0;
-}
-
-static ALWAYS_INLINE void animate_ship(playing_stage_state_ptr state,
-                                        double delta_time) {
-  wrap_animate(state->graphics_context, &state->ship.position,
-               &state->ship.velocity, delta_time);
-  if (state->ship.thrusting &&
-      elapsed_from(state->ship.last_thrust_ticks) > SHIP_THRUST_DURATION_MS) {
-    state->ship.thrusting = false;
-    state->ship.last_thrust_ticks = get_clock_ticks_ms();
-  }
-}
-
-static ALWAYS_INLINE void update_ship(playing_stage_state_ptr state,
-                                       double delta_time) {
-  animate_ship(state, delta_time);
-  // Flashing effect during immunity
-  if (elapsed_from(state->ship.creation_ticks) > SHIP_IMMUNITY_DURATION_MS ||
-      get_clock_ticks_ms() % 5 == 0) {
-    render_ship(state->graphics_context, &state->ship);
-  }
-}
-
-static ALWAYS_INLINE void handle_ship_destruction(playing_stage_state_ptr state) {
-  add_sharpnel(state->sharpnel_system, state->ship.position);
-  if (sound_on(state)) {
-    play_ship_lost(state->audio_context);
-  }
-  destroy_ship(&state->ship);
-}
-
-static ALWAYS_INLINE bool ship_was_destroyed(const playing_stage_state_ptr state) {
-  return state->ship.state == DESTROYED;
-}
-
-static ALWAYS_INLINE void recreate_ship(playing_stage_state_ptr state) {
-  state->ship = create_ship(state->graphics_context->screen_center,
-                            state->ship.scale);
-}
+/* ---- ==== ---- ==== helper functions ==== ---- ==== ---- */
 
 static ALWAYS_INLINE bool any_ship_lives_left(const playing_stage_state_ptr state) {
   return state->game->lives > 0;
@@ -75,22 +29,6 @@ static ALWAYS_INLINE bool any_ship_lives_left(const playing_stage_state_ptr stat
 
 static ALWAYS_INLINE void consume_one_ship_life(playing_stage_state_ptr state) {
   --state->game->lives;
-}
-
-static ALWAYS_INLINE void thrust_ship(playing_stage_state_ptr state) {
-  accelerate_ship(&state->ship);
-  if (sound_on(state)) {
-    play_thrust(state->audio_context);
-  }
-}
-
-static ALWAYS_INLINE void fire_ship_bullet(playing_stage_state_ptr state) {
-  point_t bullet_position = get_cannon_position(&state->ship);
-  velocity_t bullet_velocity = velocity(10, state->ship.rotation_vector);
-  add_ship_bullet(&state->bullet_manager, bullet_position, bullet_velocity);
-  if (sound_on(state)) {
-    play_fire(&state->game->audio_context);
-  }
 }
 
 /* ---- ==== ---- ==== init ==== ---- ==== ---- */
@@ -125,6 +63,10 @@ playing_stage_state_ptr create_playing_stage(game_ptr game) {
                       state->sharpnel_system);
   init_game_hud(&state->game_hud, game, state->graphics_context);
 
+  state->ship_controller = create_ship_controller(
+      &state->ship, state->graphics_context, state->audio_context,
+      &state->bullet_manager, state->sharpnel_system, game->settings.volume);
+
   return state;
 }
 
@@ -154,7 +96,7 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
 
     // Update all game objects
     update_asteroids(&state->asteroid_manager, delta_time);
-    update_ship(state, delta_time);
+    ship_controller_update(&state->ship_controller, delta_time);
     update_ship_bullets(&state->bullet_manager, delta_time);
 
     if (is_saucer_flying(&state->saucer_manager)) {
@@ -169,18 +111,18 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
     // Check all collisions
     if (check_asteroid_ship_collisions(&state->asteroid_manager,
                                        &state->ship)) {
-      handle_ship_destruction(state);
+      ship_controller_handle_destruction(&state->ship_controller);
     }
 
     if (check_saucer_bullet_ship_collisions(&state->bullet_manager,
                                             &state->ship)) {
-      handle_ship_destruction(state);
+      ship_controller_handle_destruction(&state->ship_controller);
     }
 
     collision_result_t ship_saucer_collision =
         check_ship_saucer_collision(&state->ship, &state->saucer_manager);
     if (ship_saucer_collision.ship_destroyed) {
-      handle_ship_destruction(state);
+      ship_controller_handle_destruction(&state->ship_controller);
     }
     if (ship_saucer_collision.saucer_destroyed) {
       destroy_saucer(&state->saucer_manager);
@@ -200,10 +142,12 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
     }
 
     // Handle ship destruction
-    if (ship_was_destroyed(state)) {
+    if (ship_controller_is_destroyed(&state->ship_controller)) {
       if (any_ship_lives_left(state)) {
         consume_one_ship_life(state);
-        recreate_ship(state);
+        ship_controller_respawn(&state->ship_controller,
+                               state->graphics_context->screen_center,
+                               state->ship.scale);
       } else {
         return PROGRESS;  // Game over
       }
@@ -221,19 +165,19 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
     }
 
     if (is_left_key_pressed(&state->game->keyboard_state)) {
-      rotate_ship_left(&state->ship);
+      ship_controller_handle_rotate_left(&state->ship_controller);
     }
 
     if (is_right_key_pressed(&state->game->keyboard_state)) {
-      rotate_ship_right(&state->ship);
+      ship_controller_handle_rotate_right(&state->ship_controller);
     }
 
     if (is_up_key_pressed(&state->game->keyboard_state)) {
-      thrust_ship(state);
+      ship_controller_handle_thrust(&state->ship_controller);
     }
 
     if (is_space_key_pressed(&state->game->keyboard_state)) {
-      fire_ship_bullet(state);
+      ship_controller_handle_fire(&state->ship_controller);
     }
 
     if (is_f11_key_pressed(&state->game->keyboard_state)) {
