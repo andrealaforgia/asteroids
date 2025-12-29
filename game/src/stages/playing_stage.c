@@ -55,16 +55,18 @@ static inline void render_sound_notification(playing_stage_state_ptr state) {
   int intensity = (int)(255 * fade);
   color_t text_color = COLOR(intensity, intensity, intensity);
 
-  const char* message = state->sound_notification_is_on ? "SOUND IS ON" : "SOUND IS OFF";
+  const char* message =
+      state->sound_notification_is_on ? "SOUND IS ON" : "SOUND IS OFF";
   int text_scale = (state->graphics_context->screen_height * 10) / 900;
-  text_dimensions_t text_dimensions = calculate_text_dimensions(message, text_scale);
+  text_dimensions_t text_dimensions =
+      calculate_text_dimensions(message, text_scale);
 
   point_t position = point(
-    state->graphics_context->screen_center.x - text_dimensions.width / 2,
-    state->graphics_context->screen_center.y
-  );
+      state->graphics_context->screen_center.x - text_dimensions.width / 2,
+      state->graphics_context->screen_center.y);
 
-  write_text(state->graphics_context, message, position, text_scale, text_color);
+  write_text(state->graphics_context, message, position, text_scale,
+             text_color);
 }
 
 /* ---- ==== ---- ==== init ==== ---- ==== ---- */
