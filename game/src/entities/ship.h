@@ -5,6 +5,7 @@
 
 #include "geometry.h"
 #include "physics.h"
+#include "types.h"
 
 #define NUMBER_OF_POINTS 8
 #define NUMBER_OF_ROTATIONS 64
@@ -15,13 +16,13 @@ typedef enum { ACTIVE, DESTROYED } ship_state_t;
 typedef struct {
   ship_state_t state;
   point_t position;
-  int rotation_index;
+  rotation_index_t rotation_index;
   velocity_t velocity;
   int scale;
   bool thrusting;
-  int last_thrust_ticks;
+  timestamp_ms_t last_thrust_ticks;
   vector_t rotation_vector;
-  int creation_ticks;
+  timestamp_ms_t creation_ticks;
 } ship_t, *ship_ptr;
 
 ship_t create_ship(point_t position, int scale);
