@@ -21,7 +21,8 @@ void remove_sharpnel(size_t sharpnel_index);
 void render_sharpnel(const graphics_context_ptr graphics_context,
                      const sharpnel_ptr sharpnel, color_t color);
 void update_sharpnel(const graphics_context_ptr graphics_context,
-                     size_t sharpnel_index);
-void animate_sharpnels(const graphics_context_ptr graphics_context);
+                     size_t sharpnel_index, double delta_time);
+void animate_sharpnels(const graphics_context_ptr graphics_context,
+                       double delta_time);
 void reset_sharpnels(void);
 #endif  // GAME_INCLUDE_ENTITIES_SHARPNEL_H_

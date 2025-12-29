@@ -74,8 +74,8 @@ static ALWAYS_INLINE bool ship_is_not_immune(void) {
   return elapsed_from(ship.creation_ticks) > SHIP_IMMUNITY_DURATION_MSECS;
 }
 
-static ALWAYS_INLINE void animate_ship(void) {
-  wrap_animate(graphics_context, &ship.position, &ship.velocity);
+static ALWAYS_INLINE void animate_ship(double delta_time) {
+  wrap_animate(graphics_context, &ship.position, &ship.velocity, delta_time);
   if (ship.thrusting &&
       elapsed_from(ship.last_thrust_ticks) > SHIP_THRUST_TICKS) {
     ship.thrusting = false;
@@ -83,8 +83,8 @@ static ALWAYS_INLINE void animate_ship(void) {
   }
 }
 
-static ALWAYS_INLINE void update_ship(void) {
-  animate_ship();
+static ALWAYS_INLINE void update_ship(double delta_time) {
+  animate_ship(delta_time);
   if (ship_is_not_immune() || get_clock_ticks_ms() % 5 == 0) {
     render_ship(graphics_context, &ship);
   }
@@ -134,13 +134,16 @@ static ALWAYS_INLINE void remove_asteroid(size_t asteroid_index) {
   --asteroid_count;
 }
 
-static ALWAYS_INLINE void animate_asteroid(size_t asteroid_index) {
+static ALWAYS_INLINE void animate_asteroid(size_t asteroid_index,
+                                           double delta_time) {
   asteroid_ptr asteroid = &asteroids[asteroid_index];
-  wrap_animate(graphics_context, &asteroid->position, &asteroid->velocity);
+  wrap_animate(graphics_context, &asteroid->position, &asteroid->velocity,
+               delta_time);
 }
 
-static ALWAYS_INLINE void update_asteroid(size_t asteroid_index) {
-  animate_asteroid(asteroid_index);
+static ALWAYS_INLINE void update_asteroid(size_t asteroid_index,
+                                          double delta_time) {
+  animate_asteroid(asteroid_index, delta_time);
   render_asteroid(graphics_context, &asteroids[asteroid_index]);
 }
 
@@ -191,14 +194,16 @@ static ALWAYS_INLINE void remove_ship_bullet(size_t bullet_index) {
   --ship_bullet_count;
 }
 
-static ALWAYS_INLINE void update_ship_bullet(size_t bullet_index) {
+static ALWAYS_INLINE void update_ship_bullet(size_t bullet_index,
+                                              double delta_time) {
   bullet_ptr bullet = &ship_bullets[bullet_index];
   int bullet_age = elapsed_from(bullet->creation_ticks);
   if (elapsed_from(bullet->creation_ticks) > SHIP_BULLET_MAX_AGE_MSECS) {
     remove_ship_bullet(bullet_index);
     return;
   }
-  wrap_animate(graphics_context, &bullet->position, &bullet->velocity);
+  wrap_animate(graphics_context, &bullet->position, &bullet->velocity,
+               delta_time);
   color_t color = GRAY_SCALE(bullet_age, SHIP_BULLET_MAX_AGE_MSECS);
   render_bullet(graphics_context, bullet, color);
 }
@@ -218,9 +223,9 @@ static ALWAYS_INLINE void fire_ship_bullet(void) {
   }
 }
 
-static ALWAYS_INLINE void animate_ship_bullets(void) {
+static ALWAYS_INLINE void animate_ship_bullets(double delta_time) {
   for (size_t sbi = 0; sbi < ship_bullet_count; sbi++) {
-    update_ship_bullet(sbi);
+    update_ship_bullet(sbi, delta_time);
   }
 }
 
@@ -250,21 +255,23 @@ static ALWAYS_INLINE void remove_saucer_bullet(size_t bullet_index) {
   --saucer_bullet_count;
 }
 
-static ALWAYS_INLINE void update_saucer_bullet(size_t bullet_index) {
+static ALWAYS_INLINE void update_saucer_bullet(size_t bullet_index,
+                                                double delta_time) {
   bullet_ptr bullet = &saucer_bullets[bullet_index];
   int bullet_age = elapsed_from(bullet->creation_ticks);
   if (elapsed_from(bullet->creation_ticks) > SAUCER_BULLET_MAX_AGE_MSECS) {
     remove_saucer_bullet(bullet_index);
     return;
   }
-  wrap_animate(graphics_context, &bullet->position, &bullet->velocity);
+  wrap_animate(graphics_context, &bullet->position, &bullet->velocity,
+               delta_time);
   color_t color = GRAY_SCALE(bullet_age, SAUCER_BULLET_MAX_AGE_MSECS);
   render_bullet(graphics_context, bullet, color);
 }
 
-static ALWAYS_INLINE void animate_saucer_bullets(void) {
+static ALWAYS_INLINE void animate_saucer_bullets(double delta_time) {
   for (size_t sbi = 0; sbi < saucer_bullet_count; sbi++) {
-    update_saucer_bullet(sbi);
+    update_saucer_bullet(sbi, delta_time);
   }
 }
 
@@ -295,8 +302,8 @@ static ALWAYS_INLINE void fire_saucer_bullet(void) {
   add_saucer_bullet(saucer.position);
 }
 
-static ALWAYS_INLINE void update_saucer(void) {
-  animate(&saucer.position, &saucer.velocity);
+static ALWAYS_INLINE void update_saucer(double delta_time) {
+  animate(&saucer.position, &saucer.velocity, delta_time);
   if (out_of_bounds(graphics_context, &saucer.position)) {
     saucer.flying = false;
     saucer_last_travel_duration_msecs =
@@ -407,9 +414,9 @@ static ALWAYS_INLINE void check_if_ship_hits_asteroid(void) {
   }
 }
 
-static ALWAYS_INLINE void animate_asteroids(void) {
+static ALWAYS_INLINE void animate_asteroids(double delta_time) {
   for (size_t ai = 0; ai < asteroid_count; ai++) {
-    update_asteroid(ai);
+    update_asteroid(ai, delta_time);
   }
 }
 
@@ -520,13 +527,19 @@ game_stage_action_t handle_playing_stage(void) {
     }
     last_frame_ticks = get_clock_ticks_ms();
 
+    // Calculate delta_time normalized to 60 FPS baseline
+    // At 60 FPS with ~16.67ms elapsed: delta_time = 1.0
+    // At 120 FPS with ~8.33ms elapsed: delta_time = 0.5
+    // At 30 FPS with ~33.33ms elapsed: delta_time = 2.0
+    double delta_time = elapsed / (1000.0 / 60.0);
+
     clear_frame(graphics_context);
 
     recreate_asteroids_if_none_are_left();
 
-    animate_asteroids();
+    animate_asteroids(delta_time);
 
-    update_ship();
+    update_ship(delta_time);
 
     check_ship_collisions_only_if_ship_is_not_immune();
 
@@ -543,17 +556,17 @@ game_stage_action_t handle_playing_stage(void) {
       }
     }
 
-    animate_ship_bullets();
+    animate_ship_bullets(delta_time);
 
     if (saucer_is_flying()) {
-      update_saucer();
+      update_saucer(delta_time);
     } else {
       create_saucer_if_required();
     }
 
-    animate_saucer_bullets();
+    animate_saucer_bullets(delta_time);
 
-    animate_sharpnels(graphics_context);
+    animate_sharpnels(graphics_context, delta_time);
 
     show_lives();
 

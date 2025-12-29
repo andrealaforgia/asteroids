@@ -126,16 +126,21 @@ game_stage_action_t handle_intro_stage(void) {
   int last_frame_ticks = get_clock_ticks_ms();
 
   while (true) {
-    if (elapsed_from(last_frame_ticks) < (1000 / game->settings.fps)) {
+    int frame_time = 1000 / game->settings.fps;
+    int elapsed = elapsed_from(last_frame_ticks);
+    if (elapsed < frame_time) {
       continue;
     }
     last_frame_ticks = get_clock_ticks_ms();
+
+    // Calculate delta_time normalized to 60 FPS baseline
+    double delta_time = elapsed / (1000.0 / 60.0);
 
     clear_frame(graphics_context);
 
     for (int i = 0; i < ASTEROIDS_COUNT; i++) {
       wrap_animate(graphics_context, &asteroids[i].position,
-                   &asteroids[i].velocity);
+                   &asteroids[i].velocity, delta_time);
       render_asteroid(graphics_context, &asteroids[i]);
     }
 

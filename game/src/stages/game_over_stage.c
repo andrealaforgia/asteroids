@@ -90,10 +90,11 @@ static ALWAYS_INLINE void create_asteroids(void) {
   }
 }
 
-static ALWAYS_INLINE void animate_asteroids(void) {
+static ALWAYS_INLINE void animate_asteroids(double delta_time) {
   for (size_t i = 0; i < ASTEROIDS_COUNT; i++) {
     const asteroid_ptr asteroid = &asteroids[i];
-    wrap_animate(graphics_context, &asteroid->position, &asteroid->velocity);
+    wrap_animate(graphics_context, &asteroid->position, &asteroid->velocity,
+                 delta_time);
     render_asteroid(graphics_context, asteroid);
   }
 }
@@ -142,14 +143,19 @@ game_stage_action_t handle_game_over_stage(void) {
   create_asteroids();
 
   while (true) {
-    if (elapsed_from(last_frame_ticks) < (1000 / game->settings.fps)) {
+    int frame_time = 1000 / game->settings.fps;
+    int elapsed = elapsed_from(last_frame_ticks);
+    if (elapsed < frame_time) {
       continue;
     }
     last_frame_ticks = get_clock_ticks_ms();
 
+    // Calculate delta_time normalized to 60 FPS baseline
+    double delta_time = elapsed / (1000.0 / 60.0);
+
     clear_frame(graphics_context);
 
-    animate_asteroids();
+    animate_asteroids(delta_time);
 
     animate_action_text();
 
