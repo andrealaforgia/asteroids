@@ -172,10 +172,10 @@ void render_ship(const graphics_context_ptr graphics_context,
     // Fade out over immunity duration
     double fade = 1.0 - (elapsed / (double)SHIP_IMMUNITY_DURATION_MS);
 
-    // Circle is 50% larger than ship (ship radius is 8 * scale)
+    // Circle is 80% larger than ship (ship radius is 8 * scale)
     // Add pulse on top of the base size
     int base_radius = 8 * ship->scale;
-    int shield_radius = base_radius * 1.5;  // 50% larger than ship
+    int shield_radius = base_radius * 1.8;  // 80% larger than ship
     int pulse_amount = base_radius * 0.2;   // Pulse by 20% of ship size
     int circle_radius = shield_radius + (int)(pulse_amount * pulse);
 
