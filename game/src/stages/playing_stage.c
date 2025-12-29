@@ -15,6 +15,7 @@
 #include "fps_tracker.h"
 #include "frame.h"
 #include "game.h"
+#include "game_audio.h"
 #include "geometry.h"
 #include "graphics.h"
 #include "physics.h"

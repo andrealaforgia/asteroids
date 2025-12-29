@@ -9,33 +9,6 @@
 #include "inline.h"
 #include "logger.h"
 
-#define BANG_LARGE_INDEX 0
-#define BANG_MEDIUM_INDEX 1
-#define BANG_SMALL_INDEX 2
-#define BEAT1_INDEX 3
-#define BEAT2_INDEX 4
-#define EXTRA_SHIP_INDEX 5
-#define FIRE_INDEX 6
-#define SAUCER_BIG_INDEX 7
-#define SAUCER_SMALL_INDEX 8
-#define THRUST_INDEX 9
-#define GAME_OVER_INDEX 10
-#define SHIP_LOST_INDEX 11
-
-// Sound file names (relative to executable directory)
-#define BANG_LARGE_WAV "game/assets/sounds/bang_large.wav"
-#define BANG_MEDIUM_WAV "game/assets/sounds/bang_medium.wav"
-#define BANG_SMALL_WAV "game/assets/sounds/bang_small.wav"
-#define BEAT1_WAV "game/assets/sounds/beat1.wav"
-#define BEAT2_WAV "game/assets/sounds/beat2.wav"
-#define EXTRA_SHIP_WAV "game/assets/sounds/extra_ship.wav"
-#define FIRE_WAV "game/assets/sounds/fire.wav"
-#define SAUCER_SMALL_WAV "game/assets/sounds/saucer_small.wav"
-#define SAUCER_BIG_WAV "game/assets/sounds/saucer_big.wav"
-#define THRUST_WAV "game/assets/sounds/thrust.wav"
-#define GAME_OVER_WAV "game/assets/sounds/game_over.wav"
-#define SHIP_LOST_MP3 "game/assets/sounds/ship_lost.mp3"
-
 // Construct full path to a sound file
 static char* get_sound_path(const char* base_path, const char* sound_file) {
   size_t path_len = strlen(base_path) + strlen(sound_file) + 1;
@@ -46,58 +19,20 @@ static char* get_sound_path(const char* base_path, const char* sound_file) {
   return full_path;
 }
 
-// Helper function to load sound with error checking
-static Mix_Chunk* load_sound(const char* base_path, const char* sound_file) {
-  char* full_path = get_sound_path(base_path, sound_file);
-  if (!full_path) {
-    LOG_WARN("Failed to allocate memory for sound path");
-    return NULL;
-  }
-
-  Mix_Chunk* chunk = Mix_LoadWAV(full_path);
-  if (!chunk) {
-    LOG_MIX_ERROR(full_path);
-    LOG_WARN("Game will continue without this sound effect");
-  }
-
-  free(full_path);
-  return chunk;
-}
-
-audio_context_t init_audio_context(int volume) {
+audio_context_t init_audio_context(int max_sounds, int volume) {
   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
     LOG_MIX_ERROR("Mix_OpenAudio");
   }
 
-  // Get the base path for the executable
-  char* base_path = SDL_GetBasePath();
-  if (!base_path) {
-    LOG_SDL_ERROR("SDL_GetBasePath");
-    LOG_WARN("Using current directory for sound files");
-    base_path = SDL_strdup("./");
-  }
-
   audio_context_t audio_context;
-  audio_context.chunks[BANG_LARGE_INDEX] =
-      load_sound(base_path, BANG_LARGE_WAV);
-  audio_context.chunks[BANG_MEDIUM_INDEX] =
-      load_sound(base_path, BANG_MEDIUM_WAV);
-  audio_context.chunks[BANG_SMALL_INDEX] =
-      load_sound(base_path, BANG_SMALL_WAV);
-  audio_context.chunks[BEAT1_INDEX] = load_sound(base_path, BEAT1_WAV);
-  audio_context.chunks[BEAT2_INDEX] = load_sound(base_path, BEAT2_WAV);
-  audio_context.chunks[EXTRA_SHIP_INDEX] =
-      load_sound(base_path, EXTRA_SHIP_WAV);
-  audio_context.chunks[FIRE_INDEX] = load_sound(base_path, FIRE_WAV);
-  audio_context.chunks[SAUCER_BIG_INDEX] =
-      load_sound(base_path, SAUCER_BIG_WAV);
-  audio_context.chunks[SAUCER_SMALL_INDEX] =
-      load_sound(base_path, SAUCER_SMALL_WAV);
-  audio_context.chunks[THRUST_INDEX] = load_sound(base_path, THRUST_WAV);
-  audio_context.chunks[GAME_OVER_INDEX] = load_sound(base_path, GAME_OVER_WAV);
-  audio_context.chunks[SHIP_LOST_INDEX] = load_sound(base_path, SHIP_LOST_MP3);
+  audio_context.max_sounds = max_sounds;
+  audio_context.chunks = calloc(max_sounds, sizeof(Mix_Chunk*));
 
-  SDL_free(base_path);
+  if (!audio_context.chunks) {
+    LOG_WARN("Failed to allocate memory for audio chunks");
+    audio_context.max_sounds = 0;
+    return audio_context;
+  }
 
   // Amount of channels (Max amount of sounds playing at the same time)
   int channels = Mix_AllocateChannels(256);
@@ -113,84 +48,63 @@ audio_context_t init_audio_context(int volume) {
   return audio_context;
 }
 
-ALWAYS_INLINE void play_bang_large(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[BANG_LARGE_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[BANG_LARGE_INDEX], 0);
+bool load_sound(audio_context_ptr audio_context, int index,
+                const char* base_path, const char* sound_file) {
+  if (!audio_context || !audio_context->chunks) {
+    LOG_WARN("Invalid audio context");
+    return false;
   }
+
+  if (index < 0 || index >= audio_context->max_sounds) {
+    LOG_WARN("Sound index out of bounds");
+    return false;
+  }
+
+  char* full_path = get_sound_path(base_path, sound_file);
+  if (!full_path) {
+    LOG_WARN("Failed to allocate memory for sound path");
+    return false;
+  }
+
+  Mix_Chunk* chunk = Mix_LoadWAV(full_path);
+  if (!chunk) {
+    LOG_MIX_ERROR(full_path);
+    LOG_WARN("Game will continue without this sound effect");
+    free(full_path);
+    return false;
+  }
+
+  audio_context->chunks[index] = chunk;
+  free(full_path);
+  return true;
 }
 
-ALWAYS_INLINE void play_bang_medium(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[BANG_MEDIUM_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[BANG_MEDIUM_INDEX], 0);
+ALWAYS_INLINE void play_sound(const audio_context_ptr audio_context,
+                               int index) {
+  if (!audio_context || !audio_context->chunks) {
+    return;
   }
-}
 
-ALWAYS_INLINE void play_bang_small(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[BANG_SMALL_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[BANG_SMALL_INDEX], 0);
+  if (index < 0 || index >= audio_context->max_sounds) {
+    return;
   }
-}
 
-ALWAYS_INLINE void play_beat1(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[BEAT1_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[BEAT1_INDEX], 0);
-  }
-}
-
-ALWAYS_INLINE void play_beat2(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[BEAT2_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[BEAT2_INDEX], 0);
-  }
-}
-
-ALWAYS_INLINE void play_extra_ship(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[EXTRA_SHIP_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[EXTRA_SHIP_INDEX], 0);
-  }
-}
-
-ALWAYS_INLINE void play_fire(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[FIRE_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[FIRE_INDEX], 0);
-  }
-}
-
-ALWAYS_INLINE void play_saucer_big(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[SAUCER_BIG_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[SAUCER_BIG_INDEX], 0);
-  }
-}
-
-ALWAYS_INLINE void play_saucer_small(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[SAUCER_SMALL_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[SAUCER_SMALL_INDEX], 0);
-  }
-}
-
-ALWAYS_INLINE void play_thrust(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[THRUST_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[THRUST_INDEX], 0);
-  }
-}
-
-ALWAYS_INLINE void play_game_over(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[GAME_OVER_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[GAME_OVER_INDEX], 0);
-  }
-}
-
-ALWAYS_INLINE void play_ship_lost(const audio_context_ptr audio_context) {
-  if (audio_context->chunks[SHIP_LOST_INDEX]) {
-    Mix_PlayChannel(-1, audio_context->chunks[SHIP_LOST_INDEX], 0);
+  if (audio_context->chunks[index]) {
+    Mix_PlayChannel(-1, audio_context->chunks[index], 0);
   }
 }
 
 void terminate_audio_context(const audio_context_ptr audio_context) {
-  // Free all 12 sound chunks (indices 0-11)
-  for (int i = 0; i < 12; i++) {
+  if (!audio_context || !audio_context->chunks) {
+    return;
+  }
+
+  for (int i = 0; i < audio_context->max_sounds; i++) {
     if (audio_context->chunks[i]) {
       Mix_FreeChunk(audio_context->chunks[i]);
     }
   }
+
+  free(audio_context->chunks);
   Mix_CloseAudio();
 }

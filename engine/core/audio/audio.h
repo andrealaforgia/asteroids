@@ -2,24 +2,24 @@
 #define ENGINE_CORE_AUDIO_AUDIO_H_
 
 #include <SDL_mixer.h>
+#include <stdbool.h>
 
 typedef struct {
-  Mix_Chunk* chunks[12];
+  Mix_Chunk** chunks;
+  int max_sounds;
 } audio_context_t, *audio_context_ptr;
 
-audio_context_t init_audio_context(int volume);
-void play_bang_large(const audio_context_ptr audio_context);
-void play_bang_medium(const audio_context_ptr audio_context);
-void play_bang_small(const audio_context_ptr audio_context);
-void play_beat1(const audio_context_ptr audio_context);
-void play_beat2(const audio_context_ptr audio_context);
-void play_extra_ship(const audio_context_ptr audio_context);
-void play_fire(const audio_context_ptr audio_context);
-void play_saucer_big(const audio_context_ptr audio_context);
-void play_saucer_small(const audio_context_ptr audio_context);
-void play_thrust(const audio_context_ptr audio_context);
-void play_game_over(const audio_context_ptr audio_context);
-void play_ship_lost(const audio_context_ptr audio_context);
+// Initialize audio context with maximum number of sounds and volume (0-128)
+audio_context_t init_audio_context(int max_sounds, int volume);
+
+// Load a sound file at the specified index
+bool load_sound(audio_context_ptr audio_context, int index,
+                const char* base_path, const char* sound_file);
+
+// Play a sound at the specified index
+void play_sound(const audio_context_ptr audio_context, int index);
+
+// Clean up and free all audio resources
 void terminate_audio_context(const audio_context_ptr audio_context);
 
 #endif  // ENGINE_CORE_AUDIO_AUDIO_H_

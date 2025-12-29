@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "audio.h"
+#include "game_audio.h"
 #include "game_settings.h"
 #include "graphics.h"
 #include "inline.h"
@@ -16,7 +17,8 @@ game_t init_game(game_settings_t game_settings) {
   game.graphics_context =
       init_graphics_context(game.settings.display, game.settings.display_mode,
                             game.settings.window_mode, game.settings.vsync);
-  game.audio_context = init_audio_context(game.settings.volume);
+  game.audio_context = init_audio_context(SOUND_COUNT, game.settings.volume);
+  init_game_audio(&game.audio_context);
   game.keyboard_state = init_keyboard_state();
   reset_game(&game);
   return game;
