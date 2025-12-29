@@ -7,6 +7,7 @@
 #include "animate.h"
 #include "asteroid.h"
 #include "audio.h"
+#include "background_effects.h"
 #include "clock.h"
 #include "events.h"
 #include "frame.h"
@@ -132,10 +133,8 @@ game_stage_action_t handle_intro_stage(intro_stage_state_ptr state) {
 
   bool is_action_text_on = true;
 
-  for (int i = 0; i < INTRO_ASTEROIDS_COUNT; i++) {
-    state->asteroids[i] = create_asteroid(random_point(state->graphics_context),
-                                   random_asteroid_scale(), random_color());
-  }
+  init_background_asteroids(state->asteroids, INTRO_ASTEROIDS_COUNT,
+                             state->graphics_context);
 
   frame_limiter_t frame_limiter = create_frame_limiter(state->game->settings.fps);
 
@@ -144,11 +143,8 @@ game_stage_action_t handle_intro_stage(intro_stage_state_ptr state) {
 
     clear_frame(state->graphics_context);
 
-    for (int i = 0; i < INTRO_ASTEROIDS_COUNT; i++) {
-      wrap_animate(state->graphics_context, &state->asteroids[i].position,
-                   &state->asteroids[i].velocity, delta_time);
-      render_asteroid(state->graphics_context, &state->asteroids[i]);
-    }
+    animate_background_asteroids(state->asteroids, INTRO_ASTEROIDS_COUNT,
+                                  state->graphics_context, delta_time);
 
     write_text(state->graphics_context, INSTRUCTIONS_TEXT_0,
                state->instructions_text_0_position, state->instructions_text_scale,

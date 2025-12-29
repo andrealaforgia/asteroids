@@ -7,6 +7,7 @@
 #include "animate.h"
 #include "asteroid.h"
 #include "audio.h"
+#include "background_effects.h"
 #include "clock.h"
 #include "events.h"
 #include "frame.h"
@@ -70,22 +71,6 @@ static void play_game_over_if_sound_on(game_over_stage_state_ptr state) {
   }
 }
 
-static ALWAYS_INLINE void create_asteroids(game_over_stage_state_ptr state) {
-  for (size_t i = 0; i < GAME_OVER_ASTEROIDS_COUNT; i++) {
-    state->asteroids[i] = create_asteroid(random_point(state->graphics_context),
-                                   random_asteroid_scale(), random_color());
-  }
-}
-
-static ALWAYS_INLINE void animate_asteroids(game_over_stage_state_ptr state,
-                                             double delta_time) {
-  for (size_t i = 0; i < GAME_OVER_ASTEROIDS_COUNT; i++) {
-    const asteroid_ptr asteroid = &state->asteroids[i];
-    wrap_animate(state->graphics_context, &asteroid->position, &asteroid->velocity,
-                 delta_time);
-    render_asteroid(state->graphics_context, asteroid);
-  }
-}
 
 static ALWAYS_INLINE void show_score(game_over_stage_state_ptr state) {
   snprintf(state->score_text, sizeof state->score_text, "SCORE %d", state->game->score);
@@ -128,14 +113,16 @@ game_stage_action_t handle_game_over_stage(game_over_stage_state_ptr state) {
 
   frame_limiter_t frame_limiter = create_frame_limiter(state->game->settings.fps);
 
-  create_asteroids(state);
+  init_background_asteroids(state->asteroids, GAME_OVER_ASTEROIDS_COUNT,
+                             state->graphics_context);
 
   while (true) {
     double delta_time = frame_limiter_wait(&frame_limiter);
 
     clear_frame(state->graphics_context);
 
-    animate_asteroids(state, delta_time);
+    animate_background_asteroids(state->asteroids, GAME_OVER_ASTEROIDS_COUNT,
+                                  state->graphics_context, delta_time);
 
     animate_action_text(state);
 
