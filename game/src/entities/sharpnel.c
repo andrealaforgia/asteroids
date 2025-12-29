@@ -52,6 +52,10 @@ void animate_sharpnels(sharpnel_system_t* system, double delta_time) {
     }
 
     sharpnel_t* sharpnel = (sharpnel_t*)pool_get_at(&system->pool, sbi);
+    if (sharpnel == NULL) {
+      continue;  // Safety check
+    }
+
     int sharpnel_age = elapsed_from(sharpnel->creation_ticks);
 
     if (sharpnel_age > SHARPNEL_MAX_AGE_MSECS) {

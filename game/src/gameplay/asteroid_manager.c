@@ -99,9 +99,8 @@ void break_asteroid_apart(asteroid_manager_ptr manager,
 
   if (scale_down(asteroid)) {
     add_asteroid(manager, asteroid->position, asteroid->scale);
-  } else {
-    remove_asteroid(manager, asteroid_index);
   }
+  remove_asteroid(manager, asteroid_index);
 }
 
 void create_asteroids(asteroid_manager_ptr manager, point_t safe_position) {
