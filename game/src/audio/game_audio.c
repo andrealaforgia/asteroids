@@ -46,51 +46,51 @@ void init_game_audio(audio_context_ptr audio_context) {
   SDL_free(base_path);
 }
 
-inline void play_bang_large(const audio_context_ptr audio_context) {
+void play_bang_large(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_BANG_LARGE);
 }
 
-inline void play_bang_medium(const audio_context_ptr audio_context) {
+void play_bang_medium(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_BANG_MEDIUM);
 }
 
-inline void play_bang_small(const audio_context_ptr audio_context) {
+void play_bang_small(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_BANG_SMALL);
 }
 
-inline void play_beat1(const audio_context_ptr audio_context) {
+void play_beat1(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_BEAT1);
 }
 
-inline void play_beat2(const audio_context_ptr audio_context) {
+void play_beat2(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_BEAT2);
 }
 
-inline void play_extra_ship(const audio_context_ptr audio_context) {
+void play_extra_ship(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_EXTRA_SHIP);
 }
 
-inline void play_fire(const audio_context_ptr audio_context) {
+void play_fire(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_FIRE);
 }
 
-inline void play_saucer_big(const audio_context_ptr audio_context) {
+void play_saucer_big(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_SAUCER_BIG);
 }
 
-inline void play_saucer_small(const audio_context_ptr audio_context) {
+void play_saucer_small(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_SAUCER_SMALL);
 }
 
-inline void play_thrust(const audio_context_ptr audio_context) {
+void play_thrust(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_THRUST);
 }
 
-inline void play_game_over(const audio_context_ptr audio_context) {
+void play_game_over(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_GAME_OVER);
 }
 
-inline void play_ship_lost(const audio_context_ptr audio_context) {
+void play_ship_lost(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_SHIP_LOST);
 }
 

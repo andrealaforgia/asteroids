@@ -5,7 +5,7 @@
 #include "game.h"
 #include "game_events.h"
 
-inline void score(const game_ptr game, int score) {
+void score(const game_ptr game, int score) {
   if (game->score + score > MAX_SCORE) {
     game->score = MAX_SCORE;
     return;
@@ -13,23 +13,23 @@ inline void score(const game_ptr game, int score) {
   game->score += score;
 }
 
-inline void score_large_asteroid(const game_ptr game) {
+void score_large_asteroid(const game_ptr game) {
   score(game, LARGE_ASTEROID_SCORE);
 }
 
-inline void score_medium_asteroid(const game_ptr game) {
+void score_medium_asteroid(const game_ptr game) {
   score(game, MEDIUM_ASTEROID_SCORE);
 }
 
-inline void score_small_asteroid(const game_ptr game) {
+void score_small_asteroid(const game_ptr game) {
   score(game, SMALL_ASTEROID_SCORE);
 }
 
-inline void score_large_saucer(const game_ptr game) {
+void score_large_saucer(const game_ptr game) {
   score(game, LARGE_SAUCER_SCORE);
 }
 
-inline void score_small_saucer(const game_ptr game) {
+void score_small_saucer(const game_ptr game) {
   score(game, SMALL_SAUCER_SCORE);
 }
 
