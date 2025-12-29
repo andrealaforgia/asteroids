@@ -5,64 +5,63 @@
 
 #include "clock.h"
 #include "coords.h"
+#include "game_constants.h"
 #include "geometry.h"
 #include "graphics.h"
 #include "inline.h"
 #include "render.h"
 
-#define MAX_SHARPNEL_COUNT 50
 #define SHARPNEL_MAX_AGE_MSECS 750
-
-sharpnel_t sharpnels[MAX_SHARPNEL_COUNT];
-size_t sharpnel_count = 0;
 
 const bounds_t SHARPNEL_BOUNDS = {49, 69};
 
-ALWAYS_INLINE sharpnel_t create_sharpnel(point_t position) {
-  sharpnel_t sharpnel;
-  sharpnel.position = position;
-  sharpnel.scale = 1;
-  sharpnel.creation_ticks = get_clock_ticks_ms();
-  return sharpnel;
+sharpnel_system_t* create_sharpnel_system(
+    graphics_context_ptr graphics_context, size_t max_count) {
+  sharpnel_system_t* system = malloc(sizeof(sharpnel_system_t));
+  system->graphics_context = graphics_context;
+  system->pool = create_object_pool(sizeof(sharpnel_t), max_count);
+  return system;
 }
 
-ALWAYS_INLINE void add_sharpnel(point_t position) {
-  assert(sharpnel_count < MAX_SHARPNEL_COUNT);
-  sharpnels[sharpnel_count++] = create_sharpnel(position);
+void destroy_sharpnel_system(sharpnel_system_t* system) {
+  pool_destroy(&system->pool);
+  free(system);
 }
 
-ALWAYS_INLINE void remove_sharpnel(size_t sharpnel_index) {
-  assert(sharpnel_count > 0);
-  if (sharpnel_count > 1) {
-    sharpnels[sharpnel_index] = sharpnels[sharpnel_count - 1];
+void reset_sharpnels(sharpnel_system_t* system) {
+  pool_reset(&system->pool);
+}
+
+void add_sharpnel(sharpnel_system_t* system, point_t position) {
+  size_t index;
+  sharpnel_t* sharpnel = (sharpnel_t*)pool_acquire(&system->pool, &index);
+  if (sharpnel == NULL) {
+    return;  // Pool exhausted
   }
-  --sharpnel_count;
+
+  sharpnel->position = position;
+  sharpnel->scale = 1;
+  sharpnel->creation_ticks = get_clock_ticks_ms();
 }
 
-ALWAYS_INLINE void render_sharpnel(const graphics_context_ptr graphics_context,
-                                   const sharpnel_ptr sharpnel, color_t color) {
-  render_object(graphics_context, SHARPNEL_BOUNDS, &sharpnel->position,
-                sharpnel->scale, color);
-}
+void animate_sharpnels(sharpnel_system_t* system, double delta_time) {
+  // Iterate backwards through pool capacity to safely handle removals
+  for (int sbi = system->pool.capacity - 1; sbi >= 0; sbi--) {
+    if (!pool_is_active(&system->pool, sbi)) {
+      continue;
+    }
 
-ALWAYS_INLINE void update_sharpnel(const graphics_context_ptr graphics_context,
-                                   size_t sharpnel_index, double delta_time) {
-  int sharpnel_age = elapsed_from(sharpnels[sharpnel_index].creation_ticks);
-  if (sharpnel_age > SHARPNEL_MAX_AGE_MSECS) {
-    remove_sharpnel(sharpnel_index);
-    return;
-  } else {
-    sharpnels[sharpnel_index].scale += 0.375 * delta_time;
+    sharpnel_t* sharpnel = (sharpnel_t*)pool_get_at(&system->pool, sbi);
+    int sharpnel_age = elapsed_from(sharpnel->creation_ticks);
+
+    if (sharpnel_age > SHARPNEL_MAX_AGE_MSECS) {
+      pool_release(&system->pool, sbi);
+      continue;
+    }
+
+    sharpnel->scale += 0.375 * delta_time;
+    color_t color = GRAY_SCALE(sharpnel_age, SHARPNEL_MAX_AGE_MSECS);
+    render_object(system->graphics_context, SHARPNEL_BOUNDS,
+                  &sharpnel->position, sharpnel->scale, color);
   }
-  color_t color = GRAY_SCALE(sharpnel_age, SHARPNEL_MAX_AGE_MSECS);
-  render_sharpnel(graphics_context, &sharpnels[sharpnel_index], color);
 }
-
-ALWAYS_INLINE void animate_sharpnels(
-    const graphics_context_ptr graphics_context, double delta_time) {
-  for (size_t sbi = 0; sbi < sharpnel_count; sbi++) {
-    update_sharpnel(graphics_context, sbi, delta_time);
-  }
-}
-
-void reset_sharpnels(void) { sharpnel_count = 0; }

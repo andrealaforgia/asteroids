@@ -197,6 +197,15 @@ game_stage_action_t handle_intro_stage(void) {
       return PROGRESS;
     }
 
+    if (is_s_key_pressed(&game->keyboard_state)) {
+      // Toggle sound: if volume > 0, mute; otherwise set to default
+      if (game->settings.volume > 0) {
+        game->settings.volume = 0;
+      } else {
+        game->settings.volume = 50;  // Default volume
+      }
+    }
+
     if (is_esc_key_pressed(&game->keyboard_state)) {
       return QUIT;
     }

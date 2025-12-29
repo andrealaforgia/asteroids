@@ -7,6 +7,7 @@
 #include "geometry.h"
 #include "graphics.h"
 #include "inline.h"
+#include "object_pool.h"
 
 typedef struct {
   point_t position;
@@ -14,14 +15,21 @@ typedef struct {
   int creation_ticks;
 } sharpnel_t, *sharpnel_ptr;
 
-sharpnel_t create_sharpnel(point_t position);
-void add_sharpnel(point_t position);
-void remove_sharpnel(size_t sharpnel_index);
-void render_sharpnel(const graphics_context_ptr graphics_context,
-                     const sharpnel_ptr sharpnel, color_t color);
-void update_sharpnel(const graphics_context_ptr graphics_context,
-                     size_t sharpnel_index, double delta_time);
-void animate_sharpnels(const graphics_context_ptr graphics_context,
-                       double delta_time);
-void reset_sharpnels(void);
+typedef struct {
+  object_pool_t pool;
+  graphics_context_ptr graphics_context;
+} sharpnel_system_t;
+
+typedef sharpnel_system_t* sharpnel_system_ptr;
+
+// Create and destroy sharpnel system
+sharpnel_system_t* create_sharpnel_system(graphics_context_ptr graphics_context,
+                                          size_t max_count);
+void destroy_sharpnel_system(sharpnel_system_t* system);
+
+// Sharpnel operations
+void reset_sharpnels(sharpnel_system_t* system);
+void add_sharpnel(sharpnel_system_t* system, point_t position);
+void animate_sharpnels(sharpnel_system_t* system, double delta_time);
+
 #endif  // GAME_SRC_ENTITIES_SHARPNEL_H_

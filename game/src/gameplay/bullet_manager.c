@@ -9,128 +9,117 @@
 #include "physics.h"
 #include "render.h"
 
-static bullet_t ship_bullets[MAX_SHIP_BULLET_COUNT];
-static size_t ship_bullet_count = 0;
-
-static bullet_t saucer_bullets[MAX_SAUCER_BULLET_COUNT];
-static size_t saucer_bullet_count = 0;
-
 void init_bullet_manager(bullet_manager_ptr manager, game_ptr game,
                          graphics_context_ptr graphics_context,
                          audio_context_ptr audio_context) {
   manager->game = game;
   manager->graphics_context = graphics_context;
   manager->audio_context = audio_context;
+  manager->ship_bullet_pool =
+      create_object_pool(sizeof(bullet_t), MAX_SHIP_BULLET_COUNT);
+  manager->saucer_bullet_pool =
+      create_object_pool(sizeof(bullet_t), MAX_SAUCER_BULLET_COUNT);
 }
 
 void reset_bullets(bullet_manager_ptr manager) {
-  (void)manager;  // Unused parameter
-  ship_bullet_count = 0;
-  saucer_bullet_count = 0;
+  pool_reset(&manager->ship_bullet_pool);
+  pool_reset(&manager->saucer_bullet_pool);
 }
 
 /* ---- ==== ---- ==== ship bullets ==== ---- ==== ---- */
 
 void add_ship_bullet(bullet_manager_ptr manager, point_t position,
                      velocity_t velocity) {
-  (void)manager;  // Unused parameter
-  assert(ship_bullet_count < MAX_SHIP_BULLET_COUNT);
-  ship_bullets[ship_bullet_count++] = create_bullet(position, velocity);
+  size_t index;
+  bullet_t* bullet = (bullet_t*)pool_acquire(&manager->ship_bullet_pool, &index);
+  if (bullet == NULL) {
+    return;  // Pool exhausted
+  }
+  *bullet = create_bullet(position, velocity);
 }
 
 void remove_ship_bullet(bullet_manager_ptr manager, size_t bullet_index) {
-  (void)manager;  // Unused parameter
-  assert(ship_bullet_count > 0);
-  if (ship_bullet_count > 1) {
-    ship_bullets[bullet_index] = ship_bullets[ship_bullet_count - 1];
-  }
-  --ship_bullet_count;
-}
-
-static ALWAYS_INLINE void update_ship_bullet(bullet_manager_ptr manager,
-                                              size_t bullet_index,
-                                              double delta_time) {
-  bullet_ptr bullet = &ship_bullets[bullet_index];
-  int bullet_age = elapsed_from(bullet->creation_ticks);
-  if (elapsed_from(bullet->creation_ticks) > SHIP_BULLET_MAX_AGE_MS) {
-    remove_ship_bullet(manager, bullet_index);
-    return;
-  }
-  wrap_animate(manager->graphics_context, &bullet->position, &bullet->velocity,
-               delta_time);
-  color_t color = GRAY_SCALE(bullet_age, SHIP_BULLET_MAX_AGE_MS);
-  render_bullet(manager->graphics_context, bullet, color);
+  pool_release(&manager->ship_bullet_pool, bullet_index);
 }
 
 void update_ship_bullets(bullet_manager_ptr manager, double delta_time) {
-  // Iterate backwards to handle removals safely
-  for (int sbi = ship_bullet_count - 1; sbi >= 0; sbi--) {
-    update_ship_bullet(manager, sbi, delta_time);
+  // Iterate backwards through pool capacity to safely handle removals
+  for (int sbi = manager->ship_bullet_pool.capacity - 1; sbi >= 0; sbi--) {
+    if (!pool_is_active(&manager->ship_bullet_pool, sbi)) {
+      continue;
+    }
+
+    bullet_ptr bullet = (bullet_ptr)pool_get_at(&manager->ship_bullet_pool, sbi);
+    int bullet_age = elapsed_from(bullet->creation_ticks);
+
+    if (elapsed_from(bullet->creation_ticks) > SHIP_BULLET_MAX_AGE_MS) {
+      remove_ship_bullet(manager, sbi);
+      continue;
+    }
+
+    wrap_animate(manager->graphics_context, &bullet->position,
+                 &bullet->velocity, delta_time);
+    color_t color = GRAY_SCALE(bullet_age, SHIP_BULLET_MAX_AGE_MS);
+    render_bullet(manager->graphics_context, bullet, color);
   }
 }
 
 size_t get_ship_bullet_count(const bullet_manager_ptr manager) {
-  (void)manager;  // Unused parameter
-  return ship_bullet_count;
+  return pool_get_active_count(&manager->ship_bullet_pool);
 }
 
 bullet_ptr get_ship_bullet(bullet_manager_ptr manager, size_t bullet_index) {
-  (void)manager;  // Unused parameter
-  assert(bullet_index < ship_bullet_count);
-  return &ship_bullets[bullet_index];
+  return (bullet_ptr)pool_get_at(&manager->ship_bullet_pool, bullet_index);
 }
 
 /* ---- ==== ---- ==== saucer bullets ==== ---- ==== ---- */
 
 void add_saucer_bullet(bullet_manager_ptr manager, point_t position,
                        point_t target_position) {
-  (void)manager;  // Unused parameter
-  assert(saucer_bullet_count < MAX_SAUCER_BULLET_COUNT);
+  size_t index;
+  bullet_t* bullet =
+      (bullet_t*)pool_acquire(&manager->saucer_bullet_pool, &index);
+  if (bullet == NULL) {
+    return;  // Pool exhausted
+  }
+
   point_t target_point = random_point_around(&target_position, 5, 10);
   velocity_t saucer_bullet_velocity =
       velocity(SAUCER_BULLET_SPEED, points_vector(&position, &target_point));
-  saucer_bullets[saucer_bullet_count++] =
-      create_bullet(position, saucer_bullet_velocity);
+  *bullet = create_bullet(position, saucer_bullet_velocity);
 }
 
 void remove_saucer_bullet(bullet_manager_ptr manager, size_t bullet_index) {
-  (void)manager;  // Unused parameter
-  assert(saucer_bullet_count > 0);
-  if (saucer_bullet_count > 1) {
-    saucer_bullets[bullet_index] = saucer_bullets[saucer_bullet_count - 1];
-  }
-  --saucer_bullet_count;
-}
-
-static ALWAYS_INLINE void update_saucer_bullet(bullet_manager_ptr manager,
-                                                size_t bullet_index,
-                                                double delta_time) {
-  bullet_ptr bullet = &saucer_bullets[bullet_index];
-  int bullet_age = elapsed_from(bullet->creation_ticks);
-  if (elapsed_from(bullet->creation_ticks) > SAUCER_BULLET_MAX_AGE_MS) {
-    remove_saucer_bullet(manager, bullet_index);
-    return;
-  }
-  wrap_animate(manager->graphics_context, &bullet->position, &bullet->velocity,
-               delta_time);
-  color_t color = GRAY_SCALE(bullet_age, SAUCER_BULLET_MAX_AGE_MS);
-  render_bullet(manager->graphics_context, bullet, color);
+  pool_release(&manager->saucer_bullet_pool, bullet_index);
 }
 
 void update_saucer_bullets(bullet_manager_ptr manager, double delta_time) {
-  // Iterate backwards to handle removals safely
-  for (int sbi = saucer_bullet_count - 1; sbi >= 0; sbi--) {
-    update_saucer_bullet(manager, sbi, delta_time);
+  // Iterate backwards through pool capacity to safely handle removals
+  for (int sbi = manager->saucer_bullet_pool.capacity - 1; sbi >= 0; sbi--) {
+    if (!pool_is_active(&manager->saucer_bullet_pool, sbi)) {
+      continue;
+    }
+
+    bullet_ptr bullet =
+        (bullet_ptr)pool_get_at(&manager->saucer_bullet_pool, sbi);
+    int bullet_age = elapsed_from(bullet->creation_ticks);
+
+    if (elapsed_from(bullet->creation_ticks) > SAUCER_BULLET_MAX_AGE_MS) {
+      remove_saucer_bullet(manager, sbi);
+      continue;
+    }
+
+    wrap_animate(manager->graphics_context, &bullet->position,
+                 &bullet->velocity, delta_time);
+    color_t color = GRAY_SCALE(bullet_age, SAUCER_BULLET_MAX_AGE_MS);
+    render_bullet(manager->graphics_context, bullet, color);
   }
 }
 
 size_t get_saucer_bullet_count(const bullet_manager_ptr manager) {
-  (void)manager;  // Unused parameter
-  return saucer_bullet_count;
+  return pool_get_active_count(&manager->saucer_bullet_pool);
 }
 
 bullet_ptr get_saucer_bullet(bullet_manager_ptr manager, size_t bullet_index) {
-  (void)manager;  // Unused parameter
-  assert(bullet_index < saucer_bullet_count);
-  return &saucer_bullets[bullet_index];
+  return (bullet_ptr)pool_get_at(&manager->saucer_bullet_pool, bullet_index);
 }
