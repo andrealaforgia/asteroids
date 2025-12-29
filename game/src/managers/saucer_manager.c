@@ -2,8 +2,8 @@
 
 #include "animate.h"
 #include "clock.h"
-#include "game_audio.h"
 #include "game_constants.h"
+#include "game_events.h"
 #include "physics.h"
 #include "sprites.h"
 #include "sharpnel.h"
@@ -12,12 +12,14 @@ void init_saucer_manager(saucer_manager_ptr manager, game_ptr game,
                          graphics_context_ptr graphics_context,
                          audio_context_ptr audio_context,
                          bullet_manager_ptr bullet_manager,
-                         sharpnel_system_ptr sharpnel_system) {
+                         sharpnel_system_ptr sharpnel_system,
+                         event_system_ptr event_system) {
   manager->game = game;
   manager->graphics_context = graphics_context;
   manager->audio_context = audio_context;
   manager->bullet_manager = bullet_manager;
   manager->sharpnel_system = sharpnel_system;
+  manager->event_system = event_system;
   manager->saucer.flying = false;
   manager->last_travel_duration_msecs = 0;
   manager->last_travel_start_ticks = 0;
@@ -29,10 +31,6 @@ void reset_saucer(saucer_manager_ptr manager) {
   manager->last_travel_duration_msecs = 0;
   manager->last_travel_start_ticks = 0;
   manager->last_bullet_fired_ticks = 0;
-}
-
-static ALWAYS_INLINE bool sound_on(const saucer_manager_ptr manager) {
-  return manager->game->settings.volume > 0;
 }
 
 void create_saucer_if_required(saucer_manager_ptr manager) {
@@ -65,15 +63,20 @@ void update_saucer(saucer_manager_ptr manager, double delta_time,
 void destroy_saucer(saucer_manager_ptr manager) {
   manager->saucer.flying = false;
   add_sharpnel(manager->sharpnel_system, manager->saucer.position);
-  if (is_big(&manager->saucer)) {
-    if (sound_on(manager)) {
-      play_bang_large(manager->audio_context);
-    }
-  } else {
-    if (sound_on(manager)) {
-      play_bang_small(manager->audio_context);
-    }
-  }
+
+  // Publish saucer destroyed event
+  saucer_destroyed_data_t event_data = {
+    .position = manager->saucer.position,
+    .is_big = is_big(&manager->saucer)
+  };
+
+  game_event_t event = {
+    .type = GAME_EVENT_SAUCER_DESTROYED,
+    .data = &event_data,
+    .data_size = sizeof(saucer_destroyed_data_t)
+  };
+
+  publish(manager->event_system, &event);
 }
 
 bool is_saucer_flying(const saucer_manager_ptr manager) {

@@ -5,6 +5,7 @@
 
 #include "asteroid.h"
 #include "audio.h"
+#include "event_system.h"
 #include "game.h"
 #include "geometry.h"
 #include "graphics.h"
@@ -16,6 +17,7 @@ typedef struct {
   audio_context_ptr audio_context;
   game_ptr game;
   sharpnel_system_ptr sharpnel_system;
+  event_system_ptr event_system;
   object_pool_t pool;
 } asteroid_manager_t;
 
@@ -25,7 +27,8 @@ typedef asteroid_manager_t* asteroid_manager_ptr;
 void init_asteroid_manager(asteroid_manager_ptr manager, game_ptr game,
                             graphics_context_ptr graphics_context,
                             audio_context_ptr audio_context,
-                            sharpnel_system_ptr sharpnel_system);
+                            sharpnel_system_ptr sharpnel_system,
+                            event_system_ptr event_system);
 
 // Reset asteroid state
 void reset_asteroids(asteroid_manager_ptr manager);

@@ -1,6 +1,7 @@
 #ifndef GAME_SRC_SCORING_SCORE_H_
 #define GAME_SRC_SCORING_SCORE_H_
 
+#include "event_system.h"
 #include "game.h"
 
 #define MAX_SCORE 999999999
@@ -16,5 +17,8 @@ void score_medium_asteroid(const game_ptr game);
 void score_small_asteroid(const game_ptr game);
 void score_large_saucer(const game_ptr game);
 void score_small_saucer(const game_ptr game);
+
+// Event subscriber functions
+void subscribe_score_events(event_system_ptr events, game_ptr game);
 
 #endif  // GAME_SRC_SCORING_SCORE_H_

@@ -2,7 +2,10 @@
 
 #include <SDL.h>
 
+#include "asteroid.h"
 #include "audio.h"
+#include "event_system.h"
+#include "game_events.h"
 #include "inline.h"
 
 // Sound file paths (relative to executable directory)
@@ -89,4 +92,48 @@ ALWAYS_INLINE void play_game_over(const audio_context_ptr audio_context) {
 
 ALWAYS_INLINE void play_ship_lost(const audio_context_ptr audio_context) {
   play_sound(audio_context, SOUND_SHIP_LOST);
+}
+
+/* ---- ==== Event Subscribers ==== ---- */
+
+static void on_asteroid_destroyed(const game_event_t* event, void* user_data) {
+  audio_context_ptr audio = (audio_context_ptr)user_data;
+  asteroid_destroyed_data_t* data = (asteroid_destroyed_data_t*)event->data;
+
+  switch (data->scale) {
+    case LARGE_ASTEROID_SCALE:
+      play_bang_large(audio);
+      break;
+    case MEDIUM_ASTEROID_SCALE:
+      play_bang_medium(audio);
+      break;
+    case SMALL_ASTEROID_SCALE:
+      play_bang_small(audio);
+      break;
+  }
+}
+
+static void on_ship_destroyed(const game_event_t* event, void* user_data) {
+  audio_context_ptr audio = (audio_context_ptr)user_data;
+  (void)event;  // Unused
+  play_ship_lost(audio);
+}
+
+static void on_saucer_destroyed(const game_event_t* event, void* user_data) {
+  audio_context_ptr audio = (audio_context_ptr)user_data;
+  saucer_destroyed_data_t* data = (saucer_destroyed_data_t*)event->data;
+
+  if (data->is_big) {
+    play_saucer_big(audio);
+  } else {
+    play_saucer_small(audio);
+  }
+}
+
+void subscribe_audio_events(event_system_ptr events,
+                            audio_context_ptr audio) {
+  subscribe(events, GAME_EVENT_ASTEROID_DESTROYED, on_asteroid_destroyed,
+            audio);
+  subscribe(events, GAME_EVENT_SHIP_DESTROYED, on_ship_destroyed, audio);
+  subscribe(events, GAME_EVENT_SAUCER_DESTROYED, on_saucer_destroyed, audio);
 }

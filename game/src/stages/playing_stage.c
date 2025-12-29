@@ -11,6 +11,7 @@
 #include "frame.h"
 #include "frame_limiter.h"
 #include "game.h"
+#include "game_audio.h"
 #include "game_constants.h"
 #include "game_hud.h"
 #include "graphics.h"
@@ -52,21 +53,29 @@ playing_stage_state_ptr create_playing_stage(game_ptr game) {
   state->graphics_context = &game->graphics_context;
   state->audio_context = &game->audio_context;
 
+  // Create event system
+  state->event_system = create_event_system();
+
+  // Subscribe audio and scoring events
+  subscribe_audio_events(&state->event_system, state->audio_context);
+  subscribe_score_events(&state->event_system, game);
+
   state->sharpnel_system =
       create_sharpnel_system(state->graphics_context, MAX_SHARPNEL_COUNT);
   init_asteroid_manager(&state->asteroid_manager, game,
                         state->graphics_context, state->audio_context,
-                        state->sharpnel_system);
+                        state->sharpnel_system, &state->event_system);
   init_bullet_manager(&state->bullet_manager, game, state->graphics_context,
                       state->audio_context);
   init_saucer_manager(&state->saucer_manager, game, state->graphics_context,
                       state->audio_context, &state->bullet_manager,
-                      state->sharpnel_system);
+                      state->sharpnel_system, &state->event_system);
   init_game_hud(&state->game_hud, game, state->graphics_context);
 
   state->ship_controller = create_ship_controller(
       &state->ship, state->graphics_context, state->audio_context,
-      &state->bullet_manager, state->sharpnel_system, game->settings.volume);
+      &state->bullet_manager, state->sharpnel_system, &state->event_system,
+      game->settings.volume);
 
   return state;
 }
@@ -135,11 +144,6 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
     if (check_ship_bullet_saucer_collisions(&state->bullet_manager,
                                             &state->saucer_manager)) {
       destroy_saucer(&state->saucer_manager);
-      if (is_saucer_big(&state->saucer_manager)) {
-        score_large_saucer(state->game);
-      } else {
-        score_small_saucer(state->game);
-      }
     }
 
     // Handle ship destruction

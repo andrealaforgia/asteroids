@@ -3,6 +3,7 @@
 
 #include "asteroid_manager.h"
 #include "bullet_manager.h"
+#include "event_system.h"
 #include "game.h"
 #include "game_hud.h"
 #include "saucer_manager.h"
@@ -14,6 +15,7 @@ typedef struct {
   game_ptr game;
   graphics_context_ptr graphics_context;
   audio_context_ptr audio_context;
+  event_system_t event_system;
   asteroid_manager_t asteroid_manager;
   bullet_manager_t bullet_manager;
   saucer_manager_t saucer_manager;

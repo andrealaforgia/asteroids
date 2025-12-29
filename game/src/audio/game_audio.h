@@ -2,6 +2,7 @@
 #define GAME_SRC_AUDIO_GAME_AUDIO_H_
 
 #include "audio.h"
+#include "event_system.h"
 
 // Asteroids-specific sound indices
 typedef enum {
@@ -36,5 +37,9 @@ void play_saucer_small(const audio_context_ptr audio_context);
 void play_thrust(const audio_context_ptr audio_context);
 void play_game_over(const audio_context_ptr audio_context);
 void play_ship_lost(const audio_context_ptr audio_context);
+
+// Event subscriber functions
+void subscribe_audio_events(event_system_ptr events,
+                            audio_context_ptr audio);
 
 #endif  // GAME_SRC_AUDIO_GAME_AUDIO_H_

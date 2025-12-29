@@ -5,6 +5,7 @@
 
 #include "audio.h"
 #include "bullet_manager.h"
+#include "event_system.h"
 #include "geometry.h"
 #include "graphics.h"
 #include "ship.h"
@@ -16,6 +17,7 @@ typedef struct {
   audio_context_ptr audio_context;
   bullet_manager_ptr bullet_manager;
   sharpnel_system_ptr sharpnel_system;
+  event_system_ptr event_system;
   int volume;
 } ship_controller_t;
 
@@ -24,7 +26,8 @@ typedef ship_controller_t* ship_controller_ptr;
 ship_controller_t create_ship_controller(
     ship_ptr ship, graphics_context_ptr graphics,
     audio_context_ptr audio, bullet_manager_ptr bullets,
-    sharpnel_system_ptr sharpnel, int volume);
+    sharpnel_system_ptr sharpnel, event_system_ptr event_system,
+    int volume);
 
 void ship_controller_update(ship_controller_ptr controller, double delta_time);
 void ship_controller_handle_thrust(ship_controller_ptr controller);

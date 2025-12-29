@@ -4,6 +4,7 @@
 #include "clock.h"
 #include "game_audio.h"
 #include "game_constants.h"
+#include "game_events.h"
 #include "inline.h"
 #include "physics.h"
 #include "sprites.h"
@@ -15,13 +16,15 @@ static ALWAYS_INLINE bool sound_on(const ship_controller_ptr controller) {
 ship_controller_t create_ship_controller(
     ship_ptr ship, graphics_context_ptr graphics,
     audio_context_ptr audio, bullet_manager_ptr bullets,
-    sharpnel_system_ptr sharpnel, int volume) {
+    sharpnel_system_ptr sharpnel, event_system_ptr event_system,
+    int volume) {
   ship_controller_t controller;
   controller.ship = ship;
   controller.graphics_context = graphics;
   controller.audio_context = audio;
   controller.bullet_manager = bullets;
   controller.sharpnel_system = sharpnel;
+  controller.event_system = event_system;
   controller.volume = volume;
   return controller;
 }
@@ -78,9 +81,20 @@ bool ship_controller_is_destroyed(const ship_controller_ptr controller) {
 
 void ship_controller_handle_destruction(ship_controller_ptr controller) {
   add_sharpnel(controller->sharpnel_system, controller->ship->position);
-  if (sound_on(controller)) {
-    play_ship_lost(controller->audio_context);
-  }
+
+  // Publish ship destroyed event
+  ship_destroyed_data_t event_data = {
+    .position = controller->ship->position
+  };
+
+  game_event_t event = {
+    .type = GAME_EVENT_SHIP_DESTROYED,
+    .data = &event_data,
+    .data_size = sizeof(ship_destroyed_data_t)
+  };
+
+  publish(controller->event_system, &event);
+
   destroy_ship(controller->ship);
 }
 

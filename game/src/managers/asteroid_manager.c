@@ -4,21 +4,22 @@
 
 #include "animate.h"
 #include "color.h"
-#include "game_audio.h"
 #include "game_constants.h"
+#include "game_events.h"
 #include "physics.h"
 #include "sprites.h"
-#include "score.h"
 #include "sharpnel.h"
 
 void init_asteroid_manager(asteroid_manager_ptr manager, game_ptr game,
                             graphics_context_ptr graphics_context,
                             audio_context_ptr audio_context,
-                            sharpnel_system_ptr sharpnel_system) {
+                            sharpnel_system_ptr sharpnel_system,
+                            event_system_ptr event_system) {
   manager->game = game;
   manager->graphics_context = graphics_context;
   manager->audio_context = audio_context;
   manager->sharpnel_system = sharpnel_system;
+  manager->event_system = event_system;
   manager->pool = create_object_pool(sizeof(asteroid_t), MAX_ASTEROID_COUNT);
 }
 
@@ -61,10 +62,6 @@ void update_asteroids(asteroid_manager_ptr manager, double delta_time) {
   pool_foreach_active(&manager->pool, update_asteroid_with_delta, &ctx);
 }
 
-static ALWAYS_INLINE bool sound_on(const asteroid_manager_ptr manager) {
-  return manager->game->settings.volume > 0;
-}
-
 void break_asteroid_apart(asteroid_manager_ptr manager,
                           size_t asteroid_index) {
   asteroid_ptr asteroid = (asteroid_ptr)pool_get_at(&manager->pool, asteroid_index);
@@ -73,29 +70,19 @@ void break_asteroid_apart(asteroid_manager_ptr manager,
   }
   add_sharpnel(manager->sharpnel_system, asteroid->position);
 
-  switch (asteroid->scale) {
-    case LARGE_ASTEROID_SCALE: {
-      if (sound_on(manager)) {
-        play_bang_large(manager->audio_context);
-      }
-      score_large_asteroid(manager->game);
-      break;
-    }
-    case MEDIUM_ASTEROID_SCALE: {
-      if (sound_on(manager)) {
-        play_bang_medium(manager->audio_context);
-      }
-      score_medium_asteroid(manager->game);
-      break;
-    }
-    case SMALL_ASTEROID_SCALE: {
-      if (sound_on(manager)) {
-        play_bang_small(manager->audio_context);
-      }
-      score_small_asteroid(manager->game);
-      break;
-    }
-  }
+  // Publish asteroid destroyed event
+  asteroid_destroyed_data_t event_data = {
+    .position = asteroid->position,
+    .scale = asteroid->scale
+  };
+
+  game_event_t event = {
+    .type = GAME_EVENT_ASTEROID_DESTROYED,
+    .data = &event_data,
+    .data_size = sizeof(asteroid_destroyed_data_t)
+  };
+
+  publish(manager->event_system, &event);
 
   if (scale_down(asteroid)) {
     // Create two smaller asteroids at the same position

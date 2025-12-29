@@ -3,6 +3,7 @@
 
 #include "audio.h"
 #include "bullet_manager.h"
+#include "event_system.h"
 #include "game.h"
 #include "geometry.h"
 #include "graphics.h"
@@ -15,6 +16,7 @@ typedef struct {
   game_ptr game;
   bullet_manager_ptr bullet_manager;
   sharpnel_system_ptr sharpnel_system;
+  event_system_ptr event_system;
   saucer_t saucer;
   int last_travel_duration_msecs;
   int last_travel_start_ticks;
@@ -28,7 +30,8 @@ void init_saucer_manager(saucer_manager_ptr manager, game_ptr game,
                          graphics_context_ptr graphics_context,
                          audio_context_ptr audio_context,
                          bullet_manager_ptr bullet_manager,
-                         sharpnel_system_ptr sharpnel_system);
+                         sharpnel_system_ptr sharpnel_system,
+                         event_system_ptr event_system);
 
 // Reset saucer state
 void reset_saucer(saucer_manager_ptr manager);
