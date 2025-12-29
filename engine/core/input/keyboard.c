@@ -11,6 +11,7 @@
 #define LEFT_RIGHT_KEY_TICKS 15
 #define S_KEY_TICKS 150
 #define F11_KEY_TICKS 500  // Longer debounce for toggle actions
+#define RETURN_KEY_TICKS 300  // Debounce for stage transitions
 
 keyboard_state_t init_keyboard_state(void) {
   keyboard_state_t keyboard_state;
@@ -21,6 +22,7 @@ keyboard_state_t init_keyboard_state(void) {
   keyboard_state.right_key_last_ticks = get_clock_ticks_ms();
   keyboard_state.s_key_last_ticks = get_clock_ticks_ms();
   keyboard_state.f11_key_last_ticks = get_clock_ticks_ms();
+  keyboard_state.return_key_last_ticks = get_clock_ticks_ms();
   return keyboard_state;
 }
 
@@ -74,7 +76,13 @@ ALWAYS_INLINE bool is_esc_key_pressed(const keyboard_state_ptr keyboard_state) {
 
 ALWAYS_INLINE bool is_return_key_pressed(
     const keyboard_state_ptr keyboard_state) {
-  return keyboard_state->keys[SDL_SCANCODE_RETURN];
+  if (keyboard_state->keys[SDL_SCANCODE_RETURN] &&
+      elapsed_from(keyboard_state->return_key_last_ticks) >
+          RETURN_KEY_TICKS) {
+    keyboard_state->return_key_last_ticks = get_clock_ticks_ms();
+    return true;
+  }
+  return false;
 }
 
 ALWAYS_INLINE bool is_s_key_pressed(const keyboard_state_ptr keyboard_state) {
