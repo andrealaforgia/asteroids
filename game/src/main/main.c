@@ -6,67 +6,53 @@
 
 #include "command_line.h"
 #include "game.h"
-#include "game_over_stage.h"
 #include "graphics.h"
-#include "intro_stage.h"
 #include "logger.h"
-#include "playing_stage.h"
+#include "stage.h"
 
 static void run_game(const game_ptr game) {
-  game_stage_t game_stage = INTRO;
+  // Create stage instances
+  stage_ptr stages[3] = {create_intro_stage_instance(),
+                         create_playing_stage_instance(),
+                         create_game_over_stage_instance()};
 
-  intro_stage_state_ptr intro_stage = create_intro_stage(game);
-  playing_stage_state_ptr playing_stage = create_playing_stage(game);
-  game_over_stage_state_ptr game_over_stage = create_game_over_stage(game);
+  // Start with intro stage
+  int current_stage_index = 0;
+  stage_ptr current_stage = stages[current_stage_index];
+  current_stage->init(current_stage, game);
 
   while (true) {
-    switch (game_stage) {
-      case INTRO: {
-        game_stage_action_t action = handle_intro_stage(intro_stage);
-        switch (action) {
-          case PROGRESS:
-            game_stage = PLAYING;
-            break;
-          case QUIT:
-            destroy_intro_stage(intro_stage);
-            destroy_playing_stage(playing_stage);
-            destroy_game_over_stage(game_over_stage);
-            return;
-        }
-        break;
-      }
+    game_stage_action_t action = current_stage->update(current_stage);
 
-      case PLAYING: {
-        game_stage_action_t action = handle_playing_stage(playing_stage);
-        switch (action) {
-          case PROGRESS:
-            game_stage = GAME_OVER;
-            break;
-          case QUIT:
-            destroy_intro_stage(intro_stage);
-            destroy_playing_stage(playing_stage);
-            destroy_game_over_stage(game_over_stage);
-            return;
-        }
-        break;
-      }
-
-      case GAME_OVER: {
-        game_stage_action_t action = handle_game_over_stage(game_over_stage);
-        switch (action) {
-          case PROGRESS:
-            game_stage = PLAYING;
-            reset_game(game);
-            break;
-          case QUIT:
-            destroy_intro_stage(intro_stage);
-            destroy_playing_stage(playing_stage);
-            destroy_game_over_stage(game_over_stage);
-            return;
-        }
-        break;
-      }
+    if (action == QUIT) {
+      current_stage->cleanup(current_stage);
+      break;
     }
+
+    if (action == PROGRESS) {
+      current_stage->cleanup(current_stage);
+
+      // Determine next stage
+      if (current_stage_index == 0) {
+        // INTRO -> PLAYING
+        current_stage_index = 1;
+      } else if (current_stage_index == 1) {
+        // PLAYING -> GAME_OVER
+        current_stage_index = 2;
+      } else {
+        // GAME_OVER -> PLAYING
+        current_stage_index = 1;
+        reset_game(game);
+      }
+
+      current_stage = stages[current_stage_index];
+      current_stage->init(current_stage, game);
+    }
+  }
+
+  // Cleanup all stages
+  for (int i = 0; i < 3; i++) {
+    destroy_stage(stages[i]);
   }
 }
 

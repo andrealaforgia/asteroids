@@ -20,6 +20,7 @@
 #include "ship_controller.h"
 #include "sharpnel.h"
 #include "ship.h"
+#include "stage.h"
 
 /* ---- ==== ---- ==== helper functions ==== ---- ==== ---- */
 
@@ -189,4 +190,32 @@ game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
     }
   }
   return QUIT;
+}
+
+/* ---- ==== Stage Interface Implementation ==== ---- */
+
+static void playing_init(stage_ptr stage, game_ptr game) {
+  playing_stage_state_ptr state = create_playing_stage(game);
+  stage->state = state;
+}
+
+static game_stage_action_t playing_update(stage_ptr stage) {
+  playing_stage_state_ptr state = (playing_stage_state_ptr)stage->state;
+  return handle_playing_stage(state);
+}
+
+static void playing_cleanup(stage_ptr stage) {
+  playing_stage_state_ptr state = (playing_stage_state_ptr)stage->state;
+  destroy_playing_stage(state);
+  stage->state = NULL;
+}
+
+stage_ptr create_playing_stage_instance(void) {
+  stage_ptr stage = malloc(sizeof(stage_t));
+  stage->state = NULL;
+  stage->init = playing_init;
+  stage->update = playing_update;
+  stage->cleanup = playing_cleanup;
+  stage->name = "PLAYING";
+  return stage;
 }

@@ -18,6 +18,7 @@
 #include "keyboard.h"
 #include "physics.h"
 #include "sprites.h"
+#include "stage.h"
 #include "string.h"
 #include "text.h"
 
@@ -168,4 +169,32 @@ game_stage_action_t handle_game_over_stage(game_over_stage_state_ptr state) {
       return QUIT;
     }
   }
+}
+
+/* ---- ==== Stage Interface Implementation ==== ---- */
+
+static void game_over_init(stage_ptr stage, game_ptr game) {
+  game_over_stage_state_ptr state = create_game_over_stage(game);
+  stage->state = state;
+}
+
+static game_stage_action_t game_over_update(stage_ptr stage) {
+  game_over_stage_state_ptr state = (game_over_stage_state_ptr)stage->state;
+  return handle_game_over_stage(state);
+}
+
+static void game_over_cleanup(stage_ptr stage) {
+  game_over_stage_state_ptr state = (game_over_stage_state_ptr)stage->state;
+  destroy_game_over_stage(state);
+  stage->state = NULL;
+}
+
+stage_ptr create_game_over_stage_instance(void) {
+  stage_ptr stage = malloc(sizeof(stage_t));
+  stage->state = NULL;
+  stage->init = game_over_init;
+  stage->update = game_over_update;
+  stage->cleanup = game_over_cleanup;
+  stage->name = "GAME_OVER";
+  return stage;
 }

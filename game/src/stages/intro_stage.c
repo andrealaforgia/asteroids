@@ -18,6 +18,7 @@
 #include "physics.h"
 #include "sprites.h"
 #include "saucer.h"
+#include "stage.h"
 #include "text.h"
 
 #define TITLE_TEXT "ASTEROIDS"
@@ -96,6 +97,34 @@ void destroy_intro_stage(intro_stage_state_ptr state) {
   if (state != NULL) {
     free(state);
   }
+}
+
+/* ---- ==== Stage Interface Implementation ==== ---- */
+
+static void intro_init(stage_ptr stage, game_ptr game) {
+  intro_stage_state_ptr state = create_intro_stage(game);
+  stage->state = state;
+}
+
+static game_stage_action_t intro_update(stage_ptr stage) {
+  intro_stage_state_ptr state = (intro_stage_state_ptr)stage->state;
+  return handle_intro_stage(state);
+}
+
+static void intro_cleanup(stage_ptr stage) {
+  intro_stage_state_ptr state = (intro_stage_state_ptr)stage->state;
+  destroy_intro_stage(state);
+  stage->state = NULL;
+}
+
+stage_ptr create_intro_stage_instance(void) {
+  stage_ptr stage = malloc(sizeof(stage_t));
+  stage->state = NULL;
+  stage->init = intro_init;
+  stage->update = intro_update;
+  stage->cleanup = intro_cleanup;
+  stage->name = "INTRO";
+  return stage;
 }
 
 game_stage_action_t handle_intro_stage(intro_stage_state_ptr state) {
