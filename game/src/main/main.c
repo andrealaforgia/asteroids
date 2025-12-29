@@ -15,20 +15,22 @@
 static void run_game(const game_ptr game) {
   game_stage_t game_stage = INTRO;
 
-  init_intro_stage(game);
+  intro_stage_state_ptr intro_stage = create_intro_stage(game);
   playing_stage_state_ptr playing_stage = create_playing_stage(game);
-  init_game_over_stage(game);
+  game_over_stage_state_ptr game_over_stage = create_game_over_stage(game);
 
   while (true) {
     switch (game_stage) {
       case INTRO: {
-        game_stage_action_t action = handle_intro_stage();
+        game_stage_action_t action = handle_intro_stage(intro_stage);
         switch (action) {
           case PROGRESS:
             game_stage = PLAYING;
             break;
           case QUIT:
+            destroy_intro_stage(intro_stage);
             destroy_playing_stage(playing_stage);
+            destroy_game_over_stage(game_over_stage);
             return;
         }
         break;
@@ -41,21 +43,25 @@ static void run_game(const game_ptr game) {
             game_stage = GAME_OVER;
             break;
           case QUIT:
+            destroy_intro_stage(intro_stage);
             destroy_playing_stage(playing_stage);
+            destroy_game_over_stage(game_over_stage);
             return;
         }
         break;
       }
 
       case GAME_OVER: {
-        game_stage_action_t action = handle_game_over_stage();
+        game_stage_action_t action = handle_game_over_stage(game_over_stage);
         switch (action) {
           case PROGRESS:
             game_stage = PLAYING;
             reset_game(game);
             break;
           case QUIT:
+            destroy_intro_stage(intro_stage);
             destroy_playing_stage(playing_stage);
+            destroy_game_over_stage(game_over_stage);
             return;
         }
         break;

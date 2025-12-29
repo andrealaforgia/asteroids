@@ -23,143 +23,128 @@
 
 #define TITLE_TEXT "GAME OVER"
 #define ACTION_TEXT "PRESS RETURN TO RESTART GAME"
-#define action_text_FLASHING_TICKS 750
+#define ACTION_TEXT_FLASHING_TICKS 750
 
-static game_ptr game = NULL;
-static graphics_context_ptr graphics_context = NULL;
-static audio_context_ptr audio_context = NULL;
+game_over_stage_state_ptr create_game_over_stage(game_ptr game) {
+  game_over_stage_state_ptr state = malloc(sizeof(game_over_stage_state_t));
+  state->game = game;
+  state->graphics_context = &game->graphics_context;
+  state->audio_context = &game->audio_context;
 
-static int title_text_scale;
-static text_dimensions_t title_text_dimensions;
-static point_t title_text_position;
+  state->score_text_scale = (state->graphics_context->screen_height * 5) / 450;
+  state->title_text_scale = (state->graphics_context->screen_height * 25) / 900;
+  state->title_text_dimensions =
+      calculate_text_dimensions(TITLE_TEXT, state->title_text_scale);
+  state->title_text_position = point(
+      state->graphics_context->screen_center.x - state->title_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 6);
 
-static int score_text_scale;
-static char score_text[100] = {0};
+  state->action_text_scale = (state->graphics_context->screen_height * 10) / 900;
+  state->action_text_dimensions =
+      calculate_text_dimensions(ACTION_TEXT, state->action_text_scale);
+  state->action_text_position = point(
+      state->graphics_context->screen_center.x - state->action_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y + state->graphics_context->screen_height / 6);
 
-static int action_text_scale;
-static text_dimensions_t action_text_dimensions;
-static point_t action_text_position;
-static bool is_action_text_on = true;
-static int last_action_text_ticks = 0;
+  state->copyright_text_scale = (state->graphics_context->screen_height * 5) / 900;
+  state->copyright_text_dimensions =
+      calculate_text_dimensions(COPYRIGHT_TEXT, state->copyright_text_scale);
 
-static int copyright_text_scale;
-static text_dimensions_t copyright_text_dimensions;
+  state->is_action_text_on = true;
+  state->last_action_text_ticks = 0;
+  memset(state->score_text, 0, sizeof(state->score_text));
 
-#define ASTEROIDS_COUNT 100
-static asteroid_t asteroids[ASTEROIDS_COUNT];
-
-void init_game_over_stage(const game_ptr _game) {
-  game = _game;
-  graphics_context = &game->graphics_context;
-  audio_context = &game->audio_context;
-
-  score_text_scale = (graphics_context->screen_height * 5) / 450;
-
-  title_text_scale = (graphics_context->screen_height * 25) / 900;
-
-  title_text_dimensions =
-      calculate_text_dimensions(TITLE_TEXT, title_text_scale);
-
-  title_text_position = point(
-      graphics_context->screen_center.x - title_text_dimensions.width / 2,
-      graphics_context->screen_center.y - graphics_context->screen_height / 6);
-
-  action_text_scale = (graphics_context->screen_height * 10) / 900;
-
-  action_text_dimensions =
-      calculate_text_dimensions(ACTION_TEXT, action_text_scale);
-
-  action_text_position = point(
-      graphics_context->screen_center.x - action_text_dimensions.width / 2,
-      graphics_context->screen_center.y + graphics_context->screen_height / 6);
-
-  copyright_text_scale = (graphics_context->screen_height * 5) / 900;
-
-  copyright_text_dimensions =
-      calculate_text_dimensions(COPYRIGHT_TEXT, copyright_text_scale);
+  return state;
 }
 
-static void play_game_over_if_sound_on(void) {
-  if (game->settings.volume > 0) {
-    play_game_over(audio_context);
+void destroy_game_over_stage(game_over_stage_state_ptr state) {
+  if (state != NULL) {
+    free(state);
   }
 }
 
-static ALWAYS_INLINE void create_asteroids(void) {
-  for (size_t i = 0; i < ASTEROIDS_COUNT; i++) {
-    asteroids[i] = create_asteroid(random_point(graphics_context),
+static void play_game_over_if_sound_on(game_over_stage_state_ptr state) {
+  if (state->game->settings.volume > 0) {
+    play_game_over(state->audio_context);
+  }
+}
+
+static ALWAYS_INLINE void create_asteroids(game_over_stage_state_ptr state) {
+  for (size_t i = 0; i < GAME_OVER_ASTEROIDS_COUNT; i++) {
+    state->asteroids[i] = create_asteroid(random_point(state->graphics_context),
                                    random_asteroid_scale(), random_color());
   }
 }
 
-static ALWAYS_INLINE void animate_asteroids(double delta_time) {
-  for (size_t i = 0; i < ASTEROIDS_COUNT; i++) {
-    const asteroid_ptr asteroid = &asteroids[i];
-    wrap_animate(graphics_context, &asteroid->position, &asteroid->velocity,
+static ALWAYS_INLINE void animate_asteroids(game_over_stage_state_ptr state,
+                                             double delta_time) {
+  for (size_t i = 0; i < GAME_OVER_ASTEROIDS_COUNT; i++) {
+    const asteroid_ptr asteroid = &state->asteroids[i];
+    wrap_animate(state->graphics_context, &asteroid->position, &asteroid->velocity,
                  delta_time);
-    render_asteroid(graphics_context, asteroid);
+    render_asteroid(state->graphics_context, asteroid);
   }
 }
 
-static ALWAYS_INLINE void show_score(void) {
-  snprintf(score_text, sizeof score_text, "SCORE %d", game->score);
+static ALWAYS_INLINE void show_score(game_over_stage_state_ptr state) {
+  snprintf(state->score_text, sizeof state->score_text, "SCORE %d", state->game->score);
   text_dimensions_t score_text_dimensions =
-      calculate_text_dimensions(score_text, score_text_scale);
+      calculate_text_dimensions(state->score_text, state->score_text_scale);
   point_t score_text_position =
-      point(graphics_context->screen_center.x - score_text_dimensions.width / 2,
-            graphics_context->screen_center.y);
-  write_text(graphics_context, score_text, score_text_position,
-             score_text_scale, COLOR_YELLOW);
+      point(state->graphics_context->screen_center.x - score_text_dimensions.width / 2,
+            state->graphics_context->screen_center.y);
+  write_text(state->graphics_context, state->score_text, score_text_position,
+             state->score_text_scale, COLOR_YELLOW);
 }
 
-static ALWAYS_INLINE void show_copyright(void) {
-  write_text(graphics_context, COPYRIGHT_TEXT,
-             point(graphics_context->screen_center.x -
-                       copyright_text_dimensions.width / 2,
-                   graphics_context->screen_height -
-                       copyright_text_dimensions.height - 5),
-             copyright_text_scale, COLOR_DARK_YELLOW);
+static ALWAYS_INLINE void show_copyright(game_over_stage_state_ptr state) {
+  write_text(state->graphics_context, COPYRIGHT_TEXT,
+             point(state->graphics_context->screen_center.x -
+                       state->copyright_text_dimensions.width / 2,
+                   state->graphics_context->screen_height -
+                       state->copyright_text_dimensions.height - 5),
+             state->copyright_text_scale, COLOR_DARK_YELLOW);
 }
 
-static ALWAYS_INLINE void animate_action_text(void) {
-  if (elapsed_from(last_action_text_ticks) > action_text_FLASHING_TICKS) {
-    is_action_text_on = !is_action_text_on;
-    last_action_text_ticks = get_clock_ticks_ms();
+static ALWAYS_INLINE void animate_action_text(game_over_stage_state_ptr state) {
+  if (elapsed_from(state->last_action_text_ticks) > ACTION_TEXT_FLASHING_TICKS) {
+    state->is_action_text_on = !state->is_action_text_on;
+    state->last_action_text_ticks = get_clock_ticks_ms();
   }
-  if (is_action_text_on) {
-    write_text(graphics_context, ACTION_TEXT, action_text_position,
-               action_text_scale, COLOR_WHITE);
+  if (state->is_action_text_on) {
+    write_text(state->graphics_context, ACTION_TEXT, state->action_text_position,
+               state->action_text_scale, COLOR_WHITE);
   }
 }
 
-static ALWAYS_INLINE void show_title_text(void) {
-  write_text(graphics_context, TITLE_TEXT, title_text_position,
-             title_text_scale, COLOR_YELLOW);
+static ALWAYS_INLINE void show_title_text(game_over_stage_state_ptr state) {
+  write_text(state->graphics_context, TITLE_TEXT, state->title_text_position,
+             state->title_text_scale, COLOR_YELLOW);
 }
 
-game_stage_action_t handle_game_over_stage(void) {
-  play_game_over_if_sound_on();
+game_stage_action_t handle_game_over_stage(game_over_stage_state_ptr state) {
+  play_game_over_if_sound_on(state);
 
-  frame_limiter_t frame_limiter = create_frame_limiter(game->settings.fps);
+  frame_limiter_t frame_limiter = create_frame_limiter(state->game->settings.fps);
 
-  create_asteroids();
+  create_asteroids(state);
 
   while (true) {
     double delta_time = frame_limiter_wait(&frame_limiter);
 
-    clear_frame(graphics_context);
+    clear_frame(state->graphics_context);
 
-    animate_asteroids(delta_time);
+    animate_asteroids(state, delta_time);
 
-    animate_action_text();
+    animate_action_text(state);
 
-    show_title_text();
+    show_title_text(state);
 
-    show_score();
+    show_score(state);
 
-    show_copyright();
+    show_copyright(state);
 
-    render_frame(graphics_context);
+    render_frame(state->graphics_context);
 
     event_t event;
 
@@ -175,11 +160,11 @@ game_stage_action_t handle_game_over_stage(void) {
       }
     }
 
-    if (is_return_key_pressed(&game->keyboard_state)) {
+    if (is_return_key_pressed(&state->game->keyboard_state)) {
       return PROGRESS;
     }
 
-    if (is_esc_key_pressed(&game->keyboard_state)) {
+    if (is_esc_key_pressed(&state->game->keyboard_state)) {
       return QUIT;
     }
   }

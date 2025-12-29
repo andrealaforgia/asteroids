@@ -30,131 +30,115 @@
 #define INSTRUCTIONS_TEXT_3 "     PRESS S TO ENABLE OR DISABLE SOUND     "
 #define INSTRUCTIONS_TEXT_4 "              PRESS ESC TO EXIT             "
 
-#define ASTEROIDS_COUNT 150
+intro_stage_state_ptr create_intro_stage(game_ptr game) {
+  intro_stage_state_ptr state = malloc(sizeof(intro_stage_state_t));
+  state->game = game;
+  state->graphics_context = &game->graphics_context;
 
-static game_ptr game = NULL;
-static graphics_context_ptr graphics_context = NULL;
+  state->title_text_scale = (state->graphics_context->screen_height * 25) / 900;
+  state->title_text_dimensions =
+      calculate_text_dimensions(TITLE_TEXT, state->title_text_scale);
+  state->title_text_position = point(
+      state->graphics_context->screen_center.x - state->title_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 3);
 
-static int title_text_scale;
-static text_dimensions_t title_text_dimensions;
-static point_t title_text_position;
+  state->action_text_scale = (state->graphics_context->screen_height * 10) / 900;
+  state->action_text_dimensions =
+      calculate_text_dimensions(ACTION_TEXT, state->action_text_scale);
+  state->action_text_position = point(
+      state->graphics_context->screen_center.x - state->action_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y + state->graphics_context->screen_height / 6);
 
-static int instructions_text_scale;
-static text_dimensions_t instructions_text_dimensions;
-static point_t instructions_text_0_position;
-static point_t instructions_text_1_position;
-static point_t instructions_text_2_position;
-static point_t instructions_text_3_position;
-static point_t instructions_text_4_position;
+  state->instructions_text_scale = (state->graphics_context->screen_height * 10) / 900;
+  state->instructions_text_dimensions =
+      calculate_text_dimensions(INSTRUCTIONS_TEXT_0, state->instructions_text_scale);
+  state->instructions_text_0_position = point(
+      state->graphics_context->screen_center.x -
+          state->instructions_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4);
 
-static int action_text_scale;
-static text_dimensions_t action_text_dimensions;
-static point_t action_text_position;
+  state->instructions_text_1_position = point(
+      state->graphics_context->screen_center.x -
+          state->instructions_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4 +
+          state->instructions_text_dimensions.height +
+          state->instructions_text_dimensions.height / 2);
 
-static text_dimensions_t copyright_text_dimensions;
-static int copyright_text_scale;
+  state->instructions_text_2_position = point(
+      state->graphics_context->screen_center.x -
+          state->instructions_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4 +
+          state->instructions_text_dimensions.height * 2 +
+          2 * state->instructions_text_dimensions.height / 2);
 
-void init_intro_stage(const game_ptr _game) {
-  game = _game;
-  graphics_context = &game->graphics_context;
+  state->instructions_text_3_position = point(
+      state->graphics_context->screen_center.x -
+          state->instructions_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4 +
+          state->instructions_text_dimensions.height * 3 +
+          3 * state->instructions_text_dimensions.height / 2);
 
-  title_text_scale = (graphics_context->screen_height * 25) / 900;
-  title_text_dimensions =
-      calculate_text_dimensions(TITLE_TEXT, title_text_scale);
-  title_text_position = point(
-      graphics_context->screen_center.x - title_text_dimensions.width / 2,
-      graphics_context->screen_center.y - graphics_context->screen_height / 3);
+  state->instructions_text_4_position = point(
+      state->graphics_context->screen_center.x -
+          state->instructions_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4 +
+          state->instructions_text_dimensions.height * 4 +
+          4 * state->instructions_text_dimensions.height / 2);
 
-  action_text_scale = (graphics_context->screen_height * 10) / 900;
-  action_text_dimensions =
-      calculate_text_dimensions(ACTION_TEXT, action_text_scale);
-  action_text_position = point(
-      graphics_context->screen_center.x - action_text_dimensions.width / 2,
-      graphics_context->screen_center.y + graphics_context->screen_height / 6);
+  state->copyright_text_scale = (state->graphics_context->screen_height * 5) / 900;
+  state->copyright_text_dimensions =
+      calculate_text_dimensions(COPYRIGHT_TEXT, state->copyright_text_scale);
 
-  instructions_text_scale = (graphics_context->screen_height * 10) / 900;
-  instructions_text_dimensions =
-      calculate_text_dimensions(INSTRUCTIONS_TEXT_0, instructions_text_scale);
-  instructions_text_0_position = point(
-      graphics_context->screen_center.x -
-          instructions_text_dimensions.width / 2,
-      graphics_context->screen_center.y - graphics_context->screen_height / 4);
-
-  instructions_text_1_position = point(
-      graphics_context->screen_center.x -
-          instructions_text_dimensions.width / 2,
-      graphics_context->screen_center.y - graphics_context->screen_height / 4 +
-          instructions_text_dimensions.height +
-          instructions_text_dimensions.height / 2);
-
-  instructions_text_2_position = point(
-      graphics_context->screen_center.x -
-          instructions_text_dimensions.width / 2,
-      graphics_context->screen_center.y - graphics_context->screen_height / 4 +
-          instructions_text_dimensions.height * 2 +
-          2 * instructions_text_dimensions.height / 2);
-
-  instructions_text_3_position = point(
-      graphics_context->screen_center.x -
-          instructions_text_dimensions.width / 2,
-      graphics_context->screen_center.y - graphics_context->screen_height / 4 +
-          instructions_text_dimensions.height * 3 +
-          3 * instructions_text_dimensions.height / 2);
-
-  instructions_text_4_position = point(
-      graphics_context->screen_center.x -
-          instructions_text_dimensions.width / 2,
-      graphics_context->screen_center.y - graphics_context->screen_height / 4 +
-          instructions_text_dimensions.height * 4 +
-          4 * instructions_text_dimensions.height / 2);
-
-  copyright_text_scale = (graphics_context->screen_height * 5) / 900;
-  copyright_text_dimensions =
-      calculate_text_dimensions(COPYRIGHT_TEXT, copyright_text_scale);
+  return state;
 }
 
-game_stage_action_t handle_intro_stage(void) {
+void destroy_intro_stage(intro_stage_state_ptr state) {
+  if (state != NULL) {
+    free(state);
+  }
+}
+
+game_stage_action_t handle_intro_stage(intro_stage_state_ptr state) {
   int last_action_text_ticks = get_clock_ticks_ms();
 
   bool is_action_text_on = true;
 
-  asteroid_t asteroids[ASTEROIDS_COUNT];
-  for (int i = 0; i < ASTEROIDS_COUNT; i++) {
-    asteroids[i] = create_asteroid(random_point(graphics_context),
+  for (int i = 0; i < INTRO_ASTEROIDS_COUNT; i++) {
+    state->asteroids[i] = create_asteroid(random_point(state->graphics_context),
                                    random_asteroid_scale(), random_color());
   }
 
-  frame_limiter_t frame_limiter = create_frame_limiter(game->settings.fps);
+  frame_limiter_t frame_limiter = create_frame_limiter(state->game->settings.fps);
 
   while (true) {
     double delta_time = frame_limiter_wait(&frame_limiter);
 
-    clear_frame(graphics_context);
+    clear_frame(state->graphics_context);
 
-    for (int i = 0; i < ASTEROIDS_COUNT; i++) {
-      wrap_animate(graphics_context, &asteroids[i].position,
-                   &asteroids[i].velocity, delta_time);
-      render_asteroid(graphics_context, &asteroids[i]);
+    for (int i = 0; i < INTRO_ASTEROIDS_COUNT; i++) {
+      wrap_animate(state->graphics_context, &state->asteroids[i].position,
+                   &state->asteroids[i].velocity, delta_time);
+      render_asteroid(state->graphics_context, &state->asteroids[i]);
     }
 
-    write_text(graphics_context, INSTRUCTIONS_TEXT_0,
-               instructions_text_0_position, instructions_text_scale,
+    write_text(state->graphics_context, INSTRUCTIONS_TEXT_0,
+               state->instructions_text_0_position, state->instructions_text_scale,
                COLOR_GRAY);
 
-    write_text(graphics_context, INSTRUCTIONS_TEXT_1,
-               instructions_text_1_position, instructions_text_scale,
+    write_text(state->graphics_context, INSTRUCTIONS_TEXT_1,
+               state->instructions_text_1_position, state->instructions_text_scale,
                COLOR_GRAY);
 
-    write_text(graphics_context, INSTRUCTIONS_TEXT_2,
-               instructions_text_2_position, instructions_text_scale,
+    write_text(state->graphics_context, INSTRUCTIONS_TEXT_2,
+               state->instructions_text_2_position, state->instructions_text_scale,
                COLOR_GRAY);
 
-    write_text(graphics_context, INSTRUCTIONS_TEXT_3,
-               instructions_text_3_position, instructions_text_scale,
+    write_text(state->graphics_context, INSTRUCTIONS_TEXT_3,
+               state->instructions_text_3_position, state->instructions_text_scale,
                COLOR_GRAY);
 
-    write_text(graphics_context, INSTRUCTIONS_TEXT_4,
-               instructions_text_4_position, instructions_text_scale,
+    write_text(state->graphics_context, INSTRUCTIONS_TEXT_4,
+               state->instructions_text_4_position, state->instructions_text_scale,
                COLOR_GRAY);
 
     if (elapsed_from(last_action_text_ticks) > ACTION_TEXT_FLASHING_TICKS) {
@@ -162,22 +146,22 @@ game_stage_action_t handle_intro_stage(void) {
       last_action_text_ticks = get_clock_ticks_ms();
     }
 
-    write_text(graphics_context, TITLE_TEXT, title_text_position,
-               title_text_scale, COLOR_YELLOW);
+    write_text(state->graphics_context, TITLE_TEXT, state->title_text_position,
+               state->title_text_scale, COLOR_YELLOW);
 
     if (is_action_text_on) {
-      write_text(graphics_context, ACTION_TEXT, action_text_position,
-                 action_text_scale, COLOR_WHITE);
+      write_text(state->graphics_context, ACTION_TEXT, state->action_text_position,
+                 state->action_text_scale, COLOR_WHITE);
     }
 
-    write_text(graphics_context, COPYRIGHT_TEXT,
-               point(graphics_context->screen_center.x -
-                         copyright_text_dimensions.width / 2,
-                     graphics_context->screen_height -
-                         copyright_text_dimensions.height - 5),
-               copyright_text_scale, COLOR_DARK_YELLOW);
+    write_text(state->graphics_context, COPYRIGHT_TEXT,
+               point(state->graphics_context->screen_center.x -
+                         state->copyright_text_dimensions.width / 2,
+                     state->graphics_context->screen_height -
+                         state->copyright_text_dimensions.height - 5),
+               state->copyright_text_scale, COLOR_DARK_YELLOW);
 
-    render_frame(graphics_context);
+    render_frame(state->graphics_context);
 
     event_t event;
 
@@ -193,20 +177,20 @@ game_stage_action_t handle_intro_stage(void) {
       }
     }
 
-    if (is_space_key_pressed(&game->keyboard_state)) {
+    if (is_space_key_pressed(&state->game->keyboard_state)) {
       return PROGRESS;
     }
 
-    if (is_s_key_pressed(&game->keyboard_state)) {
+    if (is_s_key_pressed(&state->game->keyboard_state)) {
       // Toggle sound: if volume > 0, mute; otherwise set to default
-      if (game->settings.volume > 0) {
-        game->settings.volume = 0;
+      if (state->game->settings.volume > 0) {
+        state->game->settings.volume = 0;
       } else {
-        game->settings.volume = 50;  // Default volume
+        state->game->settings.volume = 50;  // Default volume
       }
     }
 
-    if (is_esc_key_pressed(&game->keyboard_state)) {
+    if (is_esc_key_pressed(&state->game->keyboard_state)) {
       return QUIT;
     }
   }
