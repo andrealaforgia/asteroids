@@ -37,57 +37,70 @@ intro_stage_state_ptr create_intro_stage(game_ptr game) {
   state->game = game;
   state->graphics_context = &game->graphics_context;
 
-  state->title_text_scale = (state->graphics_context->screen_height * 25) / 900;
+  state->title_text_scale =
+      (state->graphics_context->screen_height * 25) / 900;
   state->title_text_dimensions =
       calculate_text_dimensions(TITLE_TEXT, state->title_text_scale);
   state->title_text_position = point(
-      state->graphics_context->screen_center.x - state->title_text_dimensions.width / 2,
-      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 3);
+      state->graphics_context->screen_center.x -
+          state->title_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y -
+          state->graphics_context->screen_height / 3);
 
-  state->action_text_scale = (state->graphics_context->screen_height * 10) / 900;
+  state->action_text_scale =
+      (state->graphics_context->screen_height * 10) / 900;
   state->action_text_dimensions =
       calculate_text_dimensions(ACTION_TEXT, state->action_text_scale);
   state->action_text_position = point(
-      state->graphics_context->screen_center.x - state->action_text_dimensions.width / 2,
-      state->graphics_context->screen_center.y + state->graphics_context->screen_height / 6);
+      state->graphics_context->screen_center.x -
+          state->action_text_dimensions.width / 2,
+      state->graphics_context->screen_center.y +
+          state->graphics_context->screen_height / 6);
 
-  state->instructions_text_scale = (state->graphics_context->screen_height * 10) / 900;
-  state->instructions_text_dimensions =
-      calculate_text_dimensions(INSTRUCTIONS_TEXT_0, state->instructions_text_scale);
+  state->instructions_text_scale =
+      (state->graphics_context->screen_height * 10) / 900;
+  state->instructions_text_dimensions = calculate_text_dimensions(
+      INSTRUCTIONS_TEXT_0, state->instructions_text_scale);
   state->instructions_text_0_position = point(
       state->graphics_context->screen_center.x -
           state->instructions_text_dimensions.width / 2,
-      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4);
+      state->graphics_context->screen_center.y -
+          state->graphics_context->screen_height / 4);
 
   state->instructions_text_1_position = point(
       state->graphics_context->screen_center.x -
           state->instructions_text_dimensions.width / 2,
-      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4 +
+      state->graphics_context->screen_center.y -
+          state->graphics_context->screen_height / 4 +
           state->instructions_text_dimensions.height +
           state->instructions_text_dimensions.height / 2);
 
   state->instructions_text_2_position = point(
       state->graphics_context->screen_center.x -
           state->instructions_text_dimensions.width / 2,
-      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4 +
+      state->graphics_context->screen_center.y -
+          state->graphics_context->screen_height / 4 +
           state->instructions_text_dimensions.height * 2 +
           2 * state->instructions_text_dimensions.height / 2);
 
   state->instructions_text_3_position = point(
       state->graphics_context->screen_center.x -
           state->instructions_text_dimensions.width / 2,
-      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4 +
+      state->graphics_context->screen_center.y -
+          state->graphics_context->screen_height / 4 +
           state->instructions_text_dimensions.height * 3 +
           3 * state->instructions_text_dimensions.height / 2);
 
   state->instructions_text_4_position = point(
       state->graphics_context->screen_center.x -
           state->instructions_text_dimensions.width / 2,
-      state->graphics_context->screen_center.y - state->graphics_context->screen_height / 4 +
+      state->graphics_context->screen_center.y -
+          state->graphics_context->screen_height / 4 +
           state->instructions_text_dimensions.height * 4 +
           4 * state->instructions_text_dimensions.height / 2);
 
-  state->copyright_text_scale = (state->graphics_context->screen_height * 5) / 900;
+  state->copyright_text_scale =
+      (state->graphics_context->screen_height * 5) / 900;
   state->copyright_text_dimensions =
       calculate_text_dimensions(COPYRIGHT_TEXT, state->copyright_text_scale);
 
@@ -136,7 +149,8 @@ game_stage_action_t handle_intro_stage(intro_stage_state_ptr state) {
   init_background_asteroids(state->asteroids, INTRO_ASTEROIDS_COUNT,
                              state->graphics_context);
 
-  frame_limiter_t frame_limiter = create_frame_limiter(state->game->settings.fps);
+  frame_limiter_t frame_limiter =
+      create_frame_limiter(state->game->settings.fps);
 
   while (true) {
     double delta_time = frame_limiter_wait(&frame_limiter);
@@ -147,36 +161,39 @@ game_stage_action_t handle_intro_stage(intro_stage_state_ptr state) {
                                   state->graphics_context, delta_time);
 
     write_text(state->graphics_context, INSTRUCTIONS_TEXT_0,
-               state->instructions_text_0_position, state->instructions_text_scale,
-               COLOR_GRAY);
+               state->instructions_text_0_position,
+               state->instructions_text_scale, COLOR_GRAY);
 
     write_text(state->graphics_context, INSTRUCTIONS_TEXT_1,
-               state->instructions_text_1_position, state->instructions_text_scale,
-               COLOR_GRAY);
+               state->instructions_text_1_position,
+               state->instructions_text_scale, COLOR_GRAY);
 
     write_text(state->graphics_context, INSTRUCTIONS_TEXT_2,
-               state->instructions_text_2_position, state->instructions_text_scale,
-               COLOR_GRAY);
+               state->instructions_text_2_position,
+               state->instructions_text_scale, COLOR_GRAY);
 
     write_text(state->graphics_context, INSTRUCTIONS_TEXT_3,
-               state->instructions_text_3_position, state->instructions_text_scale,
-               COLOR_GRAY);
+               state->instructions_text_3_position,
+               state->instructions_text_scale, COLOR_GRAY);
 
     write_text(state->graphics_context, INSTRUCTIONS_TEXT_4,
-               state->instructions_text_4_position, state->instructions_text_scale,
-               COLOR_GRAY);
+               state->instructions_text_4_position,
+               state->instructions_text_scale, COLOR_GRAY);
 
-    if (elapsed_from(last_action_text_ticks) > ACTION_TEXT_FLASHING_TICKS) {
+    if (elapsed_from(last_action_text_ticks) >
+        ACTION_TEXT_FLASHING_TICKS) {
       is_action_text_on = !is_action_text_on;
       last_action_text_ticks = get_clock_ticks_ms();
     }
 
-    write_text(state->graphics_context, TITLE_TEXT, state->title_text_position,
-               state->title_text_scale, COLOR_YELLOW);
+    write_text(state->graphics_context, TITLE_TEXT,
+               state->title_text_position, state->title_text_scale,
+               COLOR_YELLOW);
 
     if (is_action_text_on) {
-      write_text(state->graphics_context, ACTION_TEXT, state->action_text_position,
-                 state->action_text_scale, COLOR_WHITE);
+      write_text(state->graphics_context, ACTION_TEXT,
+                 state->action_text_position, state->action_text_scale,
+                 COLOR_WHITE);
     }
 
     write_text(state->graphics_context, COPYRIGHT_TEXT,

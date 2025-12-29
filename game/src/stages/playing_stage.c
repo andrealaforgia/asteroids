@@ -90,7 +90,8 @@ void destroy_playing_stage(playing_stage_state_ptr state) {
 /* ---- ==== ---- ==== main game loop ==== ---- ==== ---- */
 
 game_stage_action_t handle_playing_stage(playing_stage_state_ptr state) {
-  frame_limiter_t frame_limiter = create_frame_limiter(state->game->settings.fps);
+  frame_limiter_t frame_limiter =
+      create_frame_limiter(state->game->settings.fps);
 
   create_first_ship(state);
   reset_objects(state);
