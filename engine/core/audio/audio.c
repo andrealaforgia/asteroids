@@ -94,6 +94,11 @@ ALWAYS_INLINE void play_sound(const audio_context_ptr audio_context,
   }
 }
 
+void set_audio_volume(int volume) {
+  // Volume is in the range 0-128, where 128 is full volume
+  Mix_Volume(-1, volume);  // -1 affects all channels
+}
+
 void terminate_audio_context(const audio_context_ptr audio_context) {
   if (!audio_context || !audio_context->chunks) {
     return;

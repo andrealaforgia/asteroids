@@ -100,14 +100,20 @@ static void on_asteroid_destroyed(const game_event_t* event, void* user_data) {
   audio_context_ptr audio = (audio_context_ptr)user_data;
   asteroid_destroyed_data_t* data = (asteroid_destroyed_data_t*)event->data;
 
+  SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+              "Asteroid destroyed event received (scale=%d)", data->scale);
+
   switch (data->scale) {
     case LARGE_ASTEROID_SCALE:
+      SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Playing bang large");
       play_bang_large(audio);
       break;
     case MEDIUM_ASTEROID_SCALE:
+      SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Playing bang medium");
       play_bang_medium(audio);
       break;
     case SMALL_ASTEROID_SCALE:
+      SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Playing bang small");
       play_bang_small(audio);
       break;
   }

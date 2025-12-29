@@ -19,6 +19,9 @@ bool load_sound(audio_context_ptr audio_context, int index,
 // Play a sound at the specified index
 void play_sound(const audio_context_ptr audio_context, int index);
 
+// Set the volume for all channels (0-128, where 128 is full volume)
+void set_audio_volume(int volume);
+
 // Clean up and free all audio resources
 void terminate_audio_context(const audio_context_ptr audio_context);
 

@@ -46,40 +46,40 @@ static ALWAYS_INLINE void show_fps_if_required(game_hud_ptr hud) {
 static ALWAYS_INLINE void show_sound_indicator(game_hud_ptr hud) {
   int base_x = 10;
   int base_y = 10;
-  color_t color = hud->game->settings.volume > 0 ? COLOR_GREEN : COLOR_RED;
 
-  // Draw speaker cone (trapezoid)
-  draw_line(hud->graphics_context, base_x, base_y + 3, base_x, base_y + 9,
-            color);
-  draw_line(hud->graphics_context, base_x, base_y + 3, base_x + 3, base_y,
-            color);
-  draw_line(hud->graphics_context, base_x, base_y + 9, base_x + 3,
-            base_y + 12, color);
-  draw_line(hud->graphics_context, base_x + 3, base_y, base_x + 3,
-            base_y + 12, color);
+  // Draw 16x16 yellow speaker icon
+  // Speaker cone (trapezoid)
+  draw_line(hud->graphics_context, base_x + 2, base_y + 5, base_x + 2,
+            base_y + 11, COLOR_YELLOW);
+  draw_line(hud->graphics_context, base_x + 2, base_y + 5, base_x + 6,
+            base_y + 2, COLOR_YELLOW);
+  draw_line(hud->graphics_context, base_x + 2, base_y + 11, base_x + 6,
+            base_y + 14, COLOR_YELLOW);
+  draw_line(hud->graphics_context, base_x + 6, base_y + 2, base_x + 6,
+            base_y + 14, COLOR_YELLOW);
 
   if (hud->game->settings.volume > 0) {
-    // Draw sound waves (3 arcs represented as lines)
-    draw_line(hud->graphics_context, base_x + 5, base_y + 2, base_x + 6,
-              base_y + 1, color);
-    draw_line(hud->graphics_context, base_x + 5, base_y + 10, base_x + 6,
-              base_y + 11, color);
+    // Draw sound waves when sound is on
+    draw_line(hud->graphics_context, base_x + 8, base_y + 4, base_x + 9,
+              base_y + 3, COLOR_YELLOW);
+    draw_line(hud->graphics_context, base_x + 8, base_y + 12, base_x + 9,
+              base_y + 13, COLOR_YELLOW);
 
-    draw_line(hud->graphics_context, base_x + 7, base_y + 1, base_x + 8,
-              base_y, color);
-    draw_line(hud->graphics_context, base_x + 7, base_y + 11, base_x + 8,
-              base_y + 12, color);
+    draw_line(hud->graphics_context, base_x + 10, base_y + 2, base_x + 11,
+              base_y + 1, COLOR_YELLOW);
+    draw_line(hud->graphics_context, base_x + 10, base_y + 14, base_x + 11,
+              base_y + 15, COLOR_YELLOW);
 
-    draw_line(hud->graphics_context, base_x + 9, base_y, base_x + 10,
-              base_y - 1, color);
-    draw_line(hud->graphics_context, base_x + 9, base_y + 12, base_x + 10,
-              base_y + 13, color);
+    draw_line(hud->graphics_context, base_x + 12, base_y + 1, base_x + 13,
+              base_y, COLOR_YELLOW);
+    draw_line(hud->graphics_context, base_x + 12, base_y + 15, base_x + 13,
+              base_y + 16, COLOR_YELLOW);
   } else {
-    // Draw red cross (X) over the speaker
-    draw_line(hud->graphics_context, base_x + 5, base_y + 2, base_x + 11,
-              base_y + 10, COLOR_RED);
-    draw_line(hud->graphics_context, base_x + 11, base_y + 2, base_x + 5,
-              base_y + 10, COLOR_RED);
+    // Draw red cross (X) when sound is off
+    draw_line(hud->graphics_context, base_x + 8, base_y + 4, base_x + 14,
+              base_y + 12, COLOR_RED);
+    draw_line(hud->graphics_context, base_x + 14, base_y + 4, base_x + 8,
+              base_y + 12, COLOR_RED);
   }
 }
 

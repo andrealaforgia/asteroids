@@ -227,8 +227,10 @@ game_stage_action_t handle_intro_stage(intro_stage_state_ptr state) {
       // Toggle sound: if volume > 0, mute; otherwise set to default
       if (state->game->settings.volume > 0) {
         state->game->settings.volume = 0;
+        set_audio_volume(0);  // Mute SDL mixer
       } else {
         state->game->settings.volume = 50;  // Default volume
+        set_audio_volume(64);  // Set SDL mixer to 50% (64/128)
       }
     }
 

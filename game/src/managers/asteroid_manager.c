@@ -83,6 +83,9 @@ void break_asteroid_apart(asteroid_manager_ptr manager,
     .data_size = sizeof(asteroid_destroyed_data_t)
   };
 
+  SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+              "Publishing asteroid destroyed event (scale=%d)",
+              asteroid->scale);
   publish(manager->event_system, &event);
 
   if (scale_down(asteroid)) {
