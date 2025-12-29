@@ -9,7 +9,7 @@
 #include "physics.h"
 #include "sprites.h"
 
-static ALWAYS_INLINE bool sound_on(const ship_controller_ptr controller) {
+static inline bool sound_on(const ship_controller_ptr controller) {
   return controller->volume > 0;
 }
 

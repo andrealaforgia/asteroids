@@ -25,21 +25,21 @@
 
 /* ---- ==== ---- ==== helper functions ==== ---- ==== ---- */
 
-static ALWAYS_INLINE bool any_ship_lives_left(const playing_stage_state_ptr state) {
+static inline bool any_ship_lives_left(const playing_stage_state_ptr state) {
   return state->game->lives > 0;
 }
 
-static ALWAYS_INLINE void consume_one_ship_life(playing_stage_state_ptr state) {
+static inline void consume_one_ship_life(playing_stage_state_ptr state) {
   --state->game->lives;
 }
 
 /* ---- ==== ---- ==== init ==== ---- ==== ---- */
 
-static ALWAYS_INLINE void create_first_ship(playing_stage_state_ptr state) {
+static inline void create_first_ship(playing_stage_state_ptr state) {
   state->ship = create_ship(state->graphics_context->screen_center, 1);
 }
 
-static ALWAYS_INLINE void reset_objects(playing_stage_state_ptr state) {
+static void reset_objects(playing_stage_state_ptr state) {
   reset_asteroids(&state->asteroid_manager);
   reset_sharpnels(state->sharpnel_system);
   reset_bullets(&state->bullet_manager);
