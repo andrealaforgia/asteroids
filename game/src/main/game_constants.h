@@ -1,3 +1,12 @@
+/**
+ * @file game_constants.h
+ * @brief Game-wide constant definitions and tuning parameters
+ *
+ * Defines all magic numbers and tuning parameters for the game including
+ * physics constants, timing durations, entity limits, and speed values.
+ * Centralizes configuration for easy gameplay balancing and tweaking.
+ */
+
 #ifndef GAME_SRC_MAIN_GAME_CONSTANTS_H_
 #define GAME_SRC_MAIN_GAME_CONSTANTS_H_
 

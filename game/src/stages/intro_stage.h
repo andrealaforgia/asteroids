@@ -1,3 +1,12 @@
+/**
+ * @file intro_stage.h
+ * @brief Introduction screen stage implementation
+ *
+ * Implements the intro screen showing game title, instructions, and
+ * animated background asteroids. Handles the initial game state before
+ * players start playing, waiting for input to transition to gameplay.
+ */
+
 #ifndef GAME_SRC_STAGES_INTRO_STAGE_H_
 #define GAME_SRC_STAGES_INTRO_STAGE_H_
 

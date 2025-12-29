@@ -1,3 +1,12 @@
+/**
+ * @file playing_stage.h
+ * @brief Main gameplay stage implementation
+ *
+ * Implements the core gameplay loop managing ship, asteroids, saucer,
+ * bullets, collisions, and HUD. Coordinates all gameplay systems including
+ * entity managers, collision detection, and event system integration.
+ */
+
 #ifndef GAME_SRC_STAGES_PLAYING_STAGE_H_
 #define GAME_SRC_STAGES_PLAYING_STAGE_H_
 

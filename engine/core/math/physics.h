@@ -1,3 +1,12 @@
+/**
+ * @file physics.h
+ * @brief Basic physics types and velocity calculations
+ *
+ * Defines velocity as a combination of speed and direction vector.
+ * Provides functions for creating velocities and generating random
+ * velocity vectors for entity movement.
+ */
+
 #ifndef ENGINE_CORE_MATH_PHYSICS_H_
 #define ENGINE_CORE_MATH_PHYSICS_H_
 

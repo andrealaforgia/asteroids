@@ -1,3 +1,12 @@
+/**
+ * @file bullet.h
+ * @brief Bullet entity definition and creation
+ *
+ * Defines the bullet entity with position, velocity, and creation timestamp.
+ * Bullets have limited lifetime and are automatically removed after a time
+ * limit to prevent indefinite movement across the screen.
+ */
+
 #ifndef GAME_SRC_ENTITIES_BULLET_H_
 #define GAME_SRC_ENTITIES_BULLET_H_
 

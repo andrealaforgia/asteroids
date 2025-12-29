@@ -1,3 +1,12 @@
+/**
+ * @file logger.h
+ * @brief Logging macros for error and info messages
+ *
+ * Provides standardized logging macros wrapping SDL logging functions.
+ * Includes helpers for SDL errors, SDL_mixer errors, and formatted messages
+ * with consistent categorization across the codebase.
+ */
+
 #ifndef ENGINE_CORE_UTILS_LOGGER_H_
 #define ENGINE_CORE_UTILS_LOGGER_H_
 

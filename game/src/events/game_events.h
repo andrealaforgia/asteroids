@@ -1,3 +1,12 @@
+/**
+ * @file game_events.h
+ * @brief Game event type definitions and data structures
+ *
+ * Defines all game-specific event types like asteroid destroyed, ship
+ * destroyed, and saucer destroyed. Includes event data structures that
+ * carry information about each event for subscribers to process.
+ */
+
 #ifndef GAME_SRC_EVENTS_GAME_EVENTS_H_
 #define GAME_SRC_EVENTS_GAME_EVENTS_H_
 

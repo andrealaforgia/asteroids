@@ -1,3 +1,12 @@
+/**
+ * @file fps_tracker.h
+ * @brief Frame rate measurement and tracking
+ *
+ * Provides a simple FPS tracker that counts frames and calculates
+ * average frames per second. Used for performance monitoring and
+ * displaying FPS information on screen.
+ */
+
 #ifndef ENGINE_CORE_GRAPHICS_FPS_TRACKER_H_
 #define ENGINE_CORE_GRAPHICS_FPS_TRACKER_H_
 

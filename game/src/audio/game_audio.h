@@ -1,3 +1,12 @@
+/**
+ * @file game_audio.h
+ * @brief Game-specific sound effects and audio management
+ *
+ * Defines all sound effect indices for Asteroids and provides wrapper
+ * functions for playing each sound. Integrates with the event system
+ * to automatically play sounds in response to game events.
+ */
+
 #ifndef GAME_SRC_AUDIO_GAME_AUDIO_H_
 #define GAME_SRC_AUDIO_GAME_AUDIO_H_
 

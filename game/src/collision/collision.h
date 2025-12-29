@@ -1,3 +1,12 @@
+/**
+ * @file collision.h
+ * @brief Low-level collision detection primitives
+ *
+ * Provides basic collision detection functions between game entities
+ * using simple distance-based checks. Returns collision status for
+ * pairs of entities like bullets, asteroids, ships, and saucers.
+ */
+
 #ifndef GAME_SRC_COLLISION_COLLISION_H_
 #define GAME_SRC_COLLISION_COLLISION_H_
 

@@ -1,3 +1,12 @@
+/**
+ * @file window_mode.h
+ * @brief Window display mode enumeration
+ *
+ * Defines the available window modes for the game including windowed,
+ * fullscreen, borderless, and maximized. Used during graphics context
+ * initialization to configure the display.
+ */
+
 #ifndef ENGINE_CORE_GRAPHICS_WINDOW_MODE_H_
 #define ENGINE_CORE_GRAPHICS_WINDOW_MODE_H_
 

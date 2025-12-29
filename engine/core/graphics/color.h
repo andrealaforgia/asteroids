@@ -1,3 +1,12 @@
+/**
+ * @file color.h
+ * @brief Color definitions and utilities for graphics rendering
+ *
+ * Provides RGB color constants and utility macros for extracting
+ * color components. Colors are represented as 32-bit integers
+ * in 0xRRGGBB format.
+ */
+
 #ifndef ENGINE_CORE_GRAPHICS_COLOR_H_
 #define ENGINE_CORE_GRAPHICS_COLOR_H_
 

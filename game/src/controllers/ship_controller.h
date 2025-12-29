@@ -1,3 +1,12 @@
+/**
+ * @file ship_controller.h
+ * @brief Player ship control and behavior management
+ *
+ * Manages player ship controls including thrust, rotation, and firing.
+ * Handles ship state updates, destruction sequences, respawning, and
+ * coordinates with bullet manager and audio system for player actions.
+ */
+
 #ifndef GAME_SRC_CONTROLLERS_SHIP_CONTROLLER_H_
 #define GAME_SRC_CONTROLLERS_SHIP_CONTROLLER_H_
 

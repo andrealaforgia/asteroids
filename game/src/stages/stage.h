@@ -1,3 +1,12 @@
+/**
+ * @file stage.h
+ * @brief Game stage abstraction and lifecycle management
+ *
+ * Defines the stage interface for different game screens like intro,
+ * playing, and game over. Provides factory functions and common operations
+ * for creating and managing stage transitions using function pointers.
+ */
+
 #ifndef GAME_SRC_STAGES_STAGE_H_
 #define GAME_SRC_STAGES_STAGE_H_
 

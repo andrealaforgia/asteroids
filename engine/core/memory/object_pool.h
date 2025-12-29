@@ -1,3 +1,12 @@
+/**
+ * @file object_pool.h
+ * @brief Generic object pool for efficient memory management
+ *
+ * Provides a reusable object pool implementation with constant-time
+ * allocation and deallocation. Uses contiguous memory for cache efficiency
+ * and maintains a free list for fast object reuse without heap operations.
+ */
+
 #ifndef ENGINE_CORE_MEMORY_OBJECT_POOL_H_
 #define ENGINE_CORE_MEMORY_OBJECT_POOL_H_
 

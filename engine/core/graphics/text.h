@@ -1,3 +1,12 @@
+/**
+ * @file text.h
+ * @brief Bitmap font text rendering system
+ *
+ * Provides functions for rendering text and numbers using a custom
+ * bitmap font. Supports scalable text rendering and calculates text
+ * dimensions for layout purposes.
+ */
+
 #ifndef ENGINE_CORE_GRAPHICS_TEXT_H_
 #define ENGINE_CORE_GRAPHICS_TEXT_H_
 

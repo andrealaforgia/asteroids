@@ -1,3 +1,12 @@
+/**
+ * @file keyboard.h
+ * @brief Keyboard input handling with debouncing
+ *
+ * Provides functions for detecting keyboard input with built-in
+ * debouncing to prevent accidental double-presses. Maintains timing
+ * state for each monitored key to ensure clean input detection.
+ */
+
 #ifndef ENGINE_CORE_INPUT_KEYBOARD_H_
 #define ENGINE_CORE_INPUT_KEYBOARD_H_
 

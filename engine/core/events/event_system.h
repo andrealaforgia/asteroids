@@ -1,3 +1,12 @@
+/**
+ * @file event_system.h
+ * @brief Publisher-subscriber event system for game events
+ *
+ * Implements a simple event bus allowing components to publish and subscribe
+ * to game events. Supports multiple subscribers per event type with user data
+ * for decoupled communication between game systems.
+ */
+
 #ifndef ENGINE_CORE_EVENTS_EVENT_SYSTEM_H_
 #define ENGINE_CORE_EVENTS_EVENT_SYSTEM_H_
 

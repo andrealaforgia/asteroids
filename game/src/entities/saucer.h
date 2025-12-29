@@ -1,3 +1,12 @@
+/**
+ * @file saucer.h
+ * @brief Enemy saucer entity definition
+ *
+ * Defines the flying saucer enemy with position, velocity, scale, and
+ * active state. Saucers come in two sizes with different behaviors and
+ * point values, moving horizontally across the screen.
+ */
+
 #ifndef GAME_SRC_ENTITIES_SAUCER_H_
 #define GAME_SRC_ENTITIES_SAUCER_H_
 

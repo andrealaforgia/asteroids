@@ -4,9 +4,12 @@
 #include <stdint.h>
 
 /**
- * Common type aliases for better type safety and code clarity.
+ * @file types.h
+ * @brief Common type aliases for better type safety
  *
- * These types make intent explicit and help catch mistakes at compile time.
+ * Defines semantic type aliases for timestamps, rotation indices, and
+ * entity scales. These types make intent explicit and help catch mistakes
+ * at compile time by providing meaningful names for domain concepts.
  */
 
 // Time-related types

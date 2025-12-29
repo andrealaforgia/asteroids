@@ -1,3 +1,12 @@
+/**
+ * @file game_settings.h
+ * @brief Game configuration settings
+ *
+ * Defines the game settings structure containing display options, FPS limits,
+ * audio volume, and gameplay parameters like initial lives. Initialized from
+ * command-line arguments and used throughout the game.
+ */
+
 #ifndef GAME_SRC_MAIN_GAME_SETTINGS_H_
 #define GAME_SRC_MAIN_GAME_SETTINGS_H_
 

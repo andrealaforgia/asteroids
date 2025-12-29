@@ -1,3 +1,12 @@
+/**
+ * @file ship.h
+ * @brief Player ship entity and physics
+ *
+ * Defines the player ship entity with rotation, velocity, thrust state,
+ * and immunity timing. Provides functions for ship creation, rotation,
+ * acceleration, and calculating geometry for collision detection and rendering.
+ */
+
 #ifndef GAME_SRC_ENTITIES_SHIP_H_
 #define GAME_SRC_ENTITIES_SHIP_H_
 

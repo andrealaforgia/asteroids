@@ -1,3 +1,12 @@
+/**
+ * @file game.h
+ * @brief Main game state and lifecycle management
+ *
+ * Defines the core game structure containing score, lives, settings, and
+ * all major subsystems like graphics, keyboard, and audio. Manages game
+ * initialization, termination, and reset operations.
+ */
+
 #ifndef GAME_SRC_MAIN_GAME_H_
 #define GAME_SRC_MAIN_GAME_H_
 

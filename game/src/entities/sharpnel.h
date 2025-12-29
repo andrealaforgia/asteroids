@@ -1,3 +1,12 @@
+/**
+ * @file sharpnel.h
+ * @brief Particle effect system for explosions
+ *
+ * Manages shrapnel particles that appear when entities are destroyed.
+ * Uses an object pool for efficient particle allocation and provides
+ * functions for adding and animating explosion debris.
+ */
+
 #ifndef GAME_SRC_ENTITIES_SHARPNEL_H_
 #define GAME_SRC_ENTITIES_SHARPNEL_H_
 

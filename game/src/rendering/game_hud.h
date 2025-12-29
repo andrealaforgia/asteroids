@@ -1,3 +1,12 @@
+/**
+ * @file game_hud.h
+ * @brief Heads-up display for in-game information
+ *
+ * Manages and renders the game HUD including player lives, score,
+ * and optional FPS counter. Coordinates layout and updates for all
+ * on-screen status information during gameplay.
+ */
+
 #ifndef GAME_SRC_RENDERING_GAME_HUD_H_
 #define GAME_SRC_RENDERING_GAME_HUD_H_
 

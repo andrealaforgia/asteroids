@@ -1,3 +1,12 @@
+/**
+ * @file asteroid.h
+ * @brief Asteroid entity definition and operations
+ *
+ * Defines the asteroid entity structure with position, velocity, scale,
+ * and color. Provides functions for creating asteroids and scaling them
+ * down when destroyed by splitting into smaller pieces.
+ */
+
 #ifndef GAME_SRC_ENTITIES_ASTEROID_H_
 #define GAME_SRC_ENTITIES_ASTEROID_H_
 

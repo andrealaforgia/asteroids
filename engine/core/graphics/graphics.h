@@ -1,3 +1,12 @@
+/**
+ * @file graphics.h
+ * @brief Core graphics context and rendering primitives
+ *
+ * Provides the main graphics context managing SDL window and renderer,
+ * along with functions for drawing lines, pixels, circles, and polygons.
+ * Handles screen wrapping, coordinate transformations, and display modes.
+ */
+
 #ifndef ENGINE_CORE_GRAPHICS_GRAPHICS_H_
 #define ENGINE_CORE_GRAPHICS_GRAPHICS_H_
 

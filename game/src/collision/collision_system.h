@@ -1,3 +1,12 @@
+/**
+ * @file collision_system.h
+ * @brief High-level collision detection and resolution system
+ *
+ * Coordinates collision checks between all game entities including
+ * asteroids, bullets, ships, and saucers. Handles collision resolution
+ * by destroying entities and triggering appropriate game events and effects.
+ */
+
 #ifndef GAME_SRC_COLLISION_COLLISION_SYSTEM_H_
 #define GAME_SRC_COLLISION_COLLISION_SYSTEM_H_
 

@@ -1,3 +1,12 @@
+/**
+ * @file geometry.h
+ * @brief 2D geometry primitives and vector mathematics
+ *
+ * Provides fundamental 2D geometry types including points, vectors,
+ * and relative coordinates. Includes functions for distance calculations,
+ * vector operations, and random point generation.
+ */
+
 #ifndef ENGINE_CORE_MATH_GEOMETRY_H_
 #define ENGINE_CORE_MATH_GEOMETRY_H_
 

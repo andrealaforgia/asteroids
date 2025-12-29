@@ -1,3 +1,12 @@
+/**
+ * @file sprites.h
+ * @brief Sprite rendering functions for game entities
+ *
+ * Provides rendering functions for all game entities including asteroids,
+ * saucers, ships, bullets, and UI elements like life indicators. Handles
+ * drawing sprites at appropriate scales and positions on screen.
+ */
+
 #ifndef GAME_SRC_RENDERING_SPRITES_H_
 #define GAME_SRC_RENDERING_SPRITES_H_
 

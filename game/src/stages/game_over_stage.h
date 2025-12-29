@@ -1,3 +1,12 @@
+/**
+ * @file game_over_stage.h
+ * @brief Game over screen stage implementation
+ *
+ * Displays the game over screen with final score, animated background,
+ * and flashing prompt text. Waits for player input to restart the game
+ * or quit, showing copyright information and score results.
+ */
+
 #ifndef GAME_SRC_STAGES_GAME_OVER_STAGE_H_
 #define GAME_SRC_STAGES_GAME_OVER_STAGE_H_
 

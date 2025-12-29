@@ -1,3 +1,12 @@
+/**
+ * @file animate.h
+ * @brief Position animation and screen wrapping utilities
+ *
+ * Provides functions for animating entity positions based on velocity
+ * and delta time. Includes screen-wrapping animation that automatically
+ * wraps entities around screen boundaries for continuous movement.
+ */
+
 #ifndef ENGINE_CORE_MATH_ANIMATE_H_
 #define ENGINE_CORE_MATH_ANIMATE_H_
 

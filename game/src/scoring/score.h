@@ -1,3 +1,12 @@
+/**
+ * @file score.h
+ * @brief Scoring system and point values
+ *
+ * Defines point values for destroying different entities and provides
+ * functions for updating player score. Integrates with the event system
+ * to automatically award points when entities are destroyed.
+ */
+
 #ifndef GAME_SRC_SCORING_SCORE_H_
 #define GAME_SRC_SCORING_SCORE_H_
 

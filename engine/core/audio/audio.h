@@ -1,3 +1,12 @@
+/**
+ * @file audio.h
+ * @brief Audio system for loading and playing sound effects
+ *
+ * Provides an audio context that manages SDL_mixer for sound playback.
+ * Supports loading multiple sound files, playing them on demand, and
+ * adjusting volume levels for all audio channels.
+ */
+
 #ifndef ENGINE_CORE_AUDIO_AUDIO_H_
 #define ENGINE_CORE_AUDIO_AUDIO_H_
 
