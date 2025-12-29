@@ -69,7 +69,8 @@ static ALWAYS_INLINE void update_ship_bullet(bullet_manager_ptr manager,
 }
 
 void update_ship_bullets(bullet_manager_ptr manager, double delta_time) {
-  for (size_t sbi = 0; sbi < ship_bullet_count; sbi++) {
+  // Iterate backwards to handle removals safely
+  for (int sbi = ship_bullet_count - 1; sbi >= 0; sbi--) {
     update_ship_bullet(manager, sbi, delta_time);
   }
 }
@@ -123,7 +124,8 @@ static ALWAYS_INLINE void update_saucer_bullet(bullet_manager_ptr manager,
 }
 
 void update_saucer_bullets(bullet_manager_ptr manager, double delta_time) {
-  for (size_t sbi = 0; sbi < saucer_bullet_count; sbi++) {
+  // Iterate backwards to handle removals safely
+  for (int sbi = saucer_bullet_count - 1; sbi >= 0; sbi--) {
     update_saucer_bullet(manager, sbi, delta_time);
   }
 }
