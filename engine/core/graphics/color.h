@@ -9,6 +9,7 @@
 #define COLOR_DARK_YELLOW 0x808000
 #define COLOR_GRAY 0x808080
 #define COLOR_RED 0xFF0000
+#define COLOR_GREEN 0x00FF00
 
 #define R(x) (((x) & 0xFF0000) >> 16)
 #define G(x) (((x) & 0x00FF00) >> 8)
