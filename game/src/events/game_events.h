@@ -5,7 +5,7 @@
 
 // Game event types
 typedef enum {
-  GAME_EVENT_ASTEROID_DESTROYED = 1000,
+  GAME_EVENT_ASTEROID_DESTROYED = 0,
   GAME_EVENT_SHIP_DESTROYED,
   GAME_EVENT_SAUCER_DESTROYED
 } game_event_type_t;
