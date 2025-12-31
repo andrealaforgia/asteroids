@@ -1,3 +1,25 @@
+# Asteroids
+
+A faithful tribute to the classic 1979 Atari arcade game, built with C and SDL2. Navigate your ship through an asteroid field, blasting space rocks into smaller fragments while avoiding collisions. Features authentic vector-style graphics, UFO enemies, and the timeless gameplay that defined a generation of arcade gaming.
+
+## Setup
+
+### Initialize Submodules
+
+This project uses a git submodule for the game engine. If you cloned without the `--recurse-submodules` flag, initialize the submodule with:
+
+```
+make dev_install
+```
+
+This will initialize the git submodules and install development tools (cpplint, clang-format).
+
+Alternatively, you can initialize submodules manually:
+
+```
+git submodule update --init --recursive
+```
+
 ## Install dependencies
 ```
 make install

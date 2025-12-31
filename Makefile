@@ -71,6 +71,7 @@ install:
 	$(INSTALL_CMD)
 
 dev_install:
+	git submodule update --init --recursive
 	$(DEV_INSTALL_CMD)
 
 lint:
