@@ -1,0 +1,3 @@
+[submodule "engine"]
+	path = engine
+	url = git@github.com:andrealaforgia/sdl-2d-game-engine.git
