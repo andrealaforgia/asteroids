@@ -4,26 +4,23 @@ A faithful tribute to the classic 1979 Atari arcade game, built with C and SDL2.
 
 ## Setup
 
-### Initialize Submodules
+This project uses a git submodule for the game engine. The setup process will automatically initialize the submodule.
 
-This project uses a git submodule for the game engine. If you cloned without the `--recurse-submodules` flag, initialize the submodule with:
+### Install dependencies
+```
+make install
+```
 
+This will initialize the git submodules and install SDL2 dependencies.
+
+### Development tools (optional)
+
+For linting and formatting:
 ```
 make dev_install
 ```
 
-This will initialize the git submodules and install development tools (cpplint, clang-format).
-
-Alternatively, you can initialize submodules manually:
-
-```
-git submodule update --init --recursive
-```
-
-## Install dependencies
-```
-make install
-```
+This installs development tools (cpplint, clang-format).
 
 ## Build the game
 ```

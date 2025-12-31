@@ -68,6 +68,7 @@ $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 install:
+	git submodule update --init --recursive
 	$(INSTALL_CMD)
 
 dev_install:
