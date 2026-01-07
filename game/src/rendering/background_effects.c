@@ -9,8 +9,10 @@
 void init_background_asteroids(asteroid_ptr asteroids, size_t count,
                                 graphics_context_ptr graphics_context) {
   for (size_t i = 0; i < count; i++) {
-    asteroids[i] = create_asteroid(random_point(graphics_context->screen_width, graphics_context->screen_height),
-                                    random_asteroid_scale(), random_color());
+    asteroids[i] = create_asteroid(
+        random_point(graphics_context->screen_width,
+                     graphics_context->screen_height),
+        random_asteroid_scale(), random_color());
   }
 }
 

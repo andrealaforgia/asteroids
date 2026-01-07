@@ -99,7 +99,9 @@ void create_asteroids(asteroid_manager_ptr manager, point_t safe_position) {
       (manager->graphics_context->screen_width * 15) / 1440;
   for (size_t i = 0; i < initial_asteroid_count; i++) {
     while (true) {
-      point_t asteroid_position = random_point(manager->graphics_context->screen_width, manager->graphics_context->screen_height);
+      point_t asteroid_position = random_point(
+          manager->graphics_context->screen_width,
+          manager->graphics_context->screen_height);
       if (point_distance(&asteroid_position, &safe_position) >
           distance_from_ship) {
         add_asteroid(manager, asteroid_position, LARGE_ASTEROID_SCALE);
