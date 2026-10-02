@@ -775,11 +775,15 @@ ALWAYS_INLINE point_t get_cannon_position(const ship_ptr ship) {
   return relative_point(&ship->position, &rp);
 }
 
-ALWAYS_INLINE void accelerate_ship(const ship_ptr ship) {
+ALWAYS_INLINE void accelerate_ship(const ship_ptr ship, double delta_time) {
   double angle = calculate_ship_angle(ship);
   ship->velocity.speed = SHIP_BASE_SPEED;
-  ship->velocity.direction.x += SHIP_THRUST_ACCELERATION * cos(angle);
-  ship->velocity.direction.y -= SHIP_THRUST_ACCELERATION * sin(angle);
+  ship->velocity.direction.x +=
+      SHIP_THRUST_ACCELERATION * delta_time * 1000.0 /
+      (PHYSICS_BASELINE_FPS * SHIP_THRUST_INTERVAL_MS) * cos(angle);
+  ship->velocity.direction.y -=
+      SHIP_THRUST_ACCELERATION * delta_time * 1000.0 /
+      (PHYSICS_BASELINE_FPS * SHIP_THRUST_INTERVAL_MS) * sin(angle);
   ship->thrusting = true;
   ship->last_thrust_ticks = get_clock_ticks_ms();
 }

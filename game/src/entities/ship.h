@@ -41,7 +41,7 @@ void create_ship_points(const int ship_rotation_index, const int ship_scale,
                         const point_ptr ship_position, const point_ptr points);
 void rotate_ship_left(const ship_ptr ship);
 void rotate_ship_right(const ship_ptr ship);
-void accelerate_ship(const ship_ptr ship);
+void accelerate_ship(const ship_ptr ship, double delta_time);
 void destroy_ship(const ship_ptr ship);
 
 #endif  // GAME_SRC_ENTITIES_SHIP_H_

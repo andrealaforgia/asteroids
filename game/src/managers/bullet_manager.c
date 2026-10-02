@@ -21,6 +21,11 @@ void init_bullet_manager(bullet_manager_ptr manager, game_ptr game,
       create_object_pool(sizeof(bullet_t), MAX_SAUCER_BULLET_COUNT);
 }
 
+void destroy_bullet_manager(bullet_manager_ptr manager) {
+  pool_destroy(&manager->ship_bullet_pool);
+  pool_destroy(&manager->saucer_bullet_pool);
+}
+
 void reset_bullets(bullet_manager_ptr manager) {
   pool_reset(&manager->ship_bullet_pool);
   pool_reset(&manager->saucer_bullet_pool);
@@ -52,7 +57,6 @@ void update_ship_bullets(bullet_manager_ptr manager, double delta_time) {
 
     bullet_ptr bullet =
         (bullet_ptr)pool_get_at(&manager->ship_bullet_pool, sbi);
-    int bullet_age = elapsed_from(bullet->creation_ticks);
 
     if (elapsed_from(bullet->creation_ticks) > SHIP_BULLET_MAX_AGE_MS) {
       remove_ship_bullet(manager, sbi);
@@ -61,8 +65,6 @@ void update_ship_bullets(bullet_manager_ptr manager, double delta_time) {
 
     wrap_animate(manager->graphics_context, &bullet->position,
                  &bullet->velocity, delta_time);
-    color_t color = GRAY_SCALE(bullet_age, SHIP_BULLET_MAX_AGE_MS);
-    render_bullet(manager->graphics_context, bullet, color);
   }
 }
 
@@ -104,7 +106,6 @@ void update_saucer_bullets(bullet_manager_ptr manager, double delta_time) {
 
     bullet_ptr bullet =
         (bullet_ptr)pool_get_at(&manager->saucer_bullet_pool, sbi);
-    int bullet_age = elapsed_from(bullet->creation_ticks);
 
     if (elapsed_from(bullet->creation_ticks) > SAUCER_BULLET_MAX_AGE_MS) {
       remove_saucer_bullet(manager, sbi);
@@ -113,8 +114,6 @@ void update_saucer_bullets(bullet_manager_ptr manager, double delta_time) {
 
     wrap_animate(manager->graphics_context, &bullet->position,
                  &bullet->velocity, delta_time);
-    color_t color = GRAY_SCALE(bullet_age, SAUCER_BULLET_MAX_AGE_MS);
-    render_bullet(manager->graphics_context, bullet, color);
   }
 }
 
@@ -127,14 +126,34 @@ bullet_ptr get_saucer_bullet(bullet_manager_ptr manager, size_t bullet_index) {
 }
 
 void foreach_active_ship_bullet(bullet_manager_ptr manager,
-                                 bullet_callback_t callback, void* user_data) {
+                                bullet_callback_t callback, void* user_data) {
   pool_foreach_active(&manager->ship_bullet_pool, (pool_callback_t)callback,
                       user_data);
 }
 
 void foreach_active_saucer_bullet(bullet_manager_ptr manager,
-                                   bullet_callback_t callback,
-                                   void* user_data) {
+                                  bullet_callback_t callback, void* user_data) {
   pool_foreach_active(&manager->saucer_bullet_pool, (pool_callback_t)callback,
                       user_data);
+}
+
+static void render_bullets(bullet_manager_ptr manager, object_pool_t* pool,
+                           int max_age) {
+  for (size_t i = 0; i < pool->capacity; ++i) {
+    if (pool_is_active(pool, i)) {
+      bullet_ptr bullet = pool_get_at(pool, i);
+      int age = elapsed_from(bullet->creation_ticks);
+      render_bullet(manager->graphics_context, bullet,
+                    GRAY_SCALE(age, max_age));
+    }
+  }
+}
+
+void render_ship_bullets(bullet_manager_ptr manager) {
+  render_bullets(manager, &manager->ship_bullet_pool, SHIP_BULLET_MAX_AGE_MS);
+}
+
+void render_saucer_bullets(bullet_manager_ptr manager) {
+  render_bullets(manager, &manager->saucer_bullet_pool,
+                 SAUCER_BULLET_MAX_AGE_MS);
 }

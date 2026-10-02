@@ -22,8 +22,11 @@ typedef struct {
   window_mode_t window_mode;
   int fps;
   int volume;
+  bool muted;
   int initial_lives;
 } game_settings_t;
+
+int game_audio_volume(const game_settings_t* settings);
 
 game_settings_t init_game_settings(bool show_fps, bool vsync, int display,
                                    int display_mode, window_mode_t window_mode,

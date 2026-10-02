@@ -44,7 +44,12 @@ void init_bullet_manager(bullet_manager_ptr manager, game_ptr game,
                          graphics_context_ptr graphics_context,
                          audio_context_ptr audio_context);
 
+void destroy_bullet_manager(bullet_manager_ptr manager);
+
 // Reset bullet state
+void render_ship_bullets(bullet_manager_ptr manager);
+void render_saucer_bullets(bullet_manager_ptr manager);
+
 void reset_bullets(bullet_manager_ptr manager);
 
 // Ship bullet management
@@ -65,10 +70,10 @@ bullet_ptr get_saucer_bullet(bullet_manager_ptr manager, size_t bullet_index);
 
 // Iterator abstractions - foreach active bullets
 typedef void (*bullet_callback_t)(bullet_ptr bullet, size_t index,
-                                   void* user_data);
+                                  void* user_data);
 void foreach_active_ship_bullet(bullet_manager_ptr manager,
-                                 bullet_callback_t callback, void* user_data);
+                                bullet_callback_t callback, void* user_data);
 void foreach_active_saucer_bullet(bullet_manager_ptr manager,
-                                   bullet_callback_t callback, void* user_data);
+                                  bullet_callback_t callback, void* user_data);
 
 #endif  // GAME_SRC_MANAGERS_BULLET_MANAGER_H_

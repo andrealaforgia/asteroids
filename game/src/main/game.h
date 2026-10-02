@@ -34,6 +34,8 @@ typedef struct {
 
 game_t init_game(game_settings_t game_settings);
 void terminate_game(const game_ptr game);
+bool toggle_game_sound(game_ptr game);
+
 void reset_game(const game_ptr game);
 
 #endif  // GAME_SRC_MAIN_GAME_H_

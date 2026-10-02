@@ -38,16 +38,19 @@ typedef struct {
   sharpnel_system_ptr sharpnel_system;
   event_system_ptr event_system;
   object_pool_t pool;
+  point_t (*position_source)(int width, int height);
 } asteroid_manager_t;
 
 typedef asteroid_manager_t* asteroid_manager_ptr;
 
 // Initialize the asteroid manager with required context
 void init_asteroid_manager(asteroid_manager_ptr manager, game_ptr game,
-                            graphics_context_ptr graphics_context,
-                            audio_context_ptr audio_context,
-                            sharpnel_system_ptr sharpnel_system,
-                            event_system_ptr event_system);
+                           graphics_context_ptr graphics_context,
+                           audio_context_ptr audio_context,
+                           sharpnel_system_ptr sharpnel_system,
+                           event_system_ptr event_system);
+
+void destroy_asteroid_manager(asteroid_manager_ptr manager);
 
 // Reset asteroid state
 void reset_asteroids(asteroid_manager_ptr manager);
@@ -62,6 +65,8 @@ void add_asteroid(asteroid_manager_ptr manager, point_t position, int scale);
 void remove_asteroid(asteroid_manager_ptr manager, size_t asteroid_index);
 
 // Update and render all asteroids
+void render_asteroids(asteroid_manager_ptr manager);
+
 void update_asteroids(asteroid_manager_ptr manager, double delta_time);
 
 // Break asteroid apart (play sound, score, spawn smaller ones)
@@ -83,8 +88,8 @@ int get_asteroid_radius(const asteroid_manager_ptr manager,
 
 // Iterator abstraction - foreach active asteroid
 typedef void (*asteroid_callback_t)(asteroid_ptr asteroid, size_t index,
-                                     void* user_data);
+                                    void* user_data);
 void foreach_active_asteroid(asteroid_manager_ptr manager,
-                              asteroid_callback_t callback, void* user_data);
+                             asteroid_callback_t callback, void* user_data);
 
 #endif  // GAME_SRC_MANAGERS_ASTEROID_MANAGER_H_

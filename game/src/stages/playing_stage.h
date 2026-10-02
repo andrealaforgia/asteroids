@@ -16,11 +16,12 @@
 #include "game.h"
 #include "game_hud.h"
 #include "saucer_manager.h"
-#include "ship_controller.h"
 #include "sharpnel.h"
 #include "ship.h"
+#include "ship_controller.h"
 
 typedef struct {
+  double simulation_accumulator;
   game_ptr game;
   graphics_context_ptr graphics_context;
   audio_context_ptr audio_context;
@@ -42,6 +43,9 @@ typedef playing_stage_state_t* playing_stage_state_ptr;
 
 playing_stage_state_ptr create_playing_stage(game_ptr game);
 void destroy_playing_stage(playing_stage_state_ptr state);
+bool advance_playing_stage(playing_stage_state_ptr state, ship_input_t input,
+                           double delta_time);
+
 game_stage_action_t handle_playing_stage(playing_stage_state_ptr state);
 
 #endif  // GAME_SRC_STAGES_PLAYING_STAGE_H_

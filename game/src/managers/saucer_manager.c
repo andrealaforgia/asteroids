@@ -5,8 +5,8 @@
 #include "game_constants.h"
 #include "game_events.h"
 #include "physics.h"
-#include "sprites.h"
 #include "sharpnel.h"
+#include "sprites.h"
 
 void init_saucer_manager(saucer_manager_ptr manager, game_ptr game,
                          graphics_context_ptr graphics_context,
@@ -22,20 +22,20 @@ void init_saucer_manager(saucer_manager_ptr manager, game_ptr game,
   manager->event_system = event_system;
   manager->saucer.flying = false;
   manager->last_travel_duration_msecs = 0;
-  manager->last_travel_start_ticks = 0;
-  manager->last_bullet_fired_ticks = 0;
+  manager->last_travel_start_ticks = get_clock_ticks_ms();
+  manager->last_bullet_fired_ticks = get_clock_ticks_ms();
 }
 
 void reset_saucer(saucer_manager_ptr manager) {
   manager->saucer.flying = false;
   manager->last_travel_duration_msecs = 0;
-  manager->last_travel_start_ticks = 0;
-  manager->last_bullet_fired_ticks = 0;
+  manager->last_travel_start_ticks = get_clock_ticks_ms();
+  manager->last_bullet_fired_ticks = get_clock_ticks_ms();
 }
 
 void create_saucer_if_required(saucer_manager_ptr manager) {
-  int wait_time = SAUCER_CREATION_FREQUENCY_MS +
-                  manager->last_travel_duration_msecs;
+  int wait_time =
+      SAUCER_CREATION_FREQUENCY_MS + manager->last_travel_duration_msecs;
   if (elapsed_from(manager->last_travel_start_ticks) > wait_time) {
     manager->saucer = create_saucer(manager->graphics_context);
     manager->last_travel_start_ticks = get_clock_ticks_ms();
@@ -50,7 +50,6 @@ void update_saucer(saucer_manager_ptr manager, double delta_time,
     manager->last_travel_duration_msecs =
         elapsed_from(manager->last_travel_start_ticks);
   } else {
-    render_saucer(manager->graphics_context, &manager->saucer);
     if (elapsed_from(manager->last_bullet_fired_ticks) >
         SAUCER_BULLET_FIRE_INTERVAL_MS) {
       add_saucer_bullet(manager->bullet_manager, manager->saucer.position,
@@ -65,16 +64,12 @@ void destroy_saucer(saucer_manager_ptr manager) {
   add_sharpnel(manager->sharpnel_system, manager->saucer.position);
 
   // Publish saucer destroyed event
-  saucer_destroyed_data_t event_data = {
-    .position = manager->saucer.position,
-    .is_big = is_big(&manager->saucer)
-  };
+  saucer_destroyed_data_t event_data = {.position = manager->saucer.position,
+                                        .is_big = is_big(&manager->saucer)};
 
-  game_event_t event = {
-    .type = GAME_EVENT_SAUCER_DESTROYED,
-    .data = &event_data,
-    .data_size = sizeof(saucer_destroyed_data_t)
-  };
+  game_event_t event = {.type = GAME_EVENT_SAUCER_DESTROYED,
+                        .data = &event_data,
+                        .data_size = sizeof(saucer_destroyed_data_t)};
 
   publish(manager->event_system, &event);
 }

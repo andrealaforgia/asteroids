@@ -14,7 +14,12 @@ game_settings_t init_game_settings(bool show_fps, bool vsync, int display,
   game_settings.display_mode = display_mode;
   game_settings.window_mode = window_mode;
   game_settings.fps = fps;
-  game_settings.volume = volume;
+  game_settings.volume = volume > 0 ? volume : 32;
+  game_settings.muted = volume == 0;
   game_settings.initial_lives = initial_lives;
   return game_settings;
+}
+
+int game_audio_volume(const game_settings_t* settings) {
+  return settings->muted ? 0 : settings->volume;
 }

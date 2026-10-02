@@ -10,22 +10,31 @@
 #include "logger.h"
 #include "stage.h"
 
-static void run_game(const game_ptr game) {
+static bool run_game(const game_ptr game) {
   // Create stage instances
   stage_ptr stages[3] = {create_intro_stage_instance(),
                          create_playing_stage_instance(),
                          create_game_over_stage_instance()};
+
+  for (int i = 0; i < 3; ++i) {
+    if (!stages[i]) {
+      for (int j = 0; j < 3; ++j) {
+        destroy_stage(stages[j]);
+      }
+      LOG_ERROR("Unable to allocate game stages");
+      return false;
+    }
+  }
 
   // Start with intro stage
   int current_stage_index = 0;
   stage_ptr current_stage = stages[current_stage_index];
   current_stage->init(current_stage, game);
 
-  while (true) {
+  while (current_stage->state != NULL) {
     game_stage_action_t action = current_stage->update(current_stage);
 
     if (action == QUIT) {
-      current_stage->cleanup(current_stage);
       break;
     }
 
@@ -50,10 +59,15 @@ static void run_game(const game_ptr game) {
     }
   }
 
+  bool succeeded = current_stage->state != NULL;
+  if (!succeeded) {
+    LOG_ERROR("Unable to allocate game stage state");
+  }
   // Cleanup all stages
   for (int i = 0; i < 3; i++) {
     destroy_stage(stages[i]);
   }
+  return succeeded;
 }
 
 int main(int argc, char* argv[]) {
@@ -88,14 +102,14 @@ int main(int argc, char* argv[]) {
   LOG_INFO_FMT("VSync: %s", game_settings.vsync ? "Enabled" : "Disabled");
   LOG_INFO_FMT("Target FPS: %d", game_settings.fps);
   LOG_INFO_FMT("Show FPS: %s", game_settings.show_fps ? "Yes" : "No");
-  LOG_INFO_FMT("Audio Volume: %d/128", game_settings.volume);
+  LOG_INFO_FMT("Audio Volume: %d/128", game_audio_volume(&game_settings));
   LOG_INFO("==============================");
 
   game_t game = init_game(game_settings);
 
-  run_game(&game);
+  bool succeeded = run_game(&game);
 
   terminate_game(&game);
 
-  return 0;
+  return succeeded ? EXIT_SUCCESS : EXIT_FAILURE;
 }

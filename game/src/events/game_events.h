@@ -10,6 +10,8 @@
 #ifndef GAME_SRC_EVENTS_GAME_EVENTS_H_
 #define GAME_SRC_EVENTS_GAME_EVENTS_H_
 
+#include <stdbool.h>
+
 #include "geometry.h"
 
 // Game event types

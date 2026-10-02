@@ -39,6 +39,8 @@ void destroy_sharpnel_system(sharpnel_system_t* system);
 // Sharpnel operations
 void reset_sharpnels(sharpnel_system_t* system);
 void add_sharpnel(sharpnel_system_t* system, point_t position);
+void render_sharpnels(sharpnel_system_ptr system);
+
 void animate_sharpnels(sharpnel_system_t* system, double delta_time);
 
 #endif  // GAME_SRC_ENTITIES_SHARPNEL_H_
