@@ -5,3 +5,6 @@ asteroids
 **/.vscode/
 mcm.sh
 mcm-pedantic.sh
+
+*.d
+__pycache__/

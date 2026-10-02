@@ -193,4 +193,28 @@ Control the game's audio volume at startup.
 - **S** - Toggle sound on/off
 - **F11** - Toggle fullscreen mode
 - **ESC** - Quit game
-- **Return/Enter** - Start game (from intro screen)
+- **Space** - Start game (from intro screen)
+- **Return/Enter** - Restart game (from game over screen)
+
+## Development checks
+
+The test suite uses controlled clocks, input and randomness to exercise gameplay
+without launching the game or creating a window. It checks replay cleanup,
+allocation failures, sound settings, collision handling, spawning and identical
+movement at different render frame rates. Engine tests cover input transitions,
+argument validation and object pools.
+
+```
+make test
+make sanitize
+```
+
+`make test` also verifies incremental rebuilding after game and engine header
+changes. `make sanitize` runs the C tests with AddressSanitizer and
+UndefinedBehaviourSanitizer. Both commands require Python 3 and the SDL libraries.
+CI runs the checks on Linux and macOS.
+
+Gameplay advances at 240 simulation steps per second, independently of the
+render frame rate. Catch-up after a stall is capped at 250 milliseconds.
+Muting with S preserves the selected volume; a game started with `--volume=0`
+uses the default volume of 32 when unmuted.
